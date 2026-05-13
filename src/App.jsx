@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import { NODES, LINKS_DATA, CAT_COLORS, CRED_COLORS, BETWEENNESS, CLUSTERING } from "./data/nodes.js";
-import { SOURCES, getSourcesForNode, hasArchivedSources } from "./data/sources.js";
+import { SOURCES } from "./data/sources.js";
 import { SMOKING_GUNS, NETWORK_INSIGHT } from "./data/smokingGuns.js";
 import { HELP } from "./data/help.js";
 import { PURSUE_RELEASES } from "./data/releases.js";
@@ -195,6 +195,222 @@ const CONF_CFG = {
   speculative: { color: "#fb923c" },
 };
 
+// ─── INTRO SCREEN ─────────────────────────────────────────────────────────────
+// Onboarding de primera visita. Se guarda en localStorage para no repetirse.
+// Tagline bilingüe, stats vivos, botón de entrada con animación de escáner.
+function IntroScreen({ lang, onEnter, nodeCount, linkCount }) {
+  const [visible, setVisible] = useState(false);
+  const [scanLine, setScanLine] = useState(0);
+
+  useEffect(() => {
+    // Fade in con pequeño delay para que el grafo cargue detrás
+    const t = setTimeout(() => setVisible(true), 60);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Línea de escáner animada
+  useEffect(() => {
+    let raf;
+    let start = null;
+    const duration = 2200;
+    const animate = (ts) => {
+      if (!start) start = ts;
+      const progress = ((ts - start) % duration) / duration;
+      setScanLine(progress * 100);
+      raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const handleEnter = () => {
+    // Guardar en localStorage para no mostrar en visitas futuras
+    try { localStorage.setItem("uap_atlas_visited", "1"); } catch {}
+    onEnter();
+  };
+
+  const tagline = {
+    es: "El mundo ya se está haciendo preguntas.\nAquí intentaremos conectar cada día todas las piezas.",
+    en: "The world is already asking questions.\nHere we will try to connect all the pieces, every day.",
+  };
+
+  const updated = new Date().toLocaleDateString(lang === "es" ? "es-ES" : "en-GB", {
+    day: "2-digit", month: "short", year: "numeric"
+  });
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 2000,
+      background: "var(--bg)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      opacity: visible ? 1 : 0,
+      transition: "opacity 0.5s ease",
+      overflow: "hidden",
+    }}>
+
+      {/* Grid de fondo — atmosfera consola */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        backgroundImage: `
+          linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px)
+        `,
+        backgroundSize: "48px 48px",
+        maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%)",
+      }}/>
+
+      {/* Línea de escáner */}
+      <div style={{
+        position: "absolute", left: 0, right: 0,
+        top: `${scanLine}%`,
+        height: "1px",
+        background: "linear-gradient(90deg, transparent 0%, rgba(56,189,248,0.15) 20%, rgba(56,189,248,0.4) 50%, rgba(56,189,248,0.15) 80%, transparent 100%)",
+        pointerEvents: "none",
+        transition: "none",
+      }}/>
+
+      {/* Esquinas decorativas */}
+      {[
+        { top: 24, left: 24, borderTop: "1px solid", borderLeft: "1px solid" },
+        { top: 24, right: 24, borderTop: "1px solid", borderRight: "1px solid" },
+        { bottom: 24, left: 24, borderBottom: "1px solid", borderLeft: "1px solid" },
+        { bottom: 24, right: 24, borderBottom: "1px solid", borderRight: "1px solid" },
+      ].map((style, i) => (
+        <div key={i} style={{
+          position: "absolute", width: 32, height: 32,
+          borderColor: "rgba(56,189,248,0.2)",
+          ...style,
+        }}/>
+      ))}
+
+      {/* Contenido central */}
+      <div style={{
+        display: "flex", flexDirection: "column", alignItems: "center",
+        gap: 0, maxWidth: 560, padding: "0 32px", textAlign: "center",
+        position: "relative",
+      }}>
+
+        {/* Símbolo */}
+        <div style={{
+          fontSize: 40, color: "var(--accent)", marginBottom: 28,
+          opacity: 0.7, letterSpacing: "-0.02em",
+          animation: "pulse 3s ease-in-out infinite",
+        }}>◈</div>
+
+        {/* Título */}
+        <div style={{
+          fontFamily: "var(--font-ui)", fontSize: "clamp(28px, 5vw, 42px)",
+          fontWeight: 800, color: "var(--text-primary)",
+          letterSpacing: "-0.02em", lineHeight: 1.1, marginBottom: 8,
+        }}>
+          UAP <span style={{ color: "var(--accent)" }}>Atlas</span>
+        </div>
+
+        {/* Subtítulo */}
+        <div style={{
+          fontFamily: "var(--font-mono)", fontSize: 11,
+          color: "var(--text-muted)", letterSpacing: "0.18em",
+          textTransform: "uppercase", marginBottom: 36,
+        }}>
+          {lang === "es" ? "Atlas de Inteligencia Relacional" : "Relational Intelligence Atlas"}
+        </div>
+
+        {/* Tagline — el corazón del onboarding */}
+        <div style={{
+          fontFamily: "var(--font-ui)", fontSize: "clamp(15px, 2.2vw, 18px)",
+          color: "var(--text-secondary)", lineHeight: 1.75, marginBottom: 44,
+          maxWidth: 440,
+        }}>
+          {tagline[lang].split("\n").map((line, i) => (
+            <span key={i}>
+              {i === 0
+                ? <span>{line}</span>
+                : <span style={{ color: "var(--accent)", fontWeight: 600 }}>{line}</span>
+              }
+              {i === 0 && <br />}
+            </span>
+          ))}
+        </div>
+
+        {/* Stats en vivo */}
+        <div style={{
+          display: "flex", gap: 0, marginBottom: 40,
+          border: "1px solid var(--border)", borderRadius: "var(--radius)",
+          overflow: "hidden", background: "var(--bg-2)",
+        }}>
+          {[
+            { value: nodeCount, label: lang === "es" ? "nodos" : "nodes" },
+            { value: linkCount, label: lang === "es" ? "conexiones" : "connections" },
+            { value: updated,   label: lang === "es" ? "actualizado" : "updated" },
+          ].map((stat, i) => (
+            <div key={i} style={{
+              padding: "14px 24px", textAlign: "center",
+              borderRight: i < 2 ? "1px solid var(--border)" : "none",
+            }}>
+              <div style={{
+                fontFamily: "var(--font-mono)", fontSize: 18, fontWeight: 600,
+                color: "var(--accent)", marginBottom: 4, lineHeight: 1,
+              }}>{stat.value}</div>
+              <div style={{
+                fontFamily: "var(--font-mono)", fontSize: 10,
+                color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em",
+              }}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Botón de entrada */}
+        <button
+          onClick={handleEnter}
+          style={{
+            fontFamily: "var(--font-ui)", fontSize: 15, fontWeight: 600,
+            color: "var(--bg)", background: "var(--accent)",
+            border: "none", borderRadius: "var(--radius-sm)",
+            padding: "14px 48px", cursor: "pointer",
+            letterSpacing: "0.04em",
+            transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
+            boxShadow: "0 0 24px rgba(56,189,248,0.25)",
+            marginBottom: 20,
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = "#7dd3fc";
+            e.currentTarget.style.boxShadow = "0 0 36px rgba(56,189,248,0.45)";
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = "var(--accent)";
+            e.currentTarget.style.boxShadow = "0 0 24px rgba(56,189,248,0.25)";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          {lang === "es" ? "Explorar el atlas" : "Explore the atlas"}
+        </button>
+
+        {/* Nota PURSUE R01 */}
+        <div style={{
+          fontFamily: "var(--font-mono)", fontSize: 10,
+          color: "var(--text-muted)", letterSpacing: "0.06em",
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399", display: "inline-block", flexShrink: 0 }}/>
+          {lang === "es"
+            ? "PURSUE R01 · war.gov/UFO · datos actualizados"
+            : "PURSUE R01 · war.gov/UFO · data up to date"}
+        </div>
+
+      </div>
+
+      {/* Pulso en CSS */}
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 0.5; transform: scale(1); }
+          50% { opacity: 0.9; transform: scale(1.05); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 // ─── HELP MODAL ───────────────────────────────────────────────────────────────
 function HelpModal({ lang, onClose, onLangChange }) {
   const [internalLang, setInternalLang] = useState(lang);
@@ -307,9 +523,7 @@ function HelpModal({ lang, onClose, onLangChange }) {
 // ─── SOURCES PANEL ────────────────────────────────────────────────────────────
 function SourcesPanel({ nodeId, lang }) {
   const t = T[lang];
-  const sources = getSourcesForNode(nodeId);   // usa el resolver con fallback
-  const hasArchived = hasArchivedSources(nodeId);
-
+  const sources = SOURCES[nodeId] || [];
   if (!sources.length) return (
     <div style={{ padding:24, textAlign:"center" }}>
       <div style={{ fontSize:32, marginBottom:12, color:"var(--text-muted)" }}>◫</div>
@@ -321,172 +535,44 @@ function SourcesPanel({ nodeId, lang }) {
     </div>
   );
 
-  const typeColor = {
-    official:"var(--success)", congress:"var(--accent)", foia:"#34d399",
-    leaked:"var(--warning)", media:"var(--purple)", explorer:"var(--text-secondary)",
-    pursue_r01:"#38bdf8", book:"#a78bfa", pending:"var(--text-muted)"
-  };
-  const confColor = { high:"var(--success)", medium:"var(--warning)", low:"var(--danger)", strong:"var(--success)", pending:"var(--text-muted)" };
-
-  // Etiquetas de tipo legibles
-  const typeLabel = {
-    es:{ official:"Oficial", congress:"Congreso", foia:"FOIA", leaked:"Filtrado",
-         media:"Prensa", explorer:"Herramienta", pursue_r01:"PURSUE R01", book:"Libro", pending:"Pendiente" },
-    en:{ official:"Official", congress:"Congress", foia:"FOIA", leaked:"Leaked",
-         media:"Press", explorer:"Tool", pursue_r01:"PURSUE R01", book:"Book", pending:"Pending" },
-  };
-
-  // Etiquetas de status PURSUE
-  const statusLabel = {
-    es:{ verified:"Verificado", "404":"URL caída — ver archivo", modified:"Modificado — ver archivo", archived_only:"Solo en archivo" },
-    en:{ verified:"Verified", "404":"URL down — see archive", modified:"Modified — see archive", archived_only:"Archive only" },
-  };
-  const statusColor = { verified:"var(--success)", "404":"var(--danger)", modified:"var(--warning)", archived_only:"var(--warning)" };
+  const typeColor = { official:"var(--success)", congress:"var(--accent)", foia:"#34d399", leaked:"var(--warning)", media:"var(--purple)", explorer:"var(--text-secondary)", pending:"var(--text-muted)" };
+  const confColor = { high:"var(--success)", medium:"var(--warning)", low:"var(--danger)", pending:"var(--text-muted)" };
 
   return (
     <div style={{ padding:16 }}>
-
-      {/* Alerta si hay fuentes archivadas */}
-      {hasArchived && (
-        <div style={{
-          marginBottom:12, padding:"10px 12px", borderRadius:"var(--radius-sm)",
-          border:"1px solid rgba(251,146,60,0.4)", background:"rgba(251,146,60,0.08)",
-          fontFamily:"var(--font-mono)", fontSize:11, color:"var(--warning)", lineHeight:1.6
-        }}>
-          {lang==="es"
-            ? "⚠ Una o más fuentes han cambiado de estado. Se muestran URLs de archivo como fallback."
-            : "⚠ One or more sources have changed status. Archive URLs shown as fallback."}
-        </div>
-      )}
-
       <div className="panel-label">{sources.length} {t.sourceCount}</div>
-
-      {sources.map((s, i) => {
-        const isPursue = s.type === "pursue_r01";
-
-        return (
-          <div key={i} className="source-card" style={{ marginBottom:10 }}>
-
-            {/* Cabecera: título + tipo */}
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, marginBottom:8 }}>
-              <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:500, color:"var(--text-primary)", lineHeight:1.4, flex:1 }}>
-                {s.title?.[lang] || s.title}
-              </div>
-              <div style={{ display:"flex", gap:4, flexShrink:0, flexDirection:"column", alignItems:"flex-end" }}>
-                <span className="tag" style={{
-                  background:`${typeColor[s.type]||"#666"}18`,
-                  color: typeColor[s.type]||"#666",
-                  border:`1px solid ${typeColor[s.type]||"#666"}33`
-                }}>
-                  {typeLabel[lang]?.[s.type] || s.type}
-                </span>
-                {/* Badge de status solo para fuentes PURSUE */}
-                {isPursue && s.status && (
-                  <span className="tag" style={{
-                    background:`${statusColor[s.status]||"#666"}18`,
-                    color: statusColor[s.status]||"#666",
-                    border:`1px solid ${statusColor[s.status]||"#666"}33`
-                  }}>
-                    {statusLabel[lang]?.[s.status] || s.status}
-                  </span>
-                )}
-              </div>
+      {sources.map((s,i) => (
+        <div key={i} className="source-card">
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, marginBottom:8 }}>
+            <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:500, color:"var(--text-primary)", lineHeight:1.4, flex:1 }}>
+              {s.title?.[lang] || s.title}
             </div>
-
-            {/* Fecha y SHA256 */}
-            <div style={{ display:"flex", gap:12, marginBottom:6, flexWrap:"wrap" }}>
-              {s.accessed && (
-                <div style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)" }}>
-                  {lang==="es" ? "Acceso:" : "Accessed:"} {s.accessed}
-                </div>
-              )}
-              {s.date && !s.accessed && (
-                <div style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)" }}>{s.date}</div>
-              )}
-              {isPursue && s.sha256 && (
-                <div style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", opacity:0.7 }}>
-                  SHA256: {s.sha256.substring(0,12)}…
-                </div>
-              )}
-            </div>
-
-            {/* Nota */}
-            {(s.note?.[lang] || s.note) && (
-              <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--text-secondary)", lineHeight:1.65, marginBottom:8 }}>
-                {s.note?.[lang] || s.note}
-              </div>
-            )}
-
-            {/* Cita */}
-            {(s.quote?.[lang] || s.quote) && (
-              <div style={{ borderLeft:"2px solid var(--accent)", paddingLeft:10, marginBottom:8, fontFamily:"var(--font-ui)", fontSize:12, color:"var(--accent)", fontStyle:"italic", lineHeight:1.6 }}>
-                {s.quote?.[lang] || s.quote}
-              </div>
-            )}
-
-            {/* Footer: confianza + botones de URL */}
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:6 }}>
-              <span className="tag" style={{
-                background:`${confColor[s.confidence]||"#666"}18`,
-                color: confColor[s.confidence]||"#666",
-                border:`1px solid ${confColor[s.confidence]||"#666"}33`
-              }}>
-                {t.conf?.[s.confidence] || s.confidence}
+            <div style={{ display:"flex", gap:4, flexShrink:0 }}>
+              <span className="tag" style={{ background:`${typeColor[s.type]||"#666"}18`, color:typeColor[s.type]||"#666", border:`1px solid ${typeColor[s.type]||"#666"}33` }}>
+                {t.srcType[s.type]||s.type}
               </span>
-
-              {/* Para fuentes PURSUE: tres botones de URL en cascada */}
-              {isPursue ? (
-                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                  {s.url_primary && (
-                    <a href={s.url_primary} target="_blank" rel="noreferrer"
-                      style={{ fontFamily:"var(--font-mono)", fontSize:10, color: s.status==="404" ? "var(--text-muted)" : "var(--success)", textDecoration:"none",
-                        padding:"3px 8px", border:`1px solid ${s.status==="404" ? "var(--border)" : "rgba(52,211,153,0.3)"}`,
-                        borderRadius:4, opacity: s.status==="404" ? 0.5 : 1
-                      }}>
-                      war.gov {s.status==="404" ? "↗ ⚠" : "↗"}
-                    </a>
-                  )}
-                  {s.url_search && (
-                    <a href={s.url_search} target="_blank" rel="noreferrer"
-                      style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--accent)", textDecoration:"none",
-                        padding:"3px 8px", border:"1px solid rgba(56,189,248,0.3)", borderRadius:4
-                      }}>
-                      {lang==="es" ? "Buscar ↗" : "Search ↗"}
-                    </a>
-                  )}
-                  {s.url_archive && (
-                    <a href={s.url_archive} target="_blank" rel="noreferrer"
-                      style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--warning)", textDecoration:"none",
-                        padding:"3px 8px", border:"1px solid rgba(251,146,60,0.3)", borderRadius:4
-                      }}>
-                      Archive ↗
-                    </a>
-                  )}
-                  {s.url_hf && (
-                    <a href={s.url_hf} target="_blank" rel="noreferrer"
-                      style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--purple)", textDecoration:"none",
-                        padding:"3px 8px", border:"1px solid rgba(167,139,250,0.3)", borderRadius:4
-                      }}>
-                      HF ↗
-                    </a>
-                  )}
-                </div>
-              ) : (
-                // Para fuentes normales: un solo botón
-                <a href={s.url} target="_blank" rel="noreferrer"
-                  style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--accent)", textDecoration:"none" }}>
-                  {t.openSource}
-                </a>
-              )}
             </div>
-
           </div>
-        );
-      })}
+          {s.date && <div style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)", marginBottom:6 }}>{s.date}</div>}
+          {(s.note?.[lang]||s.note) && <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--text-secondary)", lineHeight:1.65, marginBottom:8 }}>{s.note?.[lang]||s.note}</div>}
+          {(s.quote?.[lang]||s.quote) && (
+            <div style={{ borderLeft:"2px solid var(--accent)", paddingLeft:10, marginBottom:8, fontFamily:"var(--font-ui)", fontSize:12, color:"var(--accent)", fontStyle:"italic", lineHeight:1.6 }}>
+              {s.quote?.[lang]||s.quote}
+            </div>
+          )}
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <span className="tag" style={{ background:`${confColor[s.confidence]}18`, color:confColor[s.confidence], border:`1px solid ${confColor[s.confidence]}33` }}>
+              {t.conf?.[s.confidence]||s.confidence}
+            </span>
+            <a href={s.url} target="_blank" rel="noreferrer" style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--accent)", textDecoration:"none" }}>
+              {t.openSource}
+            </a>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
-
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function UAPAtlas() {
@@ -506,6 +592,12 @@ export default function UAPAtlas() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [dimensions, setDimensions] = useState({ w: 800, h: 600 });
+
+  // Intro screen — solo en primera visita
+  const [showIntro, setShowIntro] = useState(() => {
+    try { return !localStorage.getItem("uap_atlas_visited"); }
+    catch { return true; }
+  });
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -797,6 +889,17 @@ export default function UAPAtlas() {
   return (
     <>
       <GlobalStyles />
+
+      {/* ── INTRO SCREEN — primera visita ────────────────────────────────── */}
+      {showIntro && (
+        <IntroScreen
+          lang={lang}
+          nodeCount={NODES.length}
+          linkCount={LINKS_DATA.length}
+          onEnter={() => setShowIntro(false)}
+        />
+      )}
+
       <div style={{ display:"flex", flexDirection:"column", height:"100vh", width:"100vw", overflow:"hidden", fontFamily:"var(--font-ui)" }}>
 
         {/* ── HEADER ──────────────────────────────────────────────────────── */}
@@ -836,8 +939,8 @@ export default function UAPAtlas() {
             </a>
           )}
 
-          {/* Stats — visible when not filtered */}
-          <div style={{ display:"flex", gap:16, marginLeft:8 }}>
+          {/* Stats — contador vivo */}
+          <div style={{ display:"flex", gap:12, marginLeft:4, alignItems:"center" }}>
             <span style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--text-secondary)" }}>
               <span style={{ color: isFiltered ? "var(--warning)" : "var(--accent)", fontWeight:600 }}>
                 {filteredNodes.length}
@@ -845,6 +948,12 @@ export default function UAPAtlas() {
               {isFiltered && <span style={{ color:"var(--text-muted)" }}> / {NODES.length}</span>}
               <span style={{ color:"var(--text-muted)" }}> {t.nodes}</span>
             </span>
+            <span style={{ color:"var(--border)", fontSize:10 }}>·</span>
+            <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)" }}>
+              <span style={{ color:"var(--text-secondary)" }}>{filteredLinks.length}</span>
+              {" "}{lang==="es" ? "links" : "links"}
+            </span>
+            <span style={{ color:"var(--border)", fontSize:10, display:"none" }} className="density-sep">·</span>
             <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)", display:"flex", gap:4 }}>
               <span style={{ color:"var(--text-secondary)" }}>{t.density}:</span>
               <span style={{ color:"var(--text-primary)" }}>{density}%</span>
@@ -1031,8 +1140,22 @@ export default function UAPAtlas() {
                       }}>
                         {t.welcomeStats.replace("{n}",NODES.length).replace("{l}",LINKS_DATA.length).replace("{s}",sgs.length)}
                       </div>
-                      <button className="btn btn-lg" onClick={() => setShowHelp(true)} style={{ width:"100%", justifyContent:"center" }}>
+                      <button className="btn btn-lg" onClick={() => setShowHelp(true)} style={{ width:"100%", justifyContent:"center", marginBottom:8 }}>
                         <span>?</span> {t.openHelp}
+                      </button>
+                      {/* Reset intro — para demos y tests */}
+                      <button
+                        onClick={() => { try { localStorage.removeItem("uap_atlas_visited"); } catch {} setShowIntro(true); }}
+                        style={{
+                          background:"transparent", border:"none", cursor:"pointer",
+                          fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)",
+                          padding:"6px 0", width:"100%", textAlign:"center",
+                          transition:"color 0.15s",
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.color = "var(--text-secondary)"}
+                        onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}
+                      >
+                        {lang==="es" ? "↩ ver intro" : "↩ show intro"}
                       </button>
                     </div>
                   )
