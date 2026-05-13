@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+    import { useState, useEffect, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import { NODES, LINKS_DATA, CAT_COLORS, CRED_COLORS, BETWEENNESS, CLUSTERING } from "./data/nodes.js";
 import { SOURCES } from "./data/sources.js";
@@ -20,9 +20,9 @@ const GlobalStyles = () => (
       --bg-glass: rgba(13,17,23,0.85);
       --border: rgba(255,255,255,0.07);
       --border-accent: rgba(56,189,248,0.3);
-      --text-primary: #e8edf3;
-      --text-secondary: #7a8899;
-      --text-muted: #3d4f62;
+      --text-primary: #f0f4f8;
+      --text-secondary: #a8b8cc;
+      --text-muted: #5a7088;
       --accent: #38bdf8;
       --accent-dim: rgba(56,189,248,0.15);
       --accent-glow: rgba(56,189,248,0.4);
@@ -40,11 +40,22 @@ const GlobalStyles = () => (
     }
 
     html, body, #root { 
-      height: 100%; 
-      width: 100%;
+      height: 100vh !important; 
+      width: 100vw !important;
+      max-width: 100vw !important;
       overflow: hidden; 
       background: var(--bg); 
-      color: var(--text-primary); 
+      color: var(--text-primary);
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+    
+    /* Override any Next.js or framework wrappers */
+    body > div, #__next, #root > div {
+      width: 100vw !important;
+      max-width: 100vw !important;
+      height: 100vh !important;
     }
 
     ::-webkit-scrollbar { width: 4px; }
@@ -54,10 +65,10 @@ const GlobalStyles = () => (
 
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+      font-family: var(--font-ui); font-size: 14px; font-weight: 500;
       border: 1px solid var(--border); border-radius: var(--radius-sm);
       background: var(--bg-3); color: var(--text-secondary);
-      cursor: pointer; transition: var(--transition); padding: 0 14px; height: 34px;
+      cursor: pointer; transition: var(--transition); padding: 0 16px; height: 40px;
       white-space: nowrap; user-select: none;
     }
     .btn:hover { border-color: var(--border-accent); color: var(--accent); background: var(--accent-dim); }
@@ -65,7 +76,7 @@ const GlobalStyles = () => (
     .btn.danger { border-color: rgba(244,63,94,0.4); color: var(--danger); }
     .btn.danger:hover { background: rgba(244,63,94,0.1); }
     .btn-icon { padding: 0; width: 34px; }
-    .btn-lg { height: 42px; padding: 0 20px; font-size: 14px; }
+    .btn-lg { height: 48px; padding: 0 24px; font-size: 15px; }
 
     .tag {
       display: inline-flex; align-items: center; gap: 4px;
@@ -76,13 +87,13 @@ const GlobalStyles = () => (
 
     .panel-section { padding: 16px; border-bottom: 1px solid var(--border); }
     .panel-label {
-      font-family: var(--font-mono); font-size: 10px; font-weight: 500;
-      color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase;
-      margin-bottom: 10px;
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      color: var(--text-secondary); letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 12px;
     }
 
     .node-card {
-      padding: 10px 12px; border-radius: var(--radius-sm);
+      padding: 12px 14px; border-radius: var(--radius-sm);
       border: 1px solid var(--border); background: var(--bg-3);
       cursor: pointer; transition: var(--transition);
       display: flex; align-items: center; justify-content: space-between; gap: 8px;
@@ -104,10 +115,10 @@ const GlobalStyles = () => (
     .sg-card:hover { filter: brightness(1.05); }
 
     input[type="text"] {
-      width: 100%; height: 36px; padding: 0 12px;
+      width: 100%; height: 42px; padding: 0 14px;
       background: var(--bg-3); border: 1px solid var(--border);
       border-radius: var(--radius-sm); color: var(--text-primary);
-      font-family: var(--font-ui); font-size: 13px;
+      font-family: var(--font-ui); font-size: 14px;
       outline: none; transition: var(--transition);
     }
     input[type="text"]::placeholder { color: var(--text-muted); }
@@ -393,13 +404,15 @@ export default function UAPAtlas() {
       const sideW = sidebarOpen ? 300 : 0;
       const headerH = 52;
       setDimensions({
-        w: Math.max(100, window.innerWidth - sideW),
-        h: Math.max(100, window.innerHeight - headerH)
+        w: Math.max(200, window.innerWidth - sideW),
+        h: Math.max(200, window.innerHeight - headerH)
       });
     };
+    // Small delay to ensure DOM layout is complete
+    const t = setTimeout(updateDims, 50);
     updateDims();
     window.addEventListener('resize', updateDims);
-    return () => window.removeEventListener('resize', updateDims);
+    return () => { clearTimeout(t); window.removeEventListener('resize', updateDims); };
   }, [sidebarOpen]);
 
   // Adaptive graph parameters based on node count
@@ -619,7 +632,7 @@ export default function UAPAtlas() {
             <span style={{ fontSize:18, color:"var(--accent)" }}>◈</span>
             <div>
               <div style={{ fontSize:14, fontWeight:700, color:"var(--text-primary)", lineHeight:1.2 }}>{t.title}</div>
-              <div style={{ fontSize:10, fontFamily:"var(--font-mono)", color:"var(--text-muted)", lineHeight:1 }}>{t.subtitle}</div>
+              <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--text-secondary)", lineHeight:1 }}>{t.subtitle}</div>
             </div>
           </div>
 
@@ -640,7 +653,7 @@ export default function UAPAtlas() {
 
           {/* Stats — visible when not filtered */}
           <div style={{ display:"flex", gap:16, marginLeft:8 }}>
-            <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)" }}>
+            <span style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--text-secondary)" }}>
               <span style={{ color: isFiltered ? "var(--warning)" : "var(--accent)", fontWeight:600 }}>
                 {filteredNodes.length}
               </span>
@@ -690,7 +703,7 @@ export default function UAPAtlas() {
             <div style={{ width:"var(--sidebar-w)", display:"flex", flexDirection:"column", height:"100%", overflow:"hidden" }}>
 
               {/* Search */}
-              <div style={{ padding:"12px", borderBottom:"1px solid var(--border)", flexShrink:0 }}>
+              <div style={{ padding:"14px", borderBottom:"1px solid var(--border)", flexShrink:0 }}>
                 <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder={t.search} />
               </div>
 
@@ -700,7 +713,7 @@ export default function UAPAtlas() {
                   padding:"10px 12px", display:"flex", alignItems:"center", justifyContent:"space-between",
                   cursor:"pointer", userSelect:"none",
                 }} onClick={() => setFiltersOpen(v => !v)}>
-                  <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", letterSpacing:"0.1em", textTransform:"uppercase" }}>
+                  <span style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--text-secondary)", letterSpacing:"0.08em", textTransform:"uppercase" }}>
                     {t.filterLabel}
                   </span>
                   <span style={{ fontSize:10, color:"var(--text-muted)", transition:"transform 0.2s", transform: filtersOpen ? "rotate(180deg)" : "rotate(0deg)" }}>▼</span>
@@ -711,7 +724,7 @@ export default function UAPAtlas() {
                     <button
                       onClick={() => setActiveCat("all")}
                       className={`btn ${activeCat==="all" ? "active" : ""}`}
-                      style={{ justifyContent:"flex-start", height:36, fontSize:13 }}>
+                      style={{ justifyContent:"flex-start", height:42, fontSize:14 }}>
                       <span style={{ width:8, height:8, borderRadius:"50%", background:"var(--text-muted)", flexShrink:0 }}/>
                       {t.allCats}
                       <span style={{ marginLeft:"auto", fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{NODES.length}</span>
@@ -723,7 +736,7 @@ export default function UAPAtlas() {
                         <button key={cat}
                           onClick={() => setActiveCat(activeCat === cat ? "all" : cat)}
                           className={`btn ${activeCat===cat ? "active" : ""}`}
-                          style={{ justifyContent:"flex-start", height:36, fontSize:13, borderColor: activeCat===cat ? CAT_COLORS[cat] : "var(--border)", color: activeCat===cat ? CAT_COLORS[cat] : "var(--text-secondary)", background: activeCat===cat ? CAT_COLORS[cat]+"18" : "var(--bg-3)" }}>
+                          style={{ justifyContent:"flex-start", height:42, fontSize:14, borderColor: activeCat===cat ? CAT_COLORS[cat] : "var(--border)", color: activeCat===cat ? CAT_COLORS[cat] : "var(--text-secondary)", background: activeCat===cat ? CAT_COLORS[cat]+"18" : "var(--bg-3)" }}>
                           <span style={{ width:8, height:8, borderRadius:"50%", background:CAT_COLORS[cat], flexShrink:0 }}/>
                           {t.catLabels[cat]}
                           <span style={{ marginLeft:"auto", fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{count}</span>
@@ -748,10 +761,10 @@ export default function UAPAtlas() {
                   const labels = { node:t.tabNode, sources:t.tabSources, guns:t.tabGuns };
                   return (
                     <button key={tab} onClick={() => setPanel(tab)} style={{
-                      flex:1, height:38, background: panel===tab ? "var(--accent-dim)" : "transparent",
+                      flex:1, height:44, background: panel===tab ? "var(--accent-dim)" : "transparent",
                       border:"none", borderBottom: panel===tab ? `2px solid var(--accent)` : "2px solid transparent",
-                      color: panel===tab ? "var(--accent)" : "var(--text-muted)",
-                      fontFamily:"var(--font-ui)", fontSize:12, fontWeight:500,
+                      color: panel===tab ? "var(--accent)" : "var(--text-secondary)",
+                      fontFamily:"var(--font-ui)", fontSize:13, fontWeight:600,
                       cursor:"pointer", transition:"var(--transition)",
                     }}>{labels[tab]}</button>
                   );
@@ -780,7 +793,7 @@ export default function UAPAtlas() {
                             </span>
                           )}
                         </div>
-                        <div style={{ fontSize:17, fontWeight:700, color:"var(--text-primary)", marginBottom:4, lineHeight:1.3 }}>
+                        <div style={{ fontSize:19, fontWeight:700, color:"var(--text-primary)", marginBottom:6, lineHeight:1.3 }}>
                           {selected.label[lang]}
                         </div>
                         <div style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", display:"flex", gap:12 }}>
@@ -791,7 +804,7 @@ export default function UAPAtlas() {
                       </div>
                       {/* Description */}
                       <div style={{ padding:"14px 16px", borderBottom:"1px solid var(--border)" }}>
-                        <div style={{ fontSize:13, lineHeight:1.8, color:"var(--text-secondary)" }}>
+                        <div style={{ fontSize:14, lineHeight:1.85, color:"var(--text-secondary)" }}>
                           {selected.desc[lang]}
                         </div>
                       </div>
@@ -807,7 +820,7 @@ export default function UAPAtlas() {
                                 <div key={id} className="node-card" onClick={() => setSelected(n)}>
                                   <div style={{ display:"flex", alignItems:"center", gap:8, flex:1, minWidth:0 }}>
                                     <span style={{ width:8, height:8, borderRadius:"50%", background:CAT_COLORS[n.cat], flexShrink:0 }}/>
-                                    <span style={{ fontSize:12, color:"var(--text-primary)", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{n.label[lang]}</span>
+                                    <span style={{ fontSize:13, color:"var(--text-primary)", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{n.label[lang]}</span>
                                   </div>
                                   <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", flexShrink:0 }}>
                                     {n.year < 0 ? `${Math.abs(n.year)}${lang==="es"?"aC":"BC"}` : n.year}
@@ -823,8 +836,8 @@ export default function UAPAtlas() {
                     /* Welcome */
                     <div style={{ padding:24, textAlign:"center" }} className="fade-in">
                       <div style={{ fontSize:36, marginBottom:12, color:"var(--accent)", opacity:0.4 }}>◈</div>
-                      <div style={{ fontSize:15, fontWeight:700, color:"var(--text-primary)", marginBottom:6 }}>{t.noNodeTitle}</div>
-                      <div style={{ fontSize:13, color:"var(--text-secondary)", lineHeight:1.7, marginBottom:20 }}>{t.noNodeDesc}</div>
+                      <div style={{ fontSize:17, fontWeight:700, color:"var(--text-primary)", marginBottom:8 }}>{t.noNodeTitle}</div>
+                      <div style={{ fontSize:14, color:"var(--text-secondary)", lineHeight:1.8, marginBottom:20 }}>{t.noNodeDesc}</div>
                       <div style={{
                         padding:"12px 16px", background:"var(--bg-3)", borderRadius:8,
                         border:"1px solid var(--border)", marginBottom:12,
@@ -888,8 +901,8 @@ export default function UAPAtlas() {
                             </div>
                             <span style={{ fontFamily:"var(--font-mono)", fontSize:9, color:"var(--text-muted)", textTransform:"uppercase" }}>{sg.type}</span>
                           </div>
-                          <div style={{ fontSize:13, fontWeight:600, color:sev.color, marginBottom:6, lineHeight:1.3 }}>{sg.title}</div>
-                          <div style={{ fontSize:12, color:"var(--text-secondary)", lineHeight:1.7, marginBottom:8 }}>{sg.headline}</div>
+                          <div style={{ fontSize:14, fontWeight:700, color:sev.color, marginBottom:6, lineHeight:1.3 }}>{sg.title}</div>
+                          <div style={{ fontSize:13, color:"var(--text-secondary)", lineHeight:1.75, marginBottom:8 }}>{sg.headline}</div>
                           <div style={{ fontSize:11.5, color:"var(--text-muted)", lineHeight:1.75, marginBottom:8 }}>{sg.analysis}</div>
                           <div style={{ borderTop:`1px solid ${sev.color}22`, paddingTop:8, fontSize:11, color:sev.color, fontStyle:"italic", lineHeight:1.6 }}>
                             → {sg.implication}
@@ -924,8 +937,8 @@ export default function UAPAtlas() {
                   [t.avgDeg, avgDeg],
                 ].map(([label, val]) => (
                   <div key={label}>
-                    <div style={{ fontFamily:"var(--font-mono)", fontSize:9, color:"var(--text-muted)", textTransform:"uppercase", letterSpacing:"0.1em" }}>{label}</div>
-                    <div style={{ fontFamily:"var(--font-mono)", fontSize:13, color:"var(--text-primary)", fontWeight:600 }}>{val}</div>
+                    <div style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-secondary)", textTransform:"uppercase", letterSpacing:"0.08em" }}>{label}</div>
+                    <div style={{ fontFamily:"var(--font-mono)", fontSize:15, color:"var(--text-primary)", fontWeight:700 }}>{val}</div>
                   </div>
                 ))}
                 <div style={{ marginLeft:"auto", fontFamily:"var(--font-mono)", fontSize:9, color:"var(--text-muted)", alignSelf:"flex-end" }}>v4.1 · CC0</div>
@@ -934,8 +947,8 @@ export default function UAPAtlas() {
           </aside>
 
           {/* ── GRAPH AREA ──────────────────────────────────────────────── */}
-          <div style={{ flex:1, position:"relative", overflow:"hidden", minWidth:0, minHeight:0 }}>
-            <svg ref={svgRef} style={{ position:"absolute", inset:0, width:"100%", height:"100%", display:"block" }}/>
+          <div style={{ flex:1, position:"relative", overflow:"hidden", minWidth:0, minHeight:0, width:"100%", height:"100%" }}>
+            <svg ref={svgRef} style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%", display:"block" }}/>
 
             {/* Clear highlight button */}
             {highlightNodes && (
@@ -956,7 +969,7 @@ export default function UAPAtlas() {
                 <div key={cat} style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}
                   onClick={() => setActiveCat(activeCat===cat ? "all" : cat)}>
                   <span style={{ width:8, height:8, borderRadius:"50%", background:CAT_COLORS[cat], flexShrink:0 }}/>
-                  <span style={{ fontFamily:"var(--font-ui)", fontSize:11, color: activeCat===cat ? CAT_COLORS[cat] : "var(--text-muted)", fontWeight: activeCat===cat ? 600 : 400 }}>
+                  <span style={{ fontFamily:"var(--font-ui)", fontSize:12, color: activeCat===cat ? CAT_COLORS[cat] : "var(--text-secondary)", fontWeight: activeCat===cat ? 600 : 400 }}>
                     {t.catLabels[cat]}
                   </span>
                 </div>
