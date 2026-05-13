@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import { NODES, LINKS_DATA, CAT_COLORS, CRED_COLORS, BETWEENNESS, CLUSTERING } from "./data/nodes.js";
-import { SOURCES } from "./data/sources.js";
+import { SOURCES, getSourcesForNode, hasArchivedSources } from "./data/sources.js";
 import { SMOKING_GUNS, NETWORK_INSIGHT } from "./data/smokingGuns.js";
 import { HELP } from "./data/help.js";
 import { PURSUE_RELEASES } from "./data/releases.js";
@@ -307,7 +307,9 @@ function HelpModal({ lang, onClose, onLangChange }) {
 // ─── SOURCES PANEL ────────────────────────────────────────────────────────────
 function SourcesPanel({ nodeId, lang }) {
   const t = T[lang];
-  const sources = SOURCES[nodeId] || [];
+  const sources = getSourcesForNode(nodeId);   // usa el resolver con fallback
+  const hasArchived = hasArchivedSources(nodeId);
+
   if (!sources.length) return (
     <div style={{ padding:24, textAlign:"center" }}>
       <div style={{ fontSize:32, marginBottom:12, color:"var(--text-muted)" }}>◫</div>
@@ -319,44 +321,172 @@ function SourcesPanel({ nodeId, lang }) {
     </div>
   );
 
-  const typeColor = { official:"var(--success)", congress:"var(--accent)", foia:"#34d399", leaked:"var(--warning)", media:"var(--purple)", explorer:"var(--text-secondary)", pending:"var(--text-muted)" };
-  const confColor = { high:"var(--success)", medium:"var(--warning)", low:"var(--danger)", pending:"var(--text-muted)" };
+  const typeColor = {
+    official:"var(--success)", congress:"var(--accent)", foia:"#34d399",
+    leaked:"var(--warning)", media:"var(--purple)", explorer:"var(--text-secondary)",
+    pursue_r01:"#38bdf8", book:"#a78bfa", pending:"var(--text-muted)"
+  };
+  const confColor = { high:"var(--success)", medium:"var(--warning)", low:"var(--danger)", strong:"var(--success)", pending:"var(--text-muted)" };
+
+  // Etiquetas de tipo legibles
+  const typeLabel = {
+    es:{ official:"Oficial", congress:"Congreso", foia:"FOIA", leaked:"Filtrado",
+         media:"Prensa", explorer:"Herramienta", pursue_r01:"PURSUE R01", book:"Libro", pending:"Pendiente" },
+    en:{ official:"Official", congress:"Congress", foia:"FOIA", leaked:"Leaked",
+         media:"Press", explorer:"Tool", pursue_r01:"PURSUE R01", book:"Book", pending:"Pending" },
+  };
+
+  // Etiquetas de status PURSUE
+  const statusLabel = {
+    es:{ verified:"Verificado", "404":"URL caída — ver archivo", modified:"Modificado — ver archivo", archived_only:"Solo en archivo" },
+    en:{ verified:"Verified", "404":"URL down — see archive", modified:"Modified — see archive", archived_only:"Archive only" },
+  };
+  const statusColor = { verified:"var(--success)", "404":"var(--danger)", modified:"var(--warning)", archived_only:"var(--warning)" };
 
   return (
     <div style={{ padding:16 }}>
-      <div className="panel-label">{sources.length} {t.sourceCount}</div>
-      {sources.map((s,i) => (
-        <div key={i} className="source-card">
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, marginBottom:8 }}>
-            <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:500, color:"var(--text-primary)", lineHeight:1.4, flex:1 }}>
-              {s.title?.[lang] || s.title}
-            </div>
-            <div style={{ display:"flex", gap:4, flexShrink:0 }}>
-              <span className="tag" style={{ background:`${typeColor[s.type]||"#666"}18`, color:typeColor[s.type]||"#666", border:`1px solid ${typeColor[s.type]||"#666"}33` }}>
-                {t.srcType[s.type]||s.type}
-              </span>
-            </div>
-          </div>
-          {s.date && <div style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)", marginBottom:6 }}>{s.date}</div>}
-          {(s.note?.[lang]||s.note) && <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--text-secondary)", lineHeight:1.65, marginBottom:8 }}>{s.note?.[lang]||s.note}</div>}
-          {(s.quote?.[lang]||s.quote) && (
-            <div style={{ borderLeft:"2px solid var(--accent)", paddingLeft:10, marginBottom:8, fontFamily:"var(--font-ui)", fontSize:12, color:"var(--accent)", fontStyle:"italic", lineHeight:1.6 }}>
-              {s.quote?.[lang]||s.quote}
-            </div>
-          )}
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <span className="tag" style={{ background:`${confColor[s.confidence]}18`, color:confColor[s.confidence], border:`1px solid ${confColor[s.confidence]}33` }}>
-              {t.conf?.[s.confidence]||s.confidence}
-            </span>
-            <a href={s.url} target="_blank" rel="noreferrer" style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--accent)", textDecoration:"none" }}>
-              {t.openSource}
-            </a>
-          </div>
+
+      {/* Alerta si hay fuentes archivadas */}
+      {hasArchived && (
+        <div style={{
+          marginBottom:12, padding:"10px 12px", borderRadius:"var(--radius-sm)",
+          border:"1px solid rgba(251,146,60,0.4)", background:"rgba(251,146,60,0.08)",
+          fontFamily:"var(--font-mono)", fontSize:11, color:"var(--warning)", lineHeight:1.6
+        }}>
+          {lang==="es"
+            ? "⚠ Una o más fuentes han cambiado de estado. Se muestran URLs de archivo como fallback."
+            : "⚠ One or more sources have changed status. Archive URLs shown as fallback."}
         </div>
-      ))}
+      )}
+
+      <div className="panel-label">{sources.length} {t.sourceCount}</div>
+
+      {sources.map((s, i) => {
+        const isPursue = s.type === "pursue_r01";
+
+        return (
+          <div key={i} className="source-card" style={{ marginBottom:10 }}>
+
+            {/* Cabecera: título + tipo */}
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, marginBottom:8 }}>
+              <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:500, color:"var(--text-primary)", lineHeight:1.4, flex:1 }}>
+                {s.title?.[lang] || s.title}
+              </div>
+              <div style={{ display:"flex", gap:4, flexShrink:0, flexDirection:"column", alignItems:"flex-end" }}>
+                <span className="tag" style={{
+                  background:`${typeColor[s.type]||"#666"}18`,
+                  color: typeColor[s.type]||"#666",
+                  border:`1px solid ${typeColor[s.type]||"#666"}33`
+                }}>
+                  {typeLabel[lang]?.[s.type] || s.type}
+                </span>
+                {/* Badge de status solo para fuentes PURSUE */}
+                {isPursue && s.status && (
+                  <span className="tag" style={{
+                    background:`${statusColor[s.status]||"#666"}18`,
+                    color: statusColor[s.status]||"#666",
+                    border:`1px solid ${statusColor[s.status]||"#666"}33`
+                  }}>
+                    {statusLabel[lang]?.[s.status] || s.status}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Fecha y SHA256 */}
+            <div style={{ display:"flex", gap:12, marginBottom:6, flexWrap:"wrap" }}>
+              {s.accessed && (
+                <div style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)" }}>
+                  {lang==="es" ? "Acceso:" : "Accessed:"} {s.accessed}
+                </div>
+              )}
+              {s.date && !s.accessed && (
+                <div style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)" }}>{s.date}</div>
+              )}
+              {isPursue && s.sha256 && (
+                <div style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", opacity:0.7 }}>
+                  SHA256: {s.sha256.substring(0,12)}…
+                </div>
+              )}
+            </div>
+
+            {/* Nota */}
+            {(s.note?.[lang] || s.note) && (
+              <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--text-secondary)", lineHeight:1.65, marginBottom:8 }}>
+                {s.note?.[lang] || s.note}
+              </div>
+            )}
+
+            {/* Cita */}
+            {(s.quote?.[lang] || s.quote) && (
+              <div style={{ borderLeft:"2px solid var(--accent)", paddingLeft:10, marginBottom:8, fontFamily:"var(--font-ui)", fontSize:12, color:"var(--accent)", fontStyle:"italic", lineHeight:1.6 }}>
+                {s.quote?.[lang] || s.quote}
+              </div>
+            )}
+
+            {/* Footer: confianza + botones de URL */}
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:6 }}>
+              <span className="tag" style={{
+                background:`${confColor[s.confidence]||"#666"}18`,
+                color: confColor[s.confidence]||"#666",
+                border:`1px solid ${confColor[s.confidence]||"#666"}33`
+              }}>
+                {t.conf?.[s.confidence] || s.confidence}
+              </span>
+
+              {/* Para fuentes PURSUE: tres botones de URL en cascada */}
+              {isPursue ? (
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                  {s.url_primary && (
+                    <a href={s.url_primary} target="_blank" rel="noreferrer"
+                      style={{ fontFamily:"var(--font-mono)", fontSize:10, color: s.status==="404" ? "var(--text-muted)" : "var(--success)", textDecoration:"none",
+                        padding:"3px 8px", border:`1px solid ${s.status==="404" ? "var(--border)" : "rgba(52,211,153,0.3)"}`,
+                        borderRadius:4, opacity: s.status==="404" ? 0.5 : 1
+                      }}>
+                      war.gov {s.status==="404" ? "↗ ⚠" : "↗"}
+                    </a>
+                  )}
+                  {s.url_search && (
+                    <a href={s.url_search} target="_blank" rel="noreferrer"
+                      style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--accent)", textDecoration:"none",
+                        padding:"3px 8px", border:"1px solid rgba(56,189,248,0.3)", borderRadius:4
+                      }}>
+                      {lang==="es" ? "Buscar ↗" : "Search ↗"}
+                    </a>
+                  )}
+                  {s.url_archive && (
+                    <a href={s.url_archive} target="_blank" rel="noreferrer"
+                      style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--warning)", textDecoration:"none",
+                        padding:"3px 8px", border:"1px solid rgba(251,146,60,0.3)", borderRadius:4
+                      }}>
+                      Archive ↗
+                    </a>
+                  )}
+                  {s.url_hf && (
+                    <a href={s.url_hf} target="_blank" rel="noreferrer"
+                      style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--purple)", textDecoration:"none",
+                        padding:"3px 8px", border:"1px solid rgba(167,139,250,0.3)", borderRadius:4
+                      }}>
+                      HF ↗
+                    </a>
+                  )}
+                </div>
+              ) : (
+                // Para fuentes normales: un solo botón
+                <a href={s.url} target="_blank" rel="noreferrer"
+                  style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--accent)", textDecoration:"none" }}>
+                  {t.openSource}
+                </a>
+              )}
+            </div>
+
+          </div>
+        );
+      })}
     </div>
   );
 }
+
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function UAPAtlas() {
