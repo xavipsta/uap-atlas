@@ -1,4 +1,4 @@
-    import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import { NODES, LINKS_DATA, CAT_COLORS, CRED_COLORS, BETWEENNESS, CLUSTERING } from "./data/nodes.js";
 import { SOURCES } from "./data/sources.js";
@@ -415,13 +415,14 @@ export default function UAPAtlas() {
     return () => { clearTimeout(t); window.removeEventListener('resize', updateDims); };
   }, [sidebarOpen]);
 
-  // Adaptive graph parameters based on node count
+  // Adaptive graph parameters — scales with node count
   const getGraphParams = useCallback((count) => {
-    if (count < 10) return { linkDist: 200, charge: -700, collision: 55, labelSize: 13, truncate: 28, nodeScale: 1.4 };
-    if (count < 20) return { linkDist: 160, charge: -500, collision: 46, labelSize: 12, truncate: 22, nodeScale: 1.2 };
-    if (count < 35) return { linkDist: 130, charge: -380, collision: 40, labelSize: 11, truncate: 18, nodeScale: 1.0 };
-    if (count < 55) return { linkDist: 110, charge: -300, collision: 34, labelSize: 10, truncate: 15, nodeScale: 0.9 };
-    return { linkDist: 90, charge: -260, collision: 30, labelSize: 9, truncate: 12, nodeScale: 0.8 };
+    if (count <= 8)  return { linkDist: 240, charge: -900, collision: 70, labelSize: 15, truncate: 32, nodeScale: 1.6, yearSize: 11 };
+    if (count <= 15) return { linkDist: 190, charge: -650, collision: 58, labelSize: 14, truncate: 26, nodeScale: 1.35, yearSize: 10 };
+    if (count <= 25) return { linkDist: 155, charge: -480, collision: 48, labelSize: 13, truncate: 22, nodeScale: 1.15, yearSize: 9 };
+    if (count <= 40) return { linkDist: 125, charge: -360, collision: 40, labelSize: 12, truncate: 18, nodeScale: 1.0, yearSize: 8 };
+    if (count <= 60) return { linkDist: 105, charge: -290, collision: 33, labelSize: 11, truncate: 15, nodeScale: 0.88, yearSize: 7 };
+    return             { linkDist: 88,  charge: -240, collision: 28, labelSize: 10, truncate: 12, nodeScale: 0.78, yearSize: 7 };
   }, []);
 
   // Build graph
@@ -537,26 +538,60 @@ export default function UAPAtlas() {
       .attr("fill", "#e8edf3").attr("font-size", "7px")
       .attr("font-family", "JetBrains Mono, monospace").attr("pointer-events", "none");
 
-    // Label
-    ng.append("text")
-      .text(d => {
+    // Label — two lines when density is low enough
+    if (params.nodeScale >= 1.35) {
+      // Low density: try to show full label, wrap if needed
+      ng.each(function(d) {
         const lbl = d.label[lang];
-        return lbl.length > params.truncate ? lbl.slice(0, params.truncate - 1) + "…" : lbl;
-      })
-      .attr("text-anchor", "middle")
-      .attr("dy", d => nodeR(d) + params.labelSize + 4)
-      .attr("fill", "rgba(232,237,243,0.8)")
-      .attr("font-size", `${params.labelSize}px`)
-      .attr("font-family", "Syne, sans-serif")
-      .attr("font-weight", "500")
-      .attr("pointer-events", "none");
+        const el = d3.select(this);
+        const r = nodeR(d);
+        const words = lbl.split(' ');
+        if (words.length > 1 && lbl.length > 12) {
+          const mid = Math.ceil(words.length / 2);
+          const line1 = words.slice(0, mid).join(' ');
+          const line2 = words.slice(mid).join(' ');
+          el.append("text").text(line1).attr("text-anchor","middle")
+            .attr("dy", r + params.labelSize + 2)
+            .attr("fill","rgba(232,237,243,0.9)")
+            .attr("font-size",`${params.labelSize}px`)
+            .attr("font-family","Syne, sans-serif")
+            .attr("font-weight","600").attr("pointer-events","none");
+          el.append("text").text(line2).attr("text-anchor","middle")
+            .attr("dy", r + params.labelSize * 2 + 4)
+            .attr("fill","rgba(232,237,243,0.75)")
+            .attr("font-size",`${params.labelSize - 1}px`)
+            .attr("font-family","Syne, sans-serif")
+            .attr("font-weight","500").attr("pointer-events","none");
+        } else {
+          el.append("text").text(lbl).attr("text-anchor","middle")
+            .attr("dy", r + params.labelSize + 4)
+            .attr("fill","rgba(232,237,243,0.9)")
+            .attr("font-size",`${params.labelSize}px`)
+            .attr("font-family","Syne, sans-serif")
+            .attr("font-weight","600").attr("pointer-events","none");
+        }
+      });
+    } else {
+      ng.append("text")
+        .text(d => {
+          const lbl = d.label[lang];
+          return lbl.length > params.truncate ? lbl.slice(0, params.truncate - 1) + "…" : lbl;
+        })
+        .attr("text-anchor", "middle")
+        .attr("dy", d => nodeR(d) + params.labelSize + 4)
+        .attr("fill", "rgba(232,237,243,0.8)")
+        .attr("font-size", `${params.labelSize}px`)
+        .attr("font-family", "Syne, sans-serif")
+        .attr("font-weight", "500")
+        .attr("pointer-events", "none");
+    }
 
     // Year
     ng.append("text")
       .text(d => d.year < 0 ? `~${Math.abs(d.year)}${lang==="es"?"aC":"BC"}` : d.year)
       .attr("text-anchor", "middle").attr("dy", "0.35em")
       .attr("fill", d => CAT_COLORS[d.cat] + "bb")
-      .attr("font-size", `${Math.max(7, params.labelSize - 3)}px`)
+      .attr("font-size", `${params.yearSize}px`)
       .attr("font-family", "JetBrains Mono, monospace")
       .attr("pointer-events", "none");
 
@@ -570,6 +605,26 @@ export default function UAPAtlas() {
     sim.on("tick", () => {
       link.attr("x1", d=>d.source.x).attr("y1", d=>d.source.y).attr("x2", d=>d.target.x).attr("y2", d=>d.target.y);
       ng.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    // Auto zoom-to-fit after simulation stabilizes (UX-03)
+    sim.on("end", () => {
+      if (filteredNodes.length < 60) {
+        const xs = nc.map(n => n.x);
+        const ys = nc.map(n => n.y);
+        const xMin = Math.min(...xs), xMax = Math.max(...xs);
+        const yMin = Math.min(...ys), yMax = Math.max(...ys);
+        const padding = 60;
+        const scaleX = (w - padding*2) / (xMax - xMin || 1);
+        const scaleY = (h - padding*2) / (yMax - yMin || 1);
+        const scale = Math.min(scaleX, scaleY, 2.5);
+        const tx = w/2 - scale * (xMin + xMax) / 2;
+        const ty = h/2 - scale * (yMin + yMax) / 2;
+        svg.transition().duration(600).call(
+          zoom.transform,
+          d3.zoomIdentity.translate(tx, ty).scale(scale)
+        );
+      }
     });
 
     svg.on("click", () => { setSelected(null); setHighlightNodes(null); setSelectedSG(null); });
