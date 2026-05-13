@@ -387,26 +387,19 @@ export default function UAPAtlas() {
   const filteredIds = new Set(filteredNodes.map(n => n.id));
   const filteredLinks = LINKS_DATA.filter(l => filteredIds.has(l.source) && filteredIds.has(l.target));
 
-  // Resize observer — robust version with fallback
+  // Resize observer — window-based for reliable full-screen rendering
   useEffect(() => {
     const updateDims = () => {
-      const el = svgRef.current?.parentElement;
-      if (el && el.clientWidth > 0 && el.clientHeight > 0) {
-        setDimensions({ w: el.clientWidth, h: el.clientHeight });
-      } else {
-        // Fallback: calculate from window minus sidebar
-        const sideW = sidebarOpen ? 300 : 0;
-        const headerH = 52;
-        setDimensions({ w: window.innerWidth - sideW, h: window.innerHeight - headerH });
-      }
+      const sideW = sidebarOpen ? 300 : 0;
+      const headerH = 52;
+      setDimensions({
+        w: Math.max(100, window.innerWidth - sideW),
+        h: Math.max(100, window.innerHeight - headerH)
+      });
     };
     updateDims();
-    const el = svgRef.current?.parentElement;
-    if (!el) return;
-    const ro = new ResizeObserver(updateDims);
-    ro.observe(el);
     window.addEventListener('resize', updateDims);
-    return () => { ro.disconnect(); window.removeEventListener('resize', updateDims); };
+    return () => window.removeEventListener('resize', updateDims);
   }, [sidebarOpen]);
 
   // Adaptive graph parameters based on node count
