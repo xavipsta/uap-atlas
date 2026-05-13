@@ -1278,4 +1278,3 @@ export default function UAPAtlas() {
     </>
   );
 }
-
