@@ -172,6 +172,9 @@ const T = {
     introCTA: "Explorar el atlas",
     introBadge: "PURSUE R01 · war.gov/UFO · datos actualizados",
     introResetDemo: "↩ ver intro",
+    // ── Hint de primer uso ──
+    hintText: "Haz clic en cualquier nodo para explorar",
+    hintLang: "Cambia idioma arriba a la derecha · ES / EN",
   },
   en: {
     title: "UAP Atlas", subtitle: "Relational Intelligence Atlas",
@@ -203,6 +206,9 @@ const T = {
     introCTA: "Explore the atlas",
     introBadge: "PURSUE R01 · war.gov/UFO · data up to date",
     introResetDemo: "↩ show intro",
+    // ── Hint de primer uso ──
+    hintText: "Click any node to explore",
+    hintLang: "Switch language top right · ES / EN",
   }
 };
 
@@ -217,9 +223,104 @@ const CONF_CFG = {
   speculative: { color: "#fb923c" },
 };
 
-// ─── INTRO SCREEN ─────────────────────────────────────────────────────────────
-// Onboarding de primera visita. Se guarda en localStorage para no repetirse.
-// Tagline bilingüe, stats vivos, botón de entrada con animación de escáner.
+// ─── GRAPH HINT ───────────────────────────────────────────────────────────────
+// Tooltip de primer uso. Aparece al entrar desde el IntroScreen.
+// Se muestra en los DOS idiomas simultáneamente — idioma activo arriba, contrario abajo.
+// Auto-desaparece a los 5.5s. Click en cualquier parte lo cierra antes.
+function GraphHint({ lang, onDismiss }) {
+  const t = T[lang];
+  const tOther = T[lang === "es" ? "en" : "es"];
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const tin = setTimeout(() => setVisible(true), 100);
+    const tout = setTimeout(() => {
+      setVisible(false);
+      setTimeout(onDismiss, 400);
+    }, 5500);
+    return () => { clearTimeout(tin); clearTimeout(tout); };
+  }, [onDismiss]);
+
+  const handleClick = () => {
+    setVisible(false);
+    setTimeout(onDismiss, 400);
+  };
+
+  return (
+    <div
+      onClick={handleClick}
+      style={{
+        position: "fixed", inset: 0, zIndex: 1500,
+        pointerEvents: visible ? "auto" : "none",
+        display: "flex", alignItems: "flex-end", justifyContent: "center",
+        paddingBottom: 36,
+      }}
+    >
+      <div style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(12px)",
+        transition: "opacity 0.35s ease, transform 0.35s ease",
+        display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+        pointerEvents: "none",
+      }}>
+        {/* Línea principal — idioma activo */}
+        <div style={{
+          fontFamily: "var(--font-mono)", fontSize: 13, fontWeight: 500,
+          color: "var(--text-primary)",
+          background: "var(--bg-glass)", backdropFilter: "blur(16px)",
+          border: "1px solid var(--border-accent)",
+          borderRadius: "var(--radius-sm)",
+          padding: "10px 20px",
+          letterSpacing: "0.04em",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(56,189,248,0.08)",
+          whiteSpace: "nowrap",
+        }}>
+          <span style={{ color: "var(--accent)", marginRight: 8 }}>◈</span>
+          {t.hintText}
+        </div>
+        {/* Línea secundaria — idioma contrario, más tenue */}
+        <div style={{
+          fontFamily: "var(--font-mono)", fontSize: 11,
+          color: "var(--text-muted)",
+          background: "rgba(13,17,23,0.7)", backdropFilter: "blur(12px)",
+          border: "1px solid var(--border)",
+          borderRadius: "var(--radius-sm)",
+          padding: "6px 16px",
+          letterSpacing: "0.04em",
+          whiteSpace: "nowrap",
+        }}>
+          {tOther.hintText}
+        </div>
+        {/* Indicación de toggle de idioma */}
+        <div style={{
+          fontFamily: "var(--font-mono)", fontSize: 10,
+          color: "var(--text-muted)", letterSpacing: "0.06em",
+          marginTop: 2,
+        }}>
+          {t.hintLang}
+        </div>
+        {/* Barra de progreso temporal */}
+        <div style={{
+          width: 120, height: 2, borderRadius: 1,
+          background: "var(--border)", overflow: "hidden", marginTop: 4,
+        }}>
+          <div style={{
+            height: "100%", borderRadius: 1,
+            background: "var(--accent)",
+            animation: "hintProgress 5.5s linear forwards",
+          }}/>
+        </div>
+      </div>
+      <style>{\`
+        @keyframes hintProgress {
+          from { width: 100%; }
+          to   { width: 0%; }
+        }
+      \`}</style>
+    </div>
+  );
+}
+
 // ─── INTRO SCREEN ─────────────────────────────────────────────────────────────
 // Onboarding de primera visita. Se guarda en localStorage para no repetirse.
 // 100% bilingüe via objeto T. Toggle ES/EN visible en la pantalla.
@@ -584,6 +685,9 @@ export default function UAPAtlas() {
     catch { return true; }
   });
 
+  // Hint de primer uso — aparece al entrar al grafo, desaparece solo
+  const [showHint, setShowHint] = useState(false);
+
   // Keyboard shortcuts
   useEffect(() => {
     const fn = e => {
@@ -881,7 +985,7 @@ export default function UAPAtlas() {
           lang={lang}
           nodeCount={NODES.length}
           linkCount={LINKS_DATA.length}
-          onEnter={() => setShowIntro(false)}
+          onEnter={() => { setShowIntro(false); setShowHint(true); }}
           onLangChange={setLang}
         />
       )}
@@ -1275,6 +1379,14 @@ export default function UAPAtlas() {
 
       {/* ── HELP MODAL ── */}
       {showHelp && <HelpModal lang={lang} onClose={() => setShowHelp(false)} onLangChange={setLang}/>}
+
+      {/* ── HINT DE PRIMER USO ─────────────────────────────────────────── */}
+      {showHint && (
+        <GraphHint
+          lang={lang}
+          onDismiss={() => setShowHint(false)}
+        />
+      )}
     </>
   );
 }
