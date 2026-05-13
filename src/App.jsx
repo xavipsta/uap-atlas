@@ -161,6 +161,17 @@ const T = {
     welcomeStats: "{n} nodos · {l} conexiones · {s} pistolas humeantes",
     openHelp: "Abrir manual",
     latestRelease: "Última release",
+    links: "links",
+    // ── IntroScreen ──
+    introSubtitle: "Atlas de Inteligencia Relacional",
+    introTagline1: "El mundo ya se está haciendo preguntas.",
+    introTagline2: "Aquí intentaremos conectar cada día todas las piezas.",
+    introStatNodes: "nodos",
+    introStatLinks: "conexiones",
+    introStatUpdated: "actualizado",
+    introCTA: "Explorar el atlas",
+    introBadge: "PURSUE R01 · war.gov/UFO · datos actualizados",
+    introResetDemo: "↩ ver intro",
   },
   en: {
     title: "UAP Atlas", subtitle: "Relational Intelligence Atlas",
@@ -181,6 +192,17 @@ const T = {
     welcomeStats: "{n} nodes · {l} connections · {s} smoking guns",
     openHelp: "Open manual",
     latestRelease: "Latest release",
+    links: "links",
+    // ── IntroScreen ──
+    introSubtitle: "Relational Intelligence Atlas",
+    introTagline1: "The world is already asking questions.",
+    introTagline2: "Here we will try to connect all the pieces, every day.",
+    introStatNodes: "nodes",
+    introStatLinks: "connections",
+    introStatUpdated: "updated",
+    introCTA: "Explore the atlas",
+    introBadge: "PURSUE R01 · war.gov/UFO · data up to date",
+    introResetDemo: "↩ show intro",
   }
 };
 
@@ -198,17 +220,19 @@ const CONF_CFG = {
 // ─── INTRO SCREEN ─────────────────────────────────────────────────────────────
 // Onboarding de primera visita. Se guarda en localStorage para no repetirse.
 // Tagline bilingüe, stats vivos, botón de entrada con animación de escáner.
-function IntroScreen({ lang, onEnter, nodeCount, linkCount }) {
+// ─── INTRO SCREEN ─────────────────────────────────────────────────────────────
+// Onboarding de primera visita. Se guarda en localStorage para no repetirse.
+// 100% bilingüe via objeto T. Toggle ES/EN visible en la pantalla.
+function IntroScreen({ lang, onEnter, onLangChange, nodeCount, linkCount }) {
+  const t = T[lang];
   const [visible, setVisible] = useState(false);
   const [scanLine, setScanLine] = useState(0);
 
   useEffect(() => {
-    // Fade in con pequeño delay para que el grafo cargue detrás
-    const t = setTimeout(() => setVisible(true), 60);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setVisible(true), 60);
+    return () => clearTimeout(timer);
   }, []);
 
-  // Línea de escáner animada
   useEffect(() => {
     let raf;
     let start = null;
@@ -224,14 +248,8 @@ function IntroScreen({ lang, onEnter, nodeCount, linkCount }) {
   }, []);
 
   const handleEnter = () => {
-    // Guardar en localStorage para no mostrar en visitas futuras
     try { localStorage.setItem("uap_atlas_visited", "1"); } catch {}
     onEnter();
-  };
-
-  const tagline = {
-    es: "El mundo ya se está haciendo preguntas.\nAquí intentaremos conectar cada día todas las piezas.",
-    en: "The world is already asking questions.\nHere we will try to connect all the pieces, every day.",
   };
 
   const updated = new Date().toLocaleDateString(lang === "es" ? "es-ES" : "en-GB", {
@@ -247,8 +265,7 @@ function IntroScreen({ lang, onEnter, nodeCount, linkCount }) {
       transition: "opacity 0.5s ease",
       overflow: "hidden",
     }}>
-
-      {/* Grid de fondo — atmosfera consola */}
+      {/* Grid atmosférico */}
       <div style={{
         position: "absolute", inset: 0, pointerEvents: "none",
         backgroundImage: `
@@ -258,46 +275,49 @@ function IntroScreen({ lang, onEnter, nodeCount, linkCount }) {
         backgroundSize: "48px 48px",
         maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%)",
       }}/>
-
       {/* Línea de escáner */}
       <div style={{
         position: "absolute", left: 0, right: 0,
-        top: `${scanLine}%`,
-        height: "1px",
+        top: `${scanLine}%`, height: "1px",
         background: "linear-gradient(90deg, transparent 0%, rgba(56,189,248,0.15) 20%, rgba(56,189,248,0.4) 50%, rgba(56,189,248,0.15) 80%, transparent 100%)",
         pointerEvents: "none",
-        transition: "none",
       }}/>
-
-      {/* Esquinas decorativas */}
+      {/* Esquinas HUD */}
       {[
-        { top: 24, left: 24, borderTop: "1px solid", borderLeft: "1px solid" },
-        { top: 24, right: 24, borderTop: "1px solid", borderRight: "1px solid" },
-        { bottom: 24, left: 24, borderBottom: "1px solid", borderLeft: "1px solid" },
-        { bottom: 24, right: 24, borderBottom: "1px solid", borderRight: "1px solid" },
-      ].map((style, i) => (
-        <div key={i} style={{
-          position: "absolute", width: 32, height: 32,
-          borderColor: "rgba(56,189,248,0.2)",
-          ...style,
-        }}/>
+        { top:24, left:24, borderTop:"1px solid", borderLeft:"1px solid" },
+        { top:24, right:24, borderTop:"1px solid", borderRight:"1px solid" },
+        { bottom:24, left:24, borderBottom:"1px solid", borderLeft:"1px solid" },
+        { bottom:24, right:24, borderBottom:"1px solid", borderRight:"1px solid" },
+      ].map((s, i) => (
+        <div key={i} style={{ position:"absolute", width:32, height:32, borderColor:"rgba(56,189,248,0.2)", ...s }}/>
       ))}
-
+      {/* Toggle ES/EN — esquina superior derecha */}
+      <div style={{
+        position: "absolute", top: 20, right: 20,
+        display: "flex", border: "1px solid var(--border)", borderRadius: 6, overflow: "hidden",
+        zIndex: 10,
+      }}>
+        {["es","en"].map(l => (
+          <button key={l} onClick={() => onLangChange(l)} style={{
+            background: lang === l ? "var(--accent-dim)" : "transparent",
+            border: "none",
+            borderRight: l === "es" ? "1px solid var(--border)" : "none",
+            padding: "0 14px", height: 32,
+            color: lang === l ? "var(--accent)" : "var(--text-muted)",
+            fontFamily: "var(--font-mono)", fontSize: 11, cursor: "pointer",
+            fontWeight: lang === l ? 600 : 400, transition: "var(--transition)",
+          }}>{l.toUpperCase()}</button>
+        ))}
+      </div>
       {/* Contenido central */}
       <div style={{
         display: "flex", flexDirection: "column", alignItems: "center",
-        gap: 0, maxWidth: 560, padding: "0 32px", textAlign: "center",
-        position: "relative",
+        maxWidth: 560, padding: "0 32px", textAlign: "center", position: "relative",
       }}>
-
-        {/* Símbolo */}
         <div style={{
-          fontSize: 40, color: "var(--accent)", marginBottom: 28,
-          opacity: 0.7, letterSpacing: "-0.02em",
-          animation: "pulse 3s ease-in-out infinite",
+          fontSize: 40, color: "var(--accent)", marginBottom: 28, opacity: 0.7,
+          animation: "introPulse 3s ease-in-out infinite",
         }}>◈</div>
-
-        {/* Título */}
         <div style={{
           fontFamily: "var(--font-ui)", fontSize: "clamp(28px, 5vw, 42px)",
           fontWeight: 800, color: "var(--text-primary)",
@@ -305,43 +325,28 @@ function IntroScreen({ lang, onEnter, nodeCount, linkCount }) {
         }}>
           UAP <span style={{ color: "var(--accent)" }}>Atlas</span>
         </div>
-
-        {/* Subtítulo */}
         <div style={{
-          fontFamily: "var(--font-mono)", fontSize: 11,
-          color: "var(--text-muted)", letterSpacing: "0.18em",
-          textTransform: "uppercase", marginBottom: 36,
+          fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-muted)",
+          letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 36,
         }}>
-          {lang === "es" ? "Atlas de Inteligencia Relacional" : "Relational Intelligence Atlas"}
+          {t.introSubtitle}
         </div>
-
-        {/* Tagline — el corazón del onboarding */}
         <div style={{
           fontFamily: "var(--font-ui)", fontSize: "clamp(15px, 2.2vw, 18px)",
-          color: "var(--text-secondary)", lineHeight: 1.75, marginBottom: 44,
-          maxWidth: 440,
+          color: "var(--text-secondary)", lineHeight: 1.75, marginBottom: 44, maxWidth: 440,
         }}>
-          {tagline[lang].split("\n").map((line, i) => (
-            <span key={i}>
-              {i === 0
-                ? <span>{line}</span>
-                : <span style={{ color: "var(--accent)", fontWeight: 600 }}>{line}</span>
-              }
-              {i === 0 && <br />}
-            </span>
-          ))}
+          {t.introTagline1}<br/>
+          <span style={{ color: "var(--accent)", fontWeight: 600 }}>{t.introTagline2}</span>
         </div>
-
-        {/* Stats en vivo */}
         <div style={{
-          display: "flex", gap: 0, marginBottom: 40,
+          display: "flex", marginBottom: 40,
           border: "1px solid var(--border)", borderRadius: "var(--radius)",
           overflow: "hidden", background: "var(--bg-2)",
         }}>
           {[
-            { value: nodeCount, label: lang === "es" ? "nodos" : "nodes" },
-            { value: linkCount, label: lang === "es" ? "conexiones" : "connections" },
-            { value: updated,   label: lang === "es" ? "actualizado" : "updated" },
+            { value: nodeCount, label: t.introStatNodes },
+            { value: linkCount, label: t.introStatLinks },
+            { value: updated,   label: t.introStatUpdated },
           ].map((stat, i) => (
             <div key={i} style={{
               padding: "14px 24px", textAlign: "center",
@@ -358,51 +363,32 @@ function IntroScreen({ lang, onEnter, nodeCount, linkCount }) {
             </div>
           ))}
         </div>
-
-        {/* Botón de entrada */}
-        <button
-          onClick={handleEnter}
-          style={{
-            fontFamily: "var(--font-ui)", fontSize: 15, fontWeight: 600,
-            color: "var(--bg)", background: "var(--accent)",
-            border: "none", borderRadius: "var(--radius-sm)",
-            padding: "14px 48px", cursor: "pointer",
-            letterSpacing: "0.04em",
-            transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
-            boxShadow: "0 0 24px rgba(56,189,248,0.25)",
-            marginBottom: 20,
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = "#7dd3fc";
-            e.currentTarget.style.boxShadow = "0 0 36px rgba(56,189,248,0.45)";
-            e.currentTarget.style.transform = "translateY(-1px)";
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = "var(--accent)";
-            e.currentTarget.style.boxShadow = "0 0 24px rgba(56,189,248,0.25)";
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
+        <button onClick={handleEnter} style={{
+          fontFamily: "var(--font-ui)", fontSize: 15, fontWeight: 600,
+          color: "var(--bg)", background: "var(--accent)",
+          border: "none", borderRadius: "var(--radius-sm)",
+          padding: "14px 48px", cursor: "pointer",
+          letterSpacing: "0.04em",
+          transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
+          boxShadow: "0 0 24px rgba(56,189,248,0.25)",
+          marginBottom: 20,
+        }}
+          onMouseEnter={e => { e.currentTarget.style.background="#7dd3fc"; e.currentTarget.style.boxShadow="0 0 36px rgba(56,189,248,0.45)"; e.currentTarget.style.transform="translateY(-1px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background="var(--accent)"; e.currentTarget.style.boxShadow="0 0 24px rgba(56,189,248,0.25)"; e.currentTarget.style.transform="translateY(0)"; }}
         >
-          {lang === "es" ? "Explorar el atlas" : "Explore the atlas"}
+          {t.introCTA}
         </button>
-
-        {/* Nota PURSUE R01 */}
         <div style={{
           fontFamily: "var(--font-mono)", fontSize: 10,
           color: "var(--text-muted)", letterSpacing: "0.06em",
           display: "flex", alignItems: "center", gap: 8,
         }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399", display: "inline-block", flexShrink: 0 }}/>
-          {lang === "es"
-            ? "PURSUE R01 · war.gov/UFO · datos actualizados"
-            : "PURSUE R01 · war.gov/UFO · data up to date"}
+          <span style={{ width:6, height:6, borderRadius:"50%", background:"#34d399", display:"inline-block", flexShrink:0 }}/>
+          {t.introBadge}
         </div>
-
       </div>
-
-      {/* Pulso en CSS */}
       <style>{`
-        @keyframes pulse {
+        @keyframes introPulse {
           0%, 100% { opacity: 0.5; transform: scale(1); }
           50% { opacity: 0.9; transform: scale(1.05); }
         }
@@ -411,7 +397,6 @@ function IntroScreen({ lang, onEnter, nodeCount, linkCount }) {
   );
 }
 
-// ─── HELP MODAL ───────────────────────────────────────────────────────────────
 function HelpModal({ lang, onClose, onLangChange }) {
   const [internalLang, setInternalLang] = useState(lang);
   const [activeIdx, setActiveIdx] = useState(0);
@@ -897,6 +882,7 @@ export default function UAPAtlas() {
           nodeCount={NODES.length}
           linkCount={LINKS_DATA.length}
           onEnter={() => setShowIntro(false)}
+          onLangChange={setLang}
         />
       )}
 
@@ -1155,7 +1141,7 @@ export default function UAPAtlas() {
                         onMouseEnter={e => e.currentTarget.style.color = "var(--text-secondary)"}
                         onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}
                       >
-                        {lang==="es" ? "↩ ver intro" : "↩ show intro"}
+                        {t.introResetDemo}
                       </button>
                     </div>
                   )
