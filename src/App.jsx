@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import * as d3 from "d3";
 import { NODES, LINKS_DATA, CAT_COLORS, CRED_COLORS, BETWEENNESS, CLUSTERING } from "./data/nodes.js";
 import { SOURCES } from "./data/sources.js";
@@ -130,6 +130,15 @@ const GlobalStyles = () => (
     .slide-in { animation: slideIn 0.25s ease forwards; }
     @keyframes slideIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:translateX(0); } }
 
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); }
+      50% { box-shadow: 0 0 0 3px rgba(244,63,94,0.2); }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
     /* Mobile */
     @media (max-width: 768px) {
       :root { --sidebar-w: 100vw; }
@@ -162,6 +171,11 @@ const T = {
     openHelp: "Abrir manual",
     latestRelease: "Última release",
     links: "links",
+    patternBtn: "◈ Patrones",
+    patternActive: "patrones activos",
+    patternExit: "← Salir de patrones",
+    patternNarrPath: "Trazo narrativo",
+    patternViewNode: "← Ver ficha",
     // ── IntroScreen ──
     introSubtitle: "Atlas de Inteligencia Relacional",
     introTagline1: "El mundo ya se está haciendo preguntas.",
@@ -196,6 +210,11 @@ const T = {
     openHelp: "Open manual",
     latestRelease: "Latest release",
     links: "links",
+    patternBtn: "◈ Patterns",
+    patternActive: "active patterns",
+    patternExit: "← Exit patterns",
+    patternNarrPath: "Narrative trace",
+    patternViewNode: "← View node",
     // ── IntroScreen ──
     introSubtitle: "Relational Intelligence Atlas",
     introTagline1: "The world is already asking questions.",
@@ -666,6 +685,9 @@ export default function UAPAtlas() {
   const [search, setSearch] = useState("");
   const [activeCat, setActiveCat] = useState("all");
   const [officialOnly, setOfficialOnly] = useState(false);
+  const [patternMode, setPatternMode] = useState(false);
+  const [activeSG, setActiveSG] = useState(null);        // pistola activa en modo patrón
+  const [patternStep, setPatternStep] = useState(-1);    // paso del trazo narrativo (-1 = todos)
   const [panel, setPanel] = useState("node");
   const [selectedSG, setSelectedSG] = useState(null);
   const [highlightNodes, setHighlightNodes] = useState(null);
@@ -937,14 +959,95 @@ export default function UAPAtlas() {
     return () => sim.stop();
   }, [filteredNodes.length, activeCat, dimensions, lang, officialOnly]);
 
-  // Highlight effect
+  // ── PATTERN MODE: color nodos por severidad de todas las pistolas activas ──
+  // Mapeo nodo → severidad máxima entre todas las pistolas que lo contienen
+  const patternNodeSeverity = useMemo(() => {
+    if (!patternMode) return null;
+    const SEV_ORDER = { critical: 3, high: 2, medium: 1 };
+    const map = {};
+    sgs.forEach(sg => {
+      (sg.nodes || []).forEach(nid => {
+        const cur = SEV_ORDER[map[nid]] || 0;
+        if ((SEV_ORDER[sg.severity] || 0) > cur) map[nid] = sg.severity;
+      });
+    });
+    return map;
+  }, [patternMode, sgs]);
+
+  const SEV_COLORS = { critical: "#f43f5e", high: "#fb923c", medium: "#facc15" };
+
+  // Highlight effect — normal highlight OR pattern mode highlight
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
-    if (!highlightNodes) {
-      svg.selectAll(".nd").attr("opacity", 1);
-      svg.selectAll(".ic").attr("stroke-width", 1.5);
-      svg.selectAll(".ll").attr("stroke", "rgba(56,189,248,0.12)").attr("stroke-width", 1);
+
+    if (patternMode && patternNodeSeverity) {
+      const pathSet = activeSG ? new Set(activeSG.path || activeSG.nodes) : null;
+      const activeNodes = activeSG ? new Set(activeSG.nodes) : null;
+
+      // Opacity: nodos en patrón → 1; resto → 0.07
+      svg.selectAll(".nd")
+        .transition().duration(400)
+        .attr("opacity", d => {
+          if (activeSG) return activeNodes.has(d.id) ? 1 : 0.05;
+          return patternNodeSeverity[d.id] ? 1 : 0.15;
+        });
+
+      // Stroke de nodos: color por severidad
+      svg.selectAll(".ic")
+        .transition().duration(400)
+        .attr("stroke", d => {
+          if (activeSG) {
+            if (pathSet && pathSet.has(d.id)) return SEV_COLORS[activeSG.severity] || "#f43f5e";
+            if (activeNodes && activeNodes.has(d.id)) return SEV_COLORS[activeSG.severity] + "99";
+          }
+          return patternNodeSeverity[d.id] ? SEV_COLORS[patternNodeSeverity[d.id]] : "rgba(56,189,248,0.2)";
+        })
+        .attr("stroke-width", d => {
+          if (activeSG && pathSet && pathSet.has(d.id)) return 3;
+          if (activeSG && activeNodes && activeNodes.has(d.id)) return 2;
+          return patternNodeSeverity[d.id] ? 2 : 1;
+        });
+
+      // Links: resaltar conexiones de la pistola activa; o todas las pistolas
+      svg.selectAll(".ll")
+        .transition().duration(400)
+        .attr("stroke", l => {
+          const s = typeof l.source==="object" ? l.source.id : l.source;
+          const t = typeof l.target==="object" ? l.target.id : l.target;
+          if (activeSG) {
+            const p = activeSG.path || activeSG.nodes;
+            const si = p.indexOf(s), ti = p.indexOf(t);
+            if (si !== -1 && ti !== -1 && Math.abs(si - ti) === 1) return SEV_COLORS[activeSG.severity] || "#f43f5e";
+            if (activeNodes && activeNodes.has(s) && activeNodes.has(t)) return SEV_COLORS[activeSG.severity] + "55";
+            return "rgba(56,189,248,0.02)";
+          }
+          const sInPat = !!patternNodeSeverity[s], tInPat = !!patternNodeSeverity[t];
+          return sInPat && tInPat ? "rgba(244,63,94,0.35)" : "rgba(56,189,248,0.04)";
+        })
+        .attr("stroke-width", l => {
+          const s = typeof l.source==="object" ? l.source.id : l.source;
+          const t = typeof l.target==="object" ? l.target.id : l.target;
+          if (activeSG) {
+            const p = activeSG.path || activeSG.nodes;
+            const si = p.indexOf(s), ti = p.indexOf(t);
+            if (si !== -1 && ti !== -1 && Math.abs(si - ti) === 1) return 2.5;
+          }
+          return 0.5;
+        })
+        .attr("stroke-dasharray", l => {
+          if (!activeSG) return "none";
+          const s = typeof l.source==="object" ? l.source.id : l.source;
+          const t = typeof l.target==="object" ? l.target.id : l.target;
+          const p = activeSG.path || activeSG.nodes;
+          const si = p.indexOf(s), ti = p.indexOf(t);
+          return (si !== -1 && ti !== -1 && Math.abs(si - ti) === 1) ? "none" : "none";
+        });
+
+    } else if (!highlightNodes) {
+      svg.selectAll(".nd").transition().duration(400).attr("opacity", 1);
+      svg.selectAll(".ic").transition().duration(400).attr("stroke", d => CAT_COLORS[d.cat]).attr("stroke-width", 1.5);
+      svg.selectAll(".ll").transition().duration(400).attr("stroke", "rgba(56,189,248,0.12)").attr("stroke-width", 1).attr("stroke-dasharray", "none");
     } else {
       svg.selectAll(".nd").attr("opacity", d => highlightNodes.has(d.id) ? 1 : 0.06);
       svg.selectAll(".ic").attr("stroke-width", d => highlightNodes.has(d.id) ? 2.5 : 1);
@@ -958,7 +1061,7 @@ export default function UAPAtlas() {
         return highlightNodes.has(s) && highlightNodes.has(t) ? 2 : 0.5;
       });
     }
-  }, [highlightNodes]);
+  }, [highlightNodes, patternMode, patternNodeSeverity, activeSG]);
 
   // Stats
   const density = filteredNodes.length > 1
@@ -1044,6 +1147,30 @@ export default function UAPAtlas() {
               <span style={{ color:"var(--text-primary)" }}>{density}%</span>
             </span>
           </div>
+
+          {/* ── BOTÓN PATRONES ── */}
+          <button
+            onClick={() => {
+              const next = !patternMode;
+              setPatternMode(next);
+              if (!next) { setActiveSG(null); setPatternStep(-1); }
+              else { setPanel("guns"); }
+            }}
+            style={{
+              display:"flex", alignItems:"center", gap:6,
+              padding:"0 12px", height:32, borderRadius:6,
+              background: patternMode ? "rgba(244,63,94,0.15)" : "var(--bg-3)",
+              border: patternMode ? "1px solid rgba(244,63,94,0.5)" : "1px solid var(--border)",
+              color: patternMode ? "#f43f5e" : "var(--text-secondary)",
+              fontFamily:"var(--font-mono)", fontSize:11, cursor:"pointer",
+              fontWeight: patternMode ? 700 : 400,
+              transition:"all 0.25s",
+              animation: patternMode ? "pulse-border 2s infinite" : "none",
+            }}
+          >
+            <span style={{ fontSize:13 }}>◈</span>
+            <span>{patternMode ? `${sgs.length} ${t.patternActive}` : t.patternBtn.replace("◈ ","")}</span>
+          </button>
 
           <div style={{ flex:1 }}/>
 
@@ -1281,7 +1408,7 @@ export default function UAPAtlas() {
                       const isActive = selectedSG?.id === sg.id;
                       return (
                         <div key={sg.id||i} className="sg-card"
-                          onClick={() => { setSelectedSG(sg); setHighlightNodes(new Set(sg.nodes)); const n=NODES.find(x=>x.id===sg.nodes?.[0]); if(n) setSelected(n); setPanel("node"); }}
+                          onClick={() => { setSelectedSG(sg); setActiveSG(sg); setPatternMode(true); setHighlightNodes(new Set(sg.nodes)); setPatternStep(-1); }}
                           style={{ background: isActive ? sev.bg : "var(--bg-3)", borderColor: isActive ? sev.color : sev.border }}>
                           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
                             <div style={{ display:"flex", gap:6 }}>
@@ -1344,30 +1471,167 @@ export default function UAPAtlas() {
             <svg ref={svgRef} style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%", display:"block" }}/>
 
             {/* Clear highlight button */}
-            {highlightNodes && (
+            {highlightNodes && !patternMode && (
               <button className="btn" onClick={() => { setHighlightNodes(null); setSelectedSG(null); }}
                 style={{ position:"absolute", top:12, left:12, background:"var(--bg-glass)", backdropFilter:"blur(8px)" }}>
                 ✕ {t.clearHL}
               </button>
             )}
 
-            {/* Category legend — bottom right */}
-            <div style={{
-              position:"absolute", bottom:16, right:16,
-              background:"var(--bg-glass)", backdropFilter:"blur(12px)",
-              border:"1px solid var(--border)", borderRadius:8, padding:"10px 14px",
-              display:"flex", flexDirection:"column", gap:6,
-            }}>
-              {cats.map(cat => (
-                <div key={cat} style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}
-                  onClick={() => setActiveCat(activeCat===cat ? "all" : cat)}>
-                  <span style={{ width:8, height:8, borderRadius:"50%", background:CAT_COLORS[cat], flexShrink:0 }}/>
-                  <span style={{ fontFamily:"var(--font-ui)", fontSize:12, color: activeCat===cat ? CAT_COLORS[cat] : "var(--text-secondary)", fontWeight: activeCat===cat ? 600 : 400 }}>
-                    {t.catLabels[cat]}
+            {/* ── PATTERN MODE OVERLAY ── */}
+            {patternMode && (
+              <>
+                {/* Contador de patrones activos */}
+                <div style={{
+                  position:"absolute", top:12, left:12,
+                  background:"rgba(244,63,94,0.12)", backdropFilter:"blur(8px)",
+                  border:"1px solid rgba(244,63,94,0.35)", borderRadius:8,
+                  padding:"6px 12px", display:"flex", alignItems:"center", gap:8,
+                }}>
+                  <span style={{ width:7, height:7, borderRadius:"50%", background:"#f43f5e", animation:"pulse-dot 1.5s infinite" }}/>
+                  <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"#f43f5e", fontWeight:600 }}>
+                    {activeSG ? activeSG.title : `${sgs.length} ${t.patternActive}`}
                   </span>
+                  {activeSG && (
+                    <button onClick={() => { setActiveSG(null); setPatternStep(-1); }}
+                      style={{ background:"transparent", border:"none", color:"rgba(244,63,94,0.6)", cursor:"pointer", fontSize:12, padding:0, marginLeft:4 }}>
+                      ✕
+                    </button>
+                  )}
                 </div>
-              ))}
-            </div>
+
+                {/* Leyenda de severidad en modo patrón */}
+                {!activeSG && (
+                  <div style={{
+                    position:"absolute", top:12, right:16,
+                    background:"var(--bg-glass)", backdropFilter:"blur(12px)",
+                    border:"1px solid var(--border)", borderRadius:8, padding:"10px 14px",
+                    display:"flex", flexDirection:"column", gap:6,
+                  }}>
+                    {[["critical","#f43f5e"], ["high","#fb923c"], ["medium","#facc15"]].map(([sev, col]) => (
+                      <div key={sev} style={{ display:"flex", alignItems:"center", gap:8 }}>
+                        <span style={{ width:8, height:8, borderRadius:"50%", background:col, flexShrink:0 }}/>
+                        <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:col, fontWeight:600 }}>
+                          {t.sev[sev]}
+                        </span>
+                      </div>
+                    ))}
+                    <div style={{ borderTop:"1px solid var(--border)", marginTop:2, paddingTop:6 }}>
+                      <button onClick={() => { setPatternMode(false); setActiveSG(null); setPatternStep(-1); }}
+                        style={{ background:"transparent", border:"none", cursor:"pointer", fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", padding:0, textAlign:"left" }}>
+                        {t.patternExit}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Panel de pistola activa — lateral sobre el grafo */}
+                {activeSG && (
+                  <div className="fade-in" style={{
+                    position:"absolute", top:52, right:16, width:320,
+                    background:"rgba(8,11,15,0.92)", backdropFilter:"blur(16px)",
+                    border:`1px solid ${SEV_COLORS[activeSG.severity]}44`,
+                    borderRadius:10, padding:16, maxHeight:"calc(100vh - 140px)", overflowY:"auto",
+                    zIndex:10,
+                  }}>
+                    {/* Header pistola */}
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
+                      <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                        <span className="tag" style={{ background:SEVERITY_CFG[activeSG.severity]?.bg, color:SEVERITY_CFG[activeSG.severity]?.color, border:`1px solid ${SEVERITY_CFG[activeSG.severity]?.border}` }}>
+                          {t.sev[activeSG.severity]}
+                        </span>
+                        <span className="tag" style={{ background:`${CONF_CFG[activeSG.confidence]?.color}18`, color:CONF_CFG[activeSG.confidence]?.color, border:`1px solid ${CONF_CFG[activeSG.confidence]?.color}33` }}>
+                          {t.conf[activeSG.confidence]}
+                        </span>
+                        <span style={{ fontFamily:"var(--font-mono)", fontSize:9, color:"var(--text-muted)", textTransform:"uppercase", alignSelf:"center" }}>{activeSG.type}</span>
+                      </div>
+                      <button onClick={() => { setActiveSG(null); setPatternStep(-1); }}
+                        style={{ background:"transparent", border:"none", color:"var(--text-muted)", cursor:"pointer", fontSize:14, padding:0, flexShrink:0, marginLeft:8 }}>
+                        ✕
+                      </button>
+                    </div>
+
+                    <div style={{ fontSize:15, fontWeight:700, color:SEV_COLORS[activeSG.severity], marginBottom:6, lineHeight:1.3 }}>
+                      {activeSG.title}
+                    </div>
+                    <div style={{ fontSize:13, color:"var(--text-secondary)", lineHeight:1.75, marginBottom:10 }}>
+                      {activeSG.headline}
+                    </div>
+                    <div style={{ fontSize:12, color:"var(--text-muted)", lineHeight:1.8, marginBottom:10 }}>
+                      {activeSG.analysis}
+                    </div>
+                    <div style={{ borderTop:`1px solid ${SEV_COLORS[activeSG.severity]}22`, paddingTop:8, fontSize:11.5, color:SEV_COLORS[activeSG.severity], fontStyle:"italic", lineHeight:1.6, marginBottom:12 }}>
+                      → {activeSG.implication}
+                    </div>
+
+                    {/* Trazo narrativo */}
+                    {activeSG.path?.length > 0 && (
+                      <div style={{ marginBottom:12 }}>
+                        <div className="panel-label" style={{ marginBottom:8 }}>{t.patternNarrPath}</div>
+                        <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
+                          {activeSG.path.map((nid, idx) => {
+                            const n = NODES.find(x => x.id === nid);
+                            if (!n) return null;
+                            return (
+                              <div key={nid} style={{ display:"flex", alignItems:"center", gap:8 }}>
+                                <div style={{ display:"flex", flexDirection:"column", alignItems:"center", flexShrink:0 }}>
+                                  <div style={{ width:8, height:8, borderRadius:"50%", background:SEV_COLORS[activeSG.severity], flexShrink:0 }}/>
+                                  {idx < activeSG.path.length - 1 && <div style={{ width:1, height:16, background:`${SEV_COLORS[activeSG.severity]}44`, marginTop:2 }}/>}
+                                </div>
+                                <span
+                                  style={{ fontSize:12, color:"var(--text-primary)", cursor:"pointer", fontWeight:500 }}
+                                  onClick={() => { setSelected(n); setPanel("node"); if (!sidebarOpen) setSidebarOpen(true); }}
+                                >{n.label[lang]}</span>
+                                <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", marginLeft:"auto", flexShrink:0 }}>{n.year < 0 ? `${Math.abs(n.year)}BC` : n.year}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Nodos involucrados */}
+                    <div style={{ display:"flex", gap:4, flexWrap:"wrap", marginBottom:12 }}>
+                      {activeSG.nodes?.map(nid => {
+                        const n = NODES.find(x => x.id === nid);
+                        return n ? (
+                          <span key={nid} className="tag"
+                            style={{ background:CAT_COLORS[n.cat]+"18", color:CAT_COLORS[n.cat], border:`1px solid ${CAT_COLORS[n.cat]}33`, cursor:"pointer" }}
+                            onClick={() => { setSelected(n); setPanel("node"); if (!sidebarOpen) setSidebarOpen(true); }}>
+                            {n.label[lang]}
+                          </span>
+                        ) : null;
+                      })}
+                    </div>
+
+                    <button className="btn" onClick={() => { setActiveSG(null); setPatternStep(-1); setSelected(null); }}
+                      style={{ width:"100%", justifyContent:"center", fontSize:12 }}>
+                      {t.patternViewNode}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Category legend — bottom right (hidden in pattern mode when activeSG is open) */}
+            {!(patternMode && activeSG) && (
+              <div style={{
+                position:"absolute", bottom:16, right:16,
+                background:"var(--bg-glass)", backdropFilter:"blur(12px)",
+                border:"1px solid var(--border)", borderRadius:8, padding:"10px 14px",
+                display:"flex", flexDirection:"column", gap:6,
+              }}>
+                {cats.map(cat => (
+                  <div key={cat} style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}
+                    onClick={() => setActiveCat(activeCat===cat ? "all" : cat)}>
+                    <span style={{ width:8, height:8, borderRadius:"50%", background:CAT_COLORS[cat], flexShrink:0 }}/>
+                    <span style={{ fontFamily:"var(--font-ui)", fontSize:12, color: activeCat===cat ? CAT_COLORS[cat] : "var(--text-secondary)", fontWeight: activeCat===cat ? 600 : 400 }}>
+                      {t.catLabels[cat]}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
