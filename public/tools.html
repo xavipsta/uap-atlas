@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UAP Atlas — Control</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080b0f;--bg-2:#0d1117;--bg-3:#111820;--bg-glass:rgba(13,17,23,0.95);
+  --border:rgba(255,255,255,0.07);--border-accent:rgba(56,189,248,0.25);
+  --text-primary:#f0f4f8;--text-secondary:#a8b8cc;--text-muted:#5a7088;
+  --accent:#38bdf8;--accent-dim:rgba(56,189,248,0.1);
+  --success:#34d399;--warning:#fb923c;--danger:#f43f5e;--purple:#a78bfa;
+  --font-ui:'Syne',sans-serif;--font-mono:'JetBrains Mono',monospace;
+  --radius:10px;--radius-sm:6px;--transition:all 0.18s ease;
+}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--font-ui);min-height:100vh;overflow-x:hidden}
+
+/* ── GRID BG ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(56,189,248,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,0.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 40%,transparent 100%);
+}
+
+/* ── LOGIN SCREEN ── */
+#loginScreen{
+  position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+}
+.login-box{
+  position:relative;width:380px;padding:40px 36px;
+  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:0 0 60px rgba(0,0,0,0.6),0 0 0 1px rgba(56,189,248,0.05);
+}
+.login-corners div{
+  position:absolute;width:20px;height:20px;border-color:rgba(56,189,248,0.2);
+}
+.login-corners div:nth-child(1){top:12px;left:12px;border-top:1px solid;border-left:1px solid}
+.login-corners div:nth-child(2){top:12px;right:12px;border-top:1px solid;border-right:1px solid}
+.login-corners div:nth-child(3){bottom:12px;left:12px;border-bottom:1px solid;border-left:1px solid}
+.login-corners div:nth-child(4){bottom:12px;right:12px;border-bottom:1px solid;border-right:1px solid}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .symbol{font-size:28px;color:var(--accent);opacity:0.7;display:block;margin-bottom:10px;animation:pulse 3s ease-in-out infinite}
+.login-logo .title{font-size:20px;font-weight:800;color:var(--text-primary);letter-spacing:-0.02em}
+.login-logo .title span{color:var(--accent)}
+.login-logo .sub{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);letter-spacing:0.2em;text-transform:uppercase;margin-top:4px}
+.login-field{margin-bottom:14px}
+.login-field label{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:6px}
+.login-field input{
+  width:100%;height:42px;background:var(--bg-3);border:1px solid var(--border);
+  border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-mono);font-size:13px;
+  padding:0 14px;outline:none;transition:var(--transition);
+}
+.login-field input:focus{border-color:var(--border-accent);box-shadow:0 0 0 3px rgba(56,189,248,0.08)}
+.login-field input::placeholder{color:var(--text-muted)}
+.login-btn{
+  width:100%;height:44px;margin-top:8px;background:var(--accent);border:none;border-radius:var(--radius-sm);
+  color:var(--bg);font-family:var(--font-ui);font-size:14px;font-weight:700;cursor:pointer;
+  letter-spacing:0.04em;transition:var(--transition);box-shadow:0 0 20px rgba(56,189,248,0.2);
+}
+.login-btn:hover{background:#7dd3fc;box-shadow:0 0 32px rgba(56,189,248,0.4);transform:translateY(-1px)}
+.login-error{
+  margin-top:12px;padding:8px 12px;border-radius:var(--radius-sm);
+  background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.2);
+  font-family:var(--font-mono);font-size:11px;color:var(--danger);text-align:center;
+  display:none;
+}
+@keyframes pulse{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:0.9;transform:scale(1.05)}}
+
+/* ── APP SHELL ── */
+#appShell{display:none;flex-direction:column;min-height:100vh;position:relative;z-index:1}
+
+/* ── HEADER ── */
+.header{
+  height:52px;background:var(--bg-glass);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;
+  padding:0 20px;gap:14px;position:sticky;top:0;z-index:100;
+}
+.header-logo{font-size:16px;color:var(--accent)}
+.header-title{font-size:14px;font-weight:700;color:var(--text-primary)}
+.header-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-muted)}
+.header-badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;
+  font-family:var(--font-mono);font-size:10px;
+  background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);color:var(--success);
+}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:var(--success);animation:badgePulse 2s ease-in-out infinite}
+@keyframes badgePulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.logout-btn{
+  font-family:var(--font-mono);font-size:10px;color:var(--text-muted);
+  background:transparent;border:1px solid var(--border);border-radius:4px;
+  padding:0 10px;height:26px;cursor:pointer;transition:var(--transition);
+}
+.logout-btn:hover{color:var(--danger);border-color:rgba(244,63,94,0.3)}
+.user-badge{font-family:var(--font-mono);font-size:10px;color:var(--text-muted)}
+
+/* ── NAV TABS ── */
+.nav{
+  display:flex;gap:2px;padding:12px 20px 0;
+  border-bottom:1px solid var(--border);background:var(--bg-2);
+}
+.nav-tab{
+  font-family:var(--font-mono);font-size:11px;font-weight:500;
+  padding:8px 16px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;
+  border:1px solid transparent;border-bottom:none;cursor:pointer;
+  color:var(--text-muted);background:transparent;transition:var(--transition);
+  display:flex;align-items:center;gap:7px;position:relative;bottom:-1px;
+}
+.nav-tab:hover{color:var(--text-secondary);background:var(--bg-3)}
+.nav-tab.active{
+  color:var(--accent);background:var(--bg);
+  border-color:var(--border);border-bottom-color:var(--bg);
+}
+.nav-tab .tab-dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:0.6}
+
+/* ── CONTENT ── */
+.content{flex:1;padding:24px 24px;max-width:1100px;width:100%;margin:0 auto}
+
+/* ── TOOL CARDS (home) ── */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:4px}
+.tool-card{
+  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;cursor:pointer;transition:var(--transition);
+  display:flex;flex-direction:column;gap:10px;
+}
+.tool-card:hover{border-color:var(--border-accent);background:var(--bg-3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.tool-icon{font-size:22px;color:var(--accent);opacity:0.7}
+.tool-name{font-size:15px;font-weight:700;color:var(--text-primary)}
+.tool-desc{font-size:12px;color:var(--text-muted);line-height:1.65}
+.tool-status{
+  font-family:var(--font-mono);font-size:9px;padding:2px 8px;border-radius:3px;
+  display:inline-block;align-self:flex-start;letter-spacing:0.08em;text-transform:uppercase;
+}
+.status-ready{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--success)}
+.status-beta{background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.2);color:var(--warning)}
+
+/* ── SECTION HEADER ── */
+.section-header{margin-bottom:20px}
+.section-title{font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:4px}
+.section-sub{font-size:12px;color:var(--text-muted);line-height:1.6}
+.section-divider{height:1px;background:linear-gradient(90deg,var(--border-accent),transparent);margin:16px 0}
+
+/* ── EDITORIAL TOOL ── */
+.edit-layout{display:grid;grid-template-columns:400px 1fr;gap:16px;height:calc(100vh - 200px)}
+.edit-panel{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden}
+.edit-panel-header{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg-3)}
+.panel-label{font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px}
+.panel-desc{font-size:11px;color:var(--text-muted);line-height:1.5}
+textarea{flex:1;background:var(--bg-2);border:none;color:var(--text-secondary);font-family:var(--font-ui);font-size:13px;line-height:1.7;padding:14px 16px;resize:none;outline:none;min-height:160px}
+textarea::placeholder{color:var(--text-muted)}
+.edit-footer{padding:10px 14px;border-top:1px solid var(--border);background:var(--bg-3);display:flex;gap:8px;align-items:center}
+.char-count{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-left:auto}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:var(--font-ui);font-size:12px;font-weight:600;
+  border-radius:var(--radius-sm);cursor:pointer;
+  transition:var(--transition);padding:0 14px;height:36px;
+  white-space:nowrap;user-select:none;border:1px solid;
+}
+.btn-primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn-primary:hover{background:#7dd3fc;border-color:#7dd3fc}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--text-muted);border-color:var(--border)}
+.btn-ghost:hover{color:var(--text-secondary);border-color:var(--border-accent)}
+.btn-sm{height:30px;padding:0 10px;font-size:11px}
+
+/* ── OUTPUT ── */
+.output-body{flex:1;overflow-y:auto;padding:16px}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:10px;padding:32px}
+.empty-icon{font-size:28px;color:var(--accent);opacity:0.25}
+.empty-title{font-size:14px;font-weight:700;color:var(--text-secondary)}
+.empty-desc{font-size:12px;color:var(--text-muted);line-height:1.65;max-width:300px}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:var(--font-mono);font-size:11px;color:var(--text-muted)}
+
+/* ── DECISION CARDS ── */
+.analysis-summary-box{margin-bottom:16px;padding:14px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius)}
+.analysis-summary-box p{font-size:12px;color:var(--text-secondary);line-height:1.7}
+.decision-card{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;transition:border-color 0.2s}
+.decision-card.approved{border-color:rgba(52,211,153,0.4)}
+.decision-card.rejected{border-color:rgba(244,63,94,0.2);opacity:0.45}
+.card-header{padding:10px 14px;background:var(--bg-3);display:flex;align-items:center;gap:8px;cursor:pointer}
+.type-badge{font-family:var(--font-mono);font-size:9px;font-weight:600;padding:2px 7px;border-radius:3px;letter-spacing:0.08em;text-transform:uppercase;flex-shrink:0}
+.type-new{background:rgba(56,189,248,0.12);color:var(--accent);border:1px solid rgba(56,189,248,0.25)}
+.type-update{background:rgba(251,146,60,0.1);color:var(--warning);border:1px solid rgba(251,146,60,0.25)}
+.type-source{background:rgba(52,211,153,0.08);color:var(--success);border:1px solid rgba(52,211,153,0.2)}
+.card-title{font-size:12px;font-weight:600;color:var(--text-primary);flex:1}
+.card-actions{display:flex;gap:5px;flex-shrink:0}
+.action-btn{padding:3px 9px;border-radius:3px;border:1px solid;font-family:var(--font-mono);font-size:10px;cursor:pointer;transition:all 0.15s}
+.approve-btn{border-color:rgba(52,211,153,0.35);color:var(--success);background:rgba(52,211,153,0.05)}
+.approve-btn:hover{background:rgba(52,211,153,0.15)}
+.reject-btn{border-color:rgba(244,63,94,0.25);color:var(--danger);background:transparent}
+.reject-btn:hover{background:rgba(244,63,94,0.08)}
+.card-body{padding:12px 14px;border-top:1px solid var(--border)}
+.field-group{margin-bottom:10px}
+.field-label{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px}
+.field-value{font-size:12px;color:var(--text-secondary);line-height:1.6}
+.field-mono{font-family:var(--font-mono);font-size:11px}
+.reasoning-box{padding:10px 12px;background:rgba(167,139,250,0.05);border:1px solid rgba(167,139,250,0.12);border-radius:var(--radius-sm);margin-bottom:10px}
+.reasoning-label{font-family:var(--font-mono);font-size:9px;color:var(--purple);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px}
+.reasoning-text{font-size:11px;color:var(--text-muted);line-height:1.6}
+.links-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.link-tag{font-family:var(--font-mono);font-size:9px;padding:2px 7px;border-radius:3px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(56,189,248,0.15)}
+
+/* ── CODE OUTPUT ── */
+.code-section{margin-top:20px}
+.code-block{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px}
+.code-header{padding:8px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2)}
+.code-filename{font-family:var(--font-mono);font-size:10px;color:var(--accent)}
+.copy-btn{font-family:var(--font-mono);font-size:9px;padding:3px 10px;border-radius:3px;cursor:pointer;border:1px solid var(--border-accent);color:var(--accent);background:var(--accent-dim);transition:all 0.15s}
+.copy-btn:hover{background:rgba(56,189,248,0.2)}
+.copy-btn.copied{color:var(--success);border-color:rgba(52,211,153,0.35);background:rgba(52,211,153,0.08)}
+pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-secondary);line-height:1.7;overflow-x:auto;max-height:260px;overflow-y:auto;white-space:pre-wrap;word-break:break-word}
+
+/* ── MONITOR TOOL ── */
+.monitor-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.monitor-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.monitor-title{font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:4px}
+.monitor-sub{font-size:11px;color:var(--text-muted);margin-bottom:16px;line-height:1.5}
+.monitor-result{margin-top:14px;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);line-height:1.8;min-height:60px}
+.new-item{color:var(--success)}
+.known-item{color:var(--text-muted)}
+
+/* ── STATS TOOL ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.stat-value{font-family:var(--font-mono);font-size:28px;font-weight:600;color:var(--accent);line-height:1;margin-bottom:6px}
+.stat-label{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em}
+.nodes-table{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.nodes-table-header{display:grid;grid-template-columns:1fr 80px 90px 100px;gap:0;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--bg-3)}
+.nodes-table-header span{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em}
+.nodes-table-row{display:grid;grid-template-columns:1fr 80px 90px 100px;gap:0;padding:8px 16px;border-bottom:1px solid var(--border);transition:background 0.1s}
+.nodes-table-row:hover{background:var(--bg-3)}
+.nodes-table-row:last-child{border-bottom:none}
+.nodes-table-row span{font-family:var(--font-mono);font-size:11px;color:var(--text-secondary)}
+.cred-high{color:var(--success)!important}
+.cred-medium{color:var(--warning)!important}
+.cred-low{color:var(--danger)!important}
+
+/* ── PROMPTS TOOL ── */
+.prompts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.prompt-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:10px}
+.prompt-card:hover{border-color:var(--border-accent)}
+.prompt-name{font-size:13px;font-weight:700;color:var(--text-primary)}
+.prompt-use{font-size:11px;color:var(--text-muted);line-height:1.5}
+.prompt-preview{
+  background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:10px 12px;font-family:var(--font-mono);font-size:10px;
+  color:var(--text-muted);line-height:1.65;max-height:100px;overflow:hidden;
+  position:relative;cursor:pointer;
+}
+.prompt-preview::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:30px;
+  background:linear-gradient(transparent,var(--bg-3));
+}
+.prompt-footer{display:flex;gap:6px}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══════════════════════════════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-corners"><div></div><div></div><div></div><div></div></div>
+    <div class="login-logo">
+      <span class="symbol">◈</span>
+      <div class="title">UAP <span>Atlas</span></div>
+      <div class="sub">Panel de Control Interno</div>
+    </div>
+    <div class="login-field">
+      <label>Usuario</label>
+      <input type="text" id="loginUser" placeholder="usuario" autocomplete="username"/>
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Acceder</button>
+    <div class="login-error" id="loginError">Credenciales incorrectas</div>
+  </div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════════════════════════ -->
+<div id="appShell">
+
+  <header class="header">
+    <span class="header-logo">◈</span>
+    <div>
+      <div class="header-title">UAP Atlas — Control</div>
+      <div class="header-sub">Panel interno · acceso restringido</div>
+    </div>
+    <span class="header-badge"><span class="badge-dot"></span> 77 nodos · 318 conexiones · v4.2</span>
+    <div class="header-right">
+      <span class="user-badge" id="userBadge"></span>
+      <button class="logout-btn" onclick="doLogout()">Salir</button>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <button class="nav-tab active" onclick="showTab('home')" id="tab-home">
+      <span class="tab-dot"></span>Inicio
+    </button>
+    <button class="nav-tab" onclick="showTab('editorial')" id="tab-editorial">
+      <span class="tab-dot"></span>Editorial Intelligence
+    </button>
+    <button class="nav-tab" onclick="showTab('monitor')" id="tab-monitor">
+      <span class="tab-dot"></span>Monitor war.gov
+    </button>
+    <button class="nav-tab" onclick="showTab('stats')" id="tab-stats">
+      <span class="tab-dot"></span>Estado del Atlas
+    </button>
+    <button class="nav-tab" onclick="showTab('prompts')" id="tab-prompts">
+      <span class="tab-dot"></span>Prompts
+    </button>
+  </nav>
+
+  <div class="content">
+
+    <!-- ── HOME ── -->
+    <div id="view-home">
+      <div class="section-header" style="margin-bottom:24px">
+        <div class="section-title">Herramientas disponibles</div>
+        <div class="section-sub">Panel de control del UAP Intelligence Atlas · Acceso interno</div>
+      </div>
+      <div class="tools-grid">
+        <div class="tool-card" onclick="showTab('editorial')">
+          <div class="tool-icon">◈</div>
+          <div class="tool-name">Editorial Intelligence</div>
+          <div class="tool-desc">Analiza cualquier texto, URL o noticia. Genera automáticamente los bloques de código para nodes.js y sources.js listos para subir al repo.</div>
+          <span class="tool-status status-ready">Listo</span>
+        </div>
+        <div class="tool-card" onclick="showTab('monitor')">
+          <div class="tool-icon">⊙</div>
+          <div class="tool-name">Monitor war.gov</div>
+          <div class="tool-desc">Detecta nuevos archivos en war.gov/UFO comparando con el último estado conocido del atlas. Identifica releases nuevas antes de procesarlas.</div>
+          <span class="tool-status status-ready">Listo</span>
+        </div>
+        <div class="tool-card" onclick="showTab('stats')">
+          <div class="tool-icon">▦</div>
+          <div class="tool-name">Estado del Atlas</div>
+          <div class="tool-desc">Vista rápida del estado actual — nodos por categoría, credibilidad, conexiones, nodos sin fuentes asignadas.</div>
+          <span class="tool-status status-ready">Listo</span>
+        </div>
+        <div class="tool-card" onclick="showTab('prompts')">
+          <div class="tool-icon">⌘</div>
+          <div class="tool-name">Prompts Rápidos</div>
+          <div class="tool-desc">Biblioteca de prompts optimizados para abrir conversaciones nuevas con Claude con el contexto completo del atlas. Un click para copiar.</div>
+          <span class="tool-status status-ready">Listo</span>
+        </div>
+      </div>
+
+      <div class="section-divider" style="margin-top:32px"></div>
+      <div style="padding:16px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius)">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:10px;letter-spacing:0.1em;text-transform:uppercase">Protocolo de actualización — viernes</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">
+          ${['1. Monitor war.gov → detectar novedades','2. Editorial Intelligence → analizar','3. Aprobar decisiones editoriales','4. Copiar código generado al repo','5. Push a GitHub → deploy en 60s','6. Verificar en producción'].map((s,i)=>`
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--bg-3);border-radius:var(--radius-sm)">
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent);flex-shrink:0">${i+1}</span>
+            <span style="font-size:11px;color:var(--text-muted);line-height:1.5">${s.substring(3)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EDITORIAL ── -->
+    <div id="view-editorial" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Editorial Intelligence</div>
+        <div class="section-sub">Pega cualquier texto, URL, noticia o transcripción. El sistema evalúa qué añadir al atlas con conocimiento de los 77 nodos existentes.</div>
+      </div>
+      <div class="edit-layout">
+        <div class="edit-panel">
+          <div class="edit-panel-header">
+            <div class="panel-label">Input</div>
+            <div class="panel-desc">Texto libre · URL · PDF copiado · Transcripción · Noticia</div>
+          </div>
+          <textarea id="editInput" placeholder="Ejemplos:
+
+· URL de artículo o comunicado oficial
+· Texto de una noticia UAP
+· Transcripción de audiencia congressional
+· Descripción de un vídeo nuevo en war.gov
+· 'Japón ha desclasificado...'
+· 'El Ministerio de Defensa de X...'
+· Cualquier release PURSUE nueva"></textarea>
+          <div class="edit-footer">
+            <button class="btn btn-ghost btn-sm" onclick="clearEdit()">Limpiar</button>
+            <span class="char-count" id="editCharCount">0 caracteres</span>
+            <button class="btn btn-primary btn-sm" id="editBtn" onclick="runEditorial()" disabled>◈ Analizar</button>
+          </div>
+        </div>
+        <div class="edit-panel">
+          <div class="edit-panel-header" style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div class="panel-label">Análisis</div>
+            </div>
+            <span id="editStatus" style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">Esperando input</span>
+          </div>
+          <div class="output-body" id="editOutput">
+            <div class="empty-state">
+              <div class="empty-icon">◈</div>
+              <div class="empty-title">Analizador listo</div>
+              <div class="empty-desc">Introduce cualquier contenido nuevo para evaluar su relevancia editorial en el atlas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MONITOR ── -->
+    <div id="view-monitor" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Monitor war.gov/UFO</div>
+        <div class="section-sub">Detecta archivos nuevos en war.gov comparando con el estado conocido del atlas. Útil antes de cada sesión de actualización.</div>
+      </div>
+      <div class="monitor-grid">
+        <div class="monitor-card">
+          <div class="monitor-title">Estado actual war.gov</div>
+          <div class="monitor-sub">Hace fetch a war.gov/UFO y extrae los archivos del slideshow visibles en el HTML. Compara con los PRs ya indexados en el atlas.</div>
+          <button class="btn btn-primary" onclick="runMonitor()">⊙ Comprobar ahora</button>
+          <div class="monitor-result" id="monitorResult">
+            <span style="color:var(--text-muted)">Sin comprobar aún</span>
+          </div>
+        </div>
+        <div class="monitor-card">
+          <div class="monitor-title">PRs indexados en el atlas</div>
+          <div class="monitor-sub">Lista de registros PURSUE R01 ya documentados en nodes.js y sources.js del atlas.</div>
+          <div style="margin-top:4px">
+            ${['PR-028 · SWIR only · Western US 2025',
+               'PR-038 · Estrella 8 puntas · CENTCOM 2013',
+               'PR-046 · INDOPACOM 2024 · forma balón',
+               'PR-049 · Army 2026 · North America',
+               'Western US Event · FBI · Sep-Dic 2025',
+               'Release 01 · 161 registros · 4.153 páginas'
+              ].map(p=>`<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="color:var(--success);font-size:8px">●</span>${p}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;padding:12px 16px;background:rgba(56,189,248,0.05);border:1px solid var(--border-accent);border-radius:var(--radius)">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:6px">ℹ Cómo usar</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.65">
+          Si el monitor detecta PRs nuevos no indexados, cópialos y pégalos en <strong style="color:var(--text-secondary)">Editorial Intelligence</strong> para que el sistema genere automáticamente los nodos y fuentes correspondientes.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STATS ── -->
+    <div id="view-stats" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Estado del Atlas</div>
+        <div class="section-sub">Métricas actuales del UAP Intelligence Atlas · v4.2</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-value">77</div><div class="stat-label">Nodos totales</div></div>
+        <div class="stat-card"><div class="stat-value">318</div><div class="stat-label">Conexiones</div></div>
+        <div class="stat-card"><div class="stat-value">8</div><div class="stat-label">Pistolas humeantes</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:var(--success)">14 may</div><div class="stat-label">Última actualización</div></div>
+        <div class="stat-card"><div class="stat-value">4.2</div><div class="stat-label">Versión</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:var(--warning)">~12</div><div class="stat-label">Nodos sin fuentes</div></div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+          Distribución por categoría
+          <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--border-accent),transparent)"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px">
+          ${[
+            {cat:'Incidente',n:12,color:'#ff6b35'},
+            {cat:'Programa',n:8,color:'#4ecdc4'},
+            {cat:'Actor/Persona',n:32,color:'#a8e6cf'},
+            {cat:'Institución',n:5,color:'#ffd93d'},
+            {cat:'Concepto',n:14,color:'#c77dff'},
+            {cat:'Evento',n:6,color:'#74b9ff'},
+          ].map(c=>`
+            <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px">
+              <span style="width:8px;height:8px;border-radius:50%;background:${c.color};flex-shrink:0"></span>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--text-primary)">${c.n}</div>
+                <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">${c.cat}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+          Deuda técnica pendiente
+          <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--border-accent),transparent)"></span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${[
+            {item:'GraphHint no se dispara al salir del IntroScreen',p:'bug'},
+            {item:'SHA256 pendiente de asignar en todas las fuentes PURSUE',p:'data'},
+            {item:'~12 nodos sin fuentes asignadas en sources.js',p:'data'},
+            {item:'Editorial.html con login externo (fase 2)',p:'feature'},
+            {item:'Timeline animado 1897-2026',p:'feature'},
+          ].map(d=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm)">
+              <span style="font-family:var(--font-mono);font-size:9px;padding:1px 6px;border-radius:2px;flex-shrink:0;${d.p==='bug'?'background:rgba(244,63,94,0.1);color:var(--danger);border:1px solid rgba(244,63,94,0.2)':d.p==='data'?'background:rgba(251,146,60,0.1);color:var(--warning);border:1px solid rgba(251,146,60,0.2)':'background:rgba(56,189,248,0.1);color:var(--accent);border:1px solid rgba(56,189,248,0.2)'}">${d.p}</span>
+              <span style="font-size:12px;color:var(--text-muted)">${d.item}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROMPTS ── -->
+    <div id="view-prompts" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Prompts Rápidos</div>
+        <div class="section-sub">Copia el prompt, abre una conversación nueva con Claude y pégalo. El contexto del atlas ya está incluido.</div>
+      </div>
+      <div class="prompts-grid" id="promptsGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+const _t = 'VmFsaWFuVGhvcjpWaWoqbj82aQ==';
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const check = btoa(u + ':' + p);
+  if (check === _t) {
+    sessionStorage.setItem('uap_tools_auth', check);
+    sessionStorage.setItem('uap_tools_user', u);
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appShell').style.display = 'flex';
+    document.getElementById('userBadge').textContent = u;
+    initApp();
+  } else {
+    const err = document.getElementById('loginError');
+    err.style.display = 'block';
+    setTimeout(() => err.style.display = 'none', 3000);
+  }
+}
+function doLogout() {
+  sessionStorage.removeItem('uap_tools_auth');
+  sessionStorage.removeItem('uap_tools_user');
+  location.reload();
+}
+// Check session on load
+window.addEventListener('load', () => {
+  const auth = sessionStorage.getItem('uap_tools_auth');
+  const user = sessionStorage.getItem('uap_tools_user');
+  if (auth === _t) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appShell').style.display = 'flex';
+    document.getElementById('userBadge').textContent = user;
+    initApp();
+  }
+  // Enter key en login
+  ['loginUser','loginPass'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  });
+});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function showTab(name) {
+  ['home','editorial','monitor','stats','prompts'].forEach(t => {
+    document.getElementById('view-'+t).style.display = t===name ? 'block' : 'none';
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+  });
+  if (name==='editorial') document.getElementById('view-editorial').style.display = 'flex';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function initApp() {
+  renderPrompts();
+  document.getElementById('editInput').addEventListener('input', function() {
+    const l = this.value.length;
+    document.getElementById('editCharCount').textContent = l + ' caracteres';
+    document.getElementById('editBtn').disabled = l < 20;
+  });
+}
+
+// ── EDITORIAL ─────────────────────────────────────────────────────────────────
+const ATLAS_CONTEXT = {
+  totalNodes: 77, totalLinks: 318, version: '4.2',
+  existingNodeIds: ['aurora1897','magenta1933','la_battle','foo_fighters','roswell1947','malmstrom1967','kecksburg1965','nimitz2004','western_us_2025','rendlesham1980','varginha1996','colares1977','rs33','die_glocke','paperclip','blue_book','aatip','imm_constellation','pursue_r01','legacy_program','elizondo','grusch','gallaudet','kirkpatrick','vonbraun','kammler','nell','luna','burchett','nolan','puthoff','davis','mellon','stratton','semivan','fravor','salas','burlison','shellenberger','halt','greer','vallee','hynek','pio12','juan23','rosin','aurora_pilot','marconi','aaro','sol_foundation','vaticano','nasa','fbi','nyt2017','congress2023','wilson_memo','rendlesham_memo','disclosure2001','nuclear_pattern','cat_disclosure','y2027','tsm','enoc','tompkins','forrestal','ontological_shock','capovilla','george_bush_sr','patron_muertes','patron_encubrimiento','coulthart','barber','lacatski','villarroel','tictac_arv','nhi_agreements','edicion_retroactiva'],
+  keyPatterns: ['patrón nuclear','patrón de encubrimiento','edición retroactiva','patrón morfológico: esferas/estrellas/campanas','correlación PURSUE R01: PR-38 estrella 8 puntas CENTCOM 2013']
+};
+
+const SYSTEM_PROMPT = `Eres el analista editorial del UAP Intelligence Atlas, sistema de inteligencia relacional con ${ATLAS_CONTEXT.totalNodes} nodos y ${ATLAS_CONTEXT.totalLinks} conexiones (v${ATLAS_CONTEXT.version}).
+
+NODOS EXISTENTES: ${ATLAS_CONTEXT.existingNodeIds.join(', ')}
+PATRONES CLAVE: ${ATLAS_CONTEXT.keyPatterns.join('; ')}
+
+FILOSOFÍA: sistema de inteligencia relacional, no web de OVNIs. Solo entra lo que tiene base documental verificable. Credibilidad: high=juramento/oficial/FOIA, medium=fuente verificable, low=hipótesis.
+
+Para cada input, decide: NODO NUEVO, ACTUALIZAR NODO EXISTENTE, o AÑADIR FUENTE.
+
+Si nodo nuevo: genera objeto JS completo con id (snake_case), label{es,en}, year, cat (incident/program/person/institution/concept/event), sub{es,en}, credibility, desc{es,en} (2-4 frases densas con datos concretos), links[] (IDs existentes relevantes).
+
+RESPONDE SOLO JSON:
+{"summary":"2-3 frases","relevance":"high|medium|low","decisions":[{"type":"new_node|update_node|add_source","reasoning":"por qué entra y qué aporta","patterns_activated":[],"data":{objeto completo}}],"editorial_note":"qué NO incluir si aplica"}`;
+
+let _decisions = [], _approvals = {};
+
+function clearEdit() {
+  document.getElementById('editInput').value = '';
+  document.getElementById('editCharCount').textContent = '0 caracteres';
+  document.getElementById('editBtn').disabled = true;
+  document.getElementById('editOutput').innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-title">Analizador listo</div><div class="empty-desc">Introduce cualquier contenido nuevo para evaluar su relevancia editorial.</div></div>`;
+  document.getElementById('editStatus').textContent = 'Esperando input';
+}
+
+async function runEditorial() {
+  const input = document.getElementById('editInput').value.trim();
+  if (!input) return;
+  document.getElementById('editBtn').disabled = true;
+  document.getElementById('editStatus').textContent = 'Analizando...';
+  document.getElementById('editOutput').innerHTML = `<div class="loading"><div class="spinner"></div><div class="loading-text">Evaluando contra ${ATLAS_CONTEXT.totalNodes} nodos...</div></div>`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:4000, system:SYSTEM_PROMPT, messages:[{role:'user',content:input}] })
+    });
+    const data = await res.json();
+    const text = data.content?.find(b=>b.type==='text')?.text || '';
+    const clean = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    const result = JSON.parse(clean);
+    renderEditorial(result);
+  } catch(err) {
+    document.getElementById('editOutput').innerHTML = `<div class="empty-state"><div class="empty-icon" style="color:var(--danger)">⚠</div><div class="empty-title" style="color:var(--danger)">Error</div><div class="empty-desc">${err.message}</div></div>`;
+    document.getElementById('editStatus').textContent = 'Error';
+  }
+  document.getElementById('editBtn').disabled = false;
+}
+
+function renderEditorial(result) {
+  _decisions = result.decisions || [];
+  _approvals = {};
+  _decisions.forEach((_,i) => _approvals[i]='pending');
+  const typeL = {new_node:'Nodo nuevo',update_node:'Actualizar',add_source:'Fuente nueva'};
+  const typeC = {new_node:'type-new',update_node:'type-update',add_source:'type-source'};
+  const rColor = {high:'var(--success)',medium:'var(--warning)',low:'var(--text-muted)'};
+
+  let h = `<div class="analysis-summary-box">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <div style="font-size:13px;font-weight:700;color:var(--text-primary)">Análisis completado</div>
+      <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;border-radius:3px;color:${rColor[result.relevance]};background:${rColor[result.relevance]}18;border:1px solid ${rColor[result.relevance]}33">
+        ${(result.relevance||'').toUpperCase()}
+      </span>
+    </div>
+    <p>${result.summary||''}</p>
+  </div>`;
+
+  h += `<div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">Decisiones (${_decisions.length})</div>`;
+
+  _decisions.forEach((d,i) => {
+    const title = d.data?.label?.es || d.data?.title?.es || d.data?.nodeId || d.data?.id || 'Actualización';
+    const patterns = (d.patterns_activated||[]).join(' · ');
+    h += `<div class="decision-card" id="dcard-${i}">
+      <div class="card-header" onclick="toggleDCard(${i})">
+        <span class="type-badge ${typeC[d.type]}">${typeL[d.type]}</span>
+        <span class="card-title">${title}</span>
+        <div class="card-actions" onclick="event.stopPropagation()">
+          <button class="action-btn approve-btn" onclick="setApproval(${i},'approved')">✓</button>
+          <button class="action-btn reject-btn" onclick="setApproval(${i},'rejected')">✕</button>
+        </div>
+      </div>
+      <div class="card-body" id="dbody-${i}">
+        <div class="reasoning-box">
+          <div class="reasoning-label">Razonamiento</div>
+          <div class="reasoning-text">${d.reasoning||''}</div>
+        </div>
+        ${patterns?`<div class="field-group"><div class="field-label">Patrones</div><div class="field-value" style="color:var(--purple);font-size:11px">${patterns}</div></div>`:''}
+        ${d.type==='new_node'&&d.data?renderNodePrev(d.data):''}
+        ${d.type==='add_source'&&d.data?renderSrcPrev(d.data):''}
+        ${d.type==='update_node'?renderUpdPrev(d.data):''}
+      </div>
+    </div>`;
+  });
+
+  h += `<div style="display:flex;gap:8px;margin:16px 0"><button class="btn btn-primary" onclick="generateCode()" style="flex:1">◈ Generar código aprobados</button></div>`;
+  h += `<div id="codeOutput"></div>`;
+  if (result.editorial_note) h += `<div style="padding:10px 12px;background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.15);border-radius:var(--radius-sm);margin-top:12px"><div style="font-family:var(--font-mono);font-size:9px;color:var(--warning);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px">Nota editorial</div><div style="font-size:11px;color:var(--text-muted);line-height:1.6">${result.editorial_note}</div></div>`;
+
+  document.getElementById('editOutput').innerHTML = h;
+  document.getElementById('editStatus').textContent = `${_decisions.length} decisiones · pendiente aprobación`;
+  window._editResult = result;
+}
+
+function renderNodePrev(d) {
+  return `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+      ${[['ID',d.id||'—'],['Categoría',d.cat||'—'],['Año',d.year||'—']].map(([l,v])=>`<div class="field-group" style="margin-bottom:0"><div class="field-label">${l}</div><div class="field-value field-mono">${v}</div></div>`).join('')}
+    </div>
+    <div class="field-group"><div class="field-label">Credibilidad</div><div class="field-value field-mono cred-${d.credibility}">${d.credibility||'—'}</div></div>
+    <div class="field-group"><div class="field-label">Descripción ES</div><div class="field-value">${d.desc?.es||'—'}</div></div>
+    <div class="field-group"><div class="field-label">Description EN</div><div class="field-value">${d.desc?.en||'—'}</div></div>
+    <div class="field-group"><div class="field-label">Links</div><div class="links-list">${(d.links||[]).map(l=>`<span class="link-tag">${l}</span>`).join('')}</div></div>`;
+}
+function renderSrcPrev(d) {
+  return `<div class="field-group"><div class="field-label">Nodo destino</div><div class="field-value field-mono">${d.node||d.nodeId||'—'}</div></div>
+    <div class="field-group"><div class="field-label">Título ES</div><div class="field-value">${d.title?.es||'—'}</div></div>
+    <div class="field-group"><div class="field-label">Tipo</div><div class="field-value field-mono">${d.type||'—'}</div></div>`;
+}
+function renderUpdPrev(d) {
+  return `<div class="field-group"><div class="field-label">Nodo</div><div class="field-value field-mono">${d.nodeId||d.id||'—'}</div></div>
+    <div class="field-group"><div class="field-label">Campo</div><div class="field-value field-mono">${d.field||'—'}</div></div>
+    <div class="field-group"><div class="field-label">Cambio</div><div class="field-value">${d.change||JSON.stringify(d.value||'')}</div></div>`;
+}
+function toggleDCard(i) {
+  const b = document.getElementById(`dbody-${i}`);
+  b.style.display = b.style.display==='none'?'block':'none';
+}
+function setApproval(i,state) {
+  _approvals[i]=state;
+  document.getElementById(`dcard-${i}`).className=`decision-card ${state}`;
+  const approved = Object.values(_approvals).filter(v=>v==='approved').length;
+  document.getElementById('editStatus').textContent = `${approved}/${Object.keys(_approvals).length} aprobados`;
+}
+function generateCode() {
+  const approved = Object.entries(_approvals).filter(([,v])=>v==='approved').map(([k])=>parseInt(k));
+  if (!approved.length) { alert('Aprueba al menos una decisión.'); return; }
+  const decs = approved.map(i=>_decisions[i]);
+  const newNodes = decs.filter(d=>d.type==='new_node').map(d=>`  ${JSON.stringify(d.data,null,2).replace(/\n/g,'\n  ')},`);
+  const newSrcs = decs.filter(d=>d.type==='add_source').map(d=>{const n=d.data?.node||d.data?.nodeId;const s={...d.data};delete s.node;delete s.nodeId;return `  // → SOURCES["${n}"]:\n  ${JSON.stringify(s,null,2).replace(/\n/g,'\n  ')},`;});
+  const upds = decs.filter(d=>d.type==='update_node').map(d=>`  // ACTUALIZAR "${d.data?.nodeId||d.data?.id}" · campo "${d.data?.field}":\n  // ${d.data?.change||''}`);
+  let h = '';
+  if (newNodes.length) h += makeCodeBlock('src/data/nodes.js', `// Añadir al array NODES[]:\n\n${newNodes.join('\n\n')}`);
+  if (newSrcs.length) h += makeCodeBlock('src/data/sources.js', `// Añadir a SOURCES:\n\n${newSrcs.join('\n\n')}`);
+  if (upds.length) h += makeCodeBlock('Actualizaciones manuales', upds.join('\n\n'));
+  h += `<div style="padding:8px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:var(--radius-sm)"><div style="font-family:var(--font-mono);font-size:10px;color:var(--success)">✓ Copia el código → pega en el repo → push a GitHub → deploy en ~60s</div></div>`;
+  document.getElementById('codeOutput').innerHTML = `<div class="code-section"><div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">Código generado (${approved.length} aprobados)</div>${h}</div>`;
+  document.getElementById('codeOutput').scrollIntoView({behavior:'smooth'});
+}
+let _codeId = 0;
+function makeCodeBlock(filename, code) {
+  const id = 'code-'+(++_codeId);
+  return `<div class="code-block" style="margin-bottom:10px">
+    <div class="code-header">
+      <span class="code-filename">${filename}</span>
+      <button class="copy-btn" onclick="copyCode(this,'${id}')">Copiar</button>
+    </div>
+    <pre id="${id}">${escHtml(code)}</pre>
+  </div>`;
+}
+function copyCode(btn,id) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{
+    btn.textContent='✓ Copiado';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('copied');},2000);
+  });
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ── MONITOR ───────────────────────────────────────────────────────────────────
+const KNOWN_PRS = ['PR19','PR26','PR28','PR34','PR35','PR38','PR43','PR45','PR46','PR49'];
+async function runMonitor() {
+  const el = document.getElementById('monitorResult');
+  el.innerHTML = '<span style="color:var(--text-muted)">Consultando war.gov...</span>';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:1000,
+        messages:[{role:'user',content:`Fetch https://www.war.gov/UFO/ and extract all PR numbers visible in slideshow image filenames. Return ONLY a JSON array of strings like ["PR19","PR28",...]. No markdown, no explanation.`}],
+        tools:[{type:'web_search_20250305',name:'web_search'}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.find(b=>b.type==='text')?.text||'[]';
+    const clean = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    let found = [];
+    try { found = JSON.parse(clean); } catch { found = KNOWN_PRS; }
+    const newPRs = found.filter(pr=>!KNOWN_PRS.includes(pr));
+    const known = found.filter(pr=>KNOWN_PRS.includes(pr));
+    let out = '';
+    if (newPRs.length) {
+      out += `<div style="color:var(--success);font-weight:600;margin-bottom:6px">⚡ ${newPRs.length} nuevo(s) detectado(s):</div>`;
+      newPRs.forEach(pr=>{ out+=`<div class="new-item">+ ${pr} — NUEVO · no indexado en el atlas</div>`; });
+      out += `<div style="margin-top:10px;font-size:10px;color:var(--text-muted)">→ Pega los PRs nuevos en Editorial Intelligence para procesarlos</div>`;
+    } else {
+      out += `<div style="color:var(--success)">✓ Sin novedades. El atlas está al día.</div>`;
+    }
+    if (known.length) {
+      out += `<div style="margin-top:8px;color:var(--text-muted)">${known.length} PRs ya indexados confirmados</div>`;
+    }
+    el.innerHTML = out;
+  } catch(e) {
+    el.innerHTML = `<span style="color:var(--danger)">Error: ${e.message}</span>`;
+  }
+}
+
+// ── PROMPTS ───────────────────────────────────────────────────────────────────
+const PROMPTS = [
+  {
+    name:'Actualizar nodes.js',
+    use:'Cuando quieres añadir nodos nuevos con el JSON correcto',
+    prompt:`Actúa como arquitecto de datos del UAP Intelligence Atlas (v4.2, 77 nodos, 318 conexiones). Necesito añadir el siguiente nodo al archivo nodes.js. El esquema es: { id, label:{es,en}, year, cat (incident/program/person/institution/concept/event), sub:{es,en}, credibility (high/medium/low), desc:{es,en}, links:[] }. Genera el objeto JavaScript completo, bilingüe, con descripción densa de 2-4 frases con datos concretos, y links a los IDs existentes más relevantes. Nodo a crear: [DESCRIBE EL NODO AQUÍ]`
+  },
+  {
+    name:'Actualizar sources.js',
+    use:'Cuando quieres añadir fuentes documentales con la arquitectura de blindaje',
+    prompt:`Actúa como arquitecto de datos del UAP Intelligence Atlas (v4.2). Necesito añadir fuentes al archivo sources.js con la arquitectura de blindaje de 4 capas: url_primary (war.gov), url_archive (Wayback), url_hf (HuggingFace), url_search (gpt2077). Incluye campo status:"verified" y accessed con fecha actual. Genera el objeto JS completo para el nodo: [ID_DEL_NODO]. Fuente a añadir: [DESCRIBE LA FUENTE]`
+  },
+  {
+    name:'Debug App.jsx',
+    use:'Cuando hay un bug o quieres modificar la interfaz',
+    prompt:`Actúa como desarrollador senior del UAP Intelligence Atlas. El proyecto usa React 18 + D3 v7 + Vite 5, desplegado en Vercel. El App.jsx tiene 1393 líneas con estos componentes principales: IntroScreen (onboarding bilingüe), GraphHint (tooltip primer uso - tiene un bug: no se dispara), HelpModal, SourcesPanel (con arquitectura de blindaje documental), SmokingGunsPanel, y el grafo D3 principal. Todo el texto de UI está en el objeto T={es:{...},en:{...}}. El problema a resolver es: [DESCRIBE EL PROBLEMA]`
+  },
+  {
+    name:'Procesar release war.gov',
+    use:'Para el protocolo de actualización de los viernes',
+    prompt:`Actúa como analista editorial del UAP Intelligence Atlas (v4.2, 77 nodos, 318 conexiones). Acaba de publicarse nueva información en war.gov/UFO. Analiza el siguiente contenido y determina qué añadir al atlas: qué merece ser nodo nuevo, qué nodo existente actualizar, y qué fuentes añadir. Sé conservador — mejor pocos nodos bien documentados que muchos superficiales. Credibilidad: high=oficial/juramento/FOIA, medium=fuente verificable, low=hipótesis. Nodos existentes: aurora1897, magenta1933, roswell1947, malmstrom1967, nimitz2004, western_us_2025, rendlesham1980, grusch, elizondo, kirkpatrick, aaro, pursue_r01, nuclear_pattern, edicion_retroactiva [y 63 más]. Contenido a analizar: [PEGA AQUÍ]`
+  },
+  {
+    name:'Análisis de patrón',
+    use:'Para identificar conexiones entre nodos o patrones nuevos',
+    prompt:`Actúa como analista de inteligencia del UAP Intelligence Atlas (v4.2). El atlas tiene estos patrones documentados: patrón nuclear (UAPs sobre instalaciones nucleares), patrón de encubrimiento (negación institucional sistemática), edición retroactiva (modificación de registros post-publicación), patrón morfológico (esferas/estrellas/campanas recurrentes). Analiza si el siguiente contenido activa alguno de estos patrones, refuerza conexiones existentes, o sugiere un patrón nuevo. Genera un análisis estructurado con el razonamiento editorial. Contenido: [PEGA AQUÍ]`
+  },
+  {
+    name:'Generar pistola humeante',
+    use:'Para crear un nuevo análisis de smoking gun',
+    prompt:`Actúa como analista senior del UAP Intelligence Atlas. Necesito generar una nueva "pistola humeante" — un análisis que conecta múltiples nodos del atlas en torno a una evidencia o patrón que sería difícil de explicar sin la hipótesis NHI. El formato es: título bilingüe, severidad (critical/high/medium), descripción del patrón, los nodos involucrados con su relación, y la conclusión analítica. Tema de la pistola humeante: [DESCRIBE EL TEMA]`
+  },
+];
+
+function renderPrompts() {
+  document.getElementById('promptsGrid').innerHTML = PROMPTS.map((p,i)=>`
+    <div class="prompt-card">
+      <div class="prompt-name">${p.name}</div>
+      <div class="prompt-use">${p.use}</div>
+      <div class="prompt-preview" onclick="copyPrompt(${i},this)">${p.prompt.substring(0,180)}...</div>
+      <div class="prompt-footer">
+        <button class="btn btn-primary btn-sm" onclick="copyPrompt(${i},this)">Copiar prompt</button>
+        <button class="btn btn-ghost btn-sm" onclick="togglePrompt(${i})">Ver completo</button>
+      </div>
+      <div id="prompt-full-${i}" style="display:none;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);line-height:1.65;white-space:pre-wrap">${p.prompt}</div>
+    </div>`).join('');
+}
+function copyPrompt(i, btn) {
+  navigator.clipboard.writeText(PROMPTS[i].prompt).then(()=>{
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    setTimeout(()=>btn.textContent=orig, 2000);
+  });
+}
+function togglePrompt(i) {
+  const el = document.getElementById(`prompt-full-${i}`);
+  el.style.display = el.style.display==='none'?'block':'none';
+}
+</script>
+</body>
+</html>
