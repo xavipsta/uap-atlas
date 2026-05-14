@@ -367,11 +367,30 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
       <div style="padding:16px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius)">
         <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:10px;letter-spacing:0.1em;text-transform:uppercase">Protocolo de actualización — viernes</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">
-          ${['1. Monitor war.gov → detectar novedades','2. Editorial Intelligence → analizar','3. Aprobar decisiones editoriales','4. Copiar código generado al repo','5. Push a GitHub → deploy en 60s','6. Verificar en producción'].map((s,i)=>`
           <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--bg-3);border-radius:var(--radius-sm)">
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent);flex-shrink:0">${i+1}</span>
-            <span style="font-size:11px;color:var(--text-muted);line-height:1.5">${s.substring(3)}</span>
-          </div>`).join('')}
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent);flex-shrink:0">1</span>
+            <span style="font-size:11px;color:var(--text-muted);line-height:1.5">Monitor war.gov → detectar novedades</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--bg-3);border-radius:var(--radius-sm)">
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent);flex-shrink:0">2</span>
+            <span style="font-size:11px;color:var(--text-muted);line-height:1.5">Editorial Intelligence → analizar</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--bg-3);border-radius:var(--radius-sm)">
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent);flex-shrink:0">3</span>
+            <span style="font-size:11px;color:var(--text-muted);line-height:1.5">Aprobar decisiones editoriales</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--bg-3);border-radius:var(--radius-sm)">
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent);flex-shrink:0">4</span>
+            <span style="font-size:11px;color:var(--text-muted);line-height:1.5">Copiar código generado al repo</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--bg-3);border-radius:var(--radius-sm)">
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent);flex-shrink:0">5</span>
+            <span style="font-size:11px;color:var(--text-muted);line-height:1.5">Push a GitHub → deploy en 60s</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--bg-3);border-radius:var(--radius-sm)">
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent);flex-shrink:0">6</span>
+            <span style="font-size:11px;color:var(--text-muted);line-height:1.5">Verificar en producción</span>
+          </div>
         </div>
       </div>
     </div>
@@ -440,13 +459,12 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
           <div class="monitor-title">PRs indexados en el atlas</div>
           <div class="monitor-sub">Lista de registros PURSUE R01 ya documentados en nodes.js y sources.js del atlas.</div>
           <div style="margin-top:4px">
-            ${['PR-028 · SWIR only · Western US 2025',
-               'PR-038 · Estrella 8 puntas · CENTCOM 2013',
-               'PR-046 · INDOPACOM 2024 · forma balón',
-               'PR-049 · Army 2026 · North America',
-               'Western US Event · FBI · Sep-Dic 2025',
-               'Release 01 · 161 registros · 4.153 páginas'
-              ].map(p=>`<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="color:var(--success);font-size:8px">●</span>${p}</div>`).join('')}
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="color:var(--success);font-size:8px">●</span>PR-028 · SWIR only · Western US 2025</div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="color:var(--success);font-size:8px">●</span>PR-038 · Estrella 8 puntas · CENTCOM 2013</div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="color:var(--success);font-size:8px">●</span>PR-046 · INDOPACOM 2024 · forma balón</div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="color:var(--success);font-size:8px">●</span>PR-049 · Army 2026 · North America</div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="color:var(--success);font-size:8px">●</span>Western US Event · FBI · Sep-Dic 2025</div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding:4px 0;display:flex;align-items:center;gap:6px"><span style="color:var(--success);font-size:8px">●</span>Release 01 · 161 registros · 4.153 páginas</div>
           </div>
         </div>
       </div>
@@ -479,21 +497,12 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
           <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--border-accent),transparent)"></span>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px">
-          ${[
-            {cat:'Incidente',n:12,color:'#ff6b35'},
-            {cat:'Programa',n:8,color:'#4ecdc4'},
-            {cat:'Actor/Persona',n:32,color:'#a8e6cf'},
-            {cat:'Institución',n:5,color:'#ffd93d'},
-            {cat:'Concepto',n:14,color:'#c77dff'},
-            {cat:'Evento',n:6,color:'#74b9ff'},
-          ].map(c=>`
-            <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px">
-              <span style="width:8px;height:8px;border-radius:50%;background:${c.color};flex-shrink:0"></span>
-              <div>
-                <div style="font-size:12px;font-weight:600;color:var(--text-primary)">${c.n}</div>
-                <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">${c.cat}</div>
-              </div>
-            </div>`).join('')}
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px"><span style="width:8px;height:8px;border-radius:50%;background:#ff6b35;flex-shrink:0"></span><div><div style="font-size:12px;font-weight:600;color:var(--text-primary)">12</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">Incidente</div></div></div>
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px"><span style="width:8px;height:8px;border-radius:50%;background:#4ecdc4;flex-shrink:0"></span><div><div style="font-size:12px;font-weight:600;color:var(--text-primary)">8</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">Programa</div></div></div>
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px"><span style="width:8px;height:8px;border-radius:50%;background:#a8e6cf;flex-shrink:0"></span><div><div style="font-size:12px;font-weight:600;color:var(--text-primary)">32</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">Actor/Persona</div></div></div>
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px"><span style="width:8px;height:8px;border-radius:50%;background:#ffd93d;flex-shrink:0"></span><div><div style="font-size:12px;font-weight:600;color:var(--text-primary)">5</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">Institución</div></div></div>
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px"><span style="width:8px;height:8px;border-radius:50%;background:#c77dff;flex-shrink:0"></span><div><div style="font-size:12px;font-weight:600;color:var(--text-primary)">14</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">Concepto</div></div></div>
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px"><span style="width:8px;height:8px;border-radius:50%;background:#74b9ff;flex-shrink:0"></span><div><div style="font-size:12px;font-weight:600;color:var(--text-primary)">6</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">Evento</div></div></div>
         </div>
       </div>
       <div>
@@ -502,17 +511,11 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
           <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--border-accent),transparent)"></span>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px">
-          ${[
-            {item:'GraphHint no se dispara al salir del IntroScreen',p:'bug'},
-            {item:'SHA256 pendiente de asignar en todas las fuentes PURSUE',p:'data'},
-            {item:'~12 nodos sin fuentes asignadas en sources.js',p:'data'},
-            {item:'Editorial.html con login externo (fase 2)',p:'feature'},
-            {item:'Timeline animado 1897-2026',p:'feature'},
-          ].map(d=>`
-            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm)">
-              <span style="font-family:var(--font-mono);font-size:9px;padding:1px 6px;border-radius:2px;flex-shrink:0;${d.p==='bug'?'background:rgba(244,63,94,0.1);color:var(--danger);border:1px solid rgba(244,63,94,0.2)':d.p==='data'?'background:rgba(251,146,60,0.1);color:var(--warning);border:1px solid rgba(251,146,60,0.2)':'background:rgba(56,189,248,0.1);color:var(--accent);border:1px solid rgba(56,189,248,0.2)'}">${d.p}</span>
-              <span style="font-size:12px;color:var(--text-muted)">${d.item}</span>
-            </div>`).join('')}
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm)"><span style="font-family:var(--font-mono);font-size:9px;padding:1px 6px;border-radius:2px;flex-shrink:0;background:rgba(244,63,94,0.1);color:var(--danger);border:1px solid rgba(244,63,94,0.2)">bug</span><span style="font-size:12px;color:var(--text-muted)">GraphHint no se dispara al salir del IntroScreen</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm)"><span style="font-family:var(--font-mono);font-size:9px;padding:1px 6px;border-radius:2px;flex-shrink:0;background:rgba(251,146,60,0.1);color:var(--warning);border:1px solid rgba(251,146,60,0.2)">data</span><span style="font-size:12px;color:var(--text-muted)">SHA256 pendiente de asignar en todas las fuentes PURSUE</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm)"><span style="font-family:var(--font-mono);font-size:9px;padding:1px 6px;border-radius:2px;flex-shrink:0;background:rgba(251,146,60,0.1);color:var(--warning);border:1px solid rgba(251,146,60,0.2)">data</span><span style="font-size:12px;color:var(--text-muted)">~12 nodos sin fuentes asignadas en sources.js</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm)"><span style="font-family:var(--font-mono);font-size:9px;padding:1px 6px;border-radius:2px;flex-shrink:0;background:rgba(56,189,248,0.1);color:var(--accent);border:1px solid rgba(56,189,248,0.2)">feature</span><span style="font-size:12px;color:var(--text-muted)">Editorial.html con login externo (fase 2)</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm)"><span style="font-family:var(--font-mono);font-size:9px;padding:1px 6px;border-radius:2px;flex-shrink:0;background:rgba(56,189,248,0.1);color:var(--accent);border:1px solid rgba(56,189,248,0.2)">feature</span><span style="font-size:12px;color:var(--text-muted)">Timeline animado 1897-2026</span></div>
         </div>
       </div>
     </div>
@@ -860,3 +863,4 @@ function togglePrompt(i) {
 </script>
 </body>
 </html>
+
