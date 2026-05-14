@@ -1,27 +1,171 @@
 // ─── UAP ATLAS — SMOKING GUNS DATA ─────────────────────────────────────────
-// v4.1 · 8 pistolas humeantes calculadas sobre análisis real del grafo
+// v4.4 · 8 pistolas humeantes con campos context y path para visualización
 // Estructura: { es: [...], en: [...] } — mismos IDs en ambos idiomas
 
 export const SMOKING_GUNS = {
   es: [
-    { id:"sg1", title:"Kammler: el nodo fantasma", type:"gap", severity:"critical", nodes:["kammler","die_glocke","paperclip","vonbraun","kecksburg1965"], headline:"El único actor del grafo con clustering perfecto (0.6) y cero registro postbélico", analysis:"Hans Kammler tiene la mayor densidad local del grafo — sus vecinos están muy interconectados — pero betweenness irrelevante (5.6). Esto sugiere que sus conexiones fueron diseñadas para ser autosuficientes sin él. No necesitan de Kammler para comunicarse. Y sin embargo es el único nodo de toda la red con ausencia documental total post-1945. Su desaparición es el único gap en una cadena de custodia que va de Magenta (1933) a Roswell (1947) de forma continua.", implication:"Si Kammler negoció inmunidad, alguien tiene su archivo. Ese archivo conectaría Die Glocke con el programa americano de ingeniería inversa.", confidence:"strong" },
-    { id:"sg2", title:"Rosin: puente de 46 años y betweenness cero", type:"paradox", severity:"critical", nodes:["rosin","vonbraun","y2027"], headline:"El único nodo que conecta la ciencia nazi de posguerra con el horizonte 2027", analysis:"Rosin tiene degree=2 y clustering=0.0 — nodo lineal puro. Su único rol: puente entre Von Braun (1977) y el Umbral 2027. El contenido es explosivo: Von Braun le dijo que la secuencia de amenazas fabricadas culminaría en 'extraterrestres'. El mismo hombre que dijo 'tuvimos ayuda de ellos'. Estas dos declaraciones de Von Braun no están conectadas entre sí en el grafo — pertenecen a clusters distintos. O Von Braun mintió en una, o describía dos realidades distintas.", implication:"La advertencia de Von Braun a Rosin sobre la 'falsa amenaza ET' cobra máxima relevancia exactamente en 2026-2027.", confidence:"verified" },
-    { id:"sg3", title:"Pío XII: la intersección imposible", type:"bridge", severity:"critical", nodes:["pio12","magenta1933","vaticano","paperclip"], headline:"Único nodo donde inteligencia vaticana, fascismo italiano e inteligencia americana convergen en una sola persona", analysis:"Pío XII conecta Magenta 1933, el Vaticano y la Operación Paperclip. Ninguna de estas tres entidades se conecta entre sí sin pasar por él. La transferencia de la nave de Magenta a los americanos dependió estructuralmente de una única persona. Si hubiera tomado la decisión contraria, la cadena de custodia de la única nave NHI pre-Roswell documentada se habría roto.", implication:"La Sol Foundation pidiendo acceso al Vaticano en 2024 no es casual — están buscando el archivo del intermediario.", confidence:"strong" },
-    { id:"sg4", title:"Enoc: 2.326 años de conexión directa", type:"temporal", severity:"high", nodes:["enoc","vaticano","aurora_pilot","tsm"], headline:"El Libro de Enoc (-300 a.C.) conecta el Piloto de Aurora (1897), el Vaticano (1933) y Soulwatchers (2026)", analysis:"Enoc tiene clustering=0.167 y betweenness=41.8 para solo 4 conexiones. Conecta clusters que de otro modo estarían completamente desconectados. El Piloto de Aurora (1897) no tiene ninguna vía hacia el Vaticano que no pase por Enoc. Soulwatchers (2026) no tiene ninguna vía hacia el Piloto de Aurora sin pasar por Enoc. El texto suprimido del canon cristiano es el único nodo que mantiene la continuidad entre la antigüedad y la era moderna.", implication:"Si la narrativa de los Vigilantes describe contacto NHI real, su supresión es la operación de encubrimiento más larga de la historia.", confidence:"speculative" },
-    { id:"sg5", title:"La cadena de campana rota", type:"morphological", severity:"high", nodes:["magenta1933","die_glocke","kecksburg1965","rs33"], headline:"Tres objetos en forma de campana en tres décadas — Kecksburg no conecta con Magenta directamente", analysis:"Magenta (1933) → Die Glocke (1941) → Kecksburg (1965). La cadena existe solo a través de Die Glocke. Kecksburg NO conecta directamente con Magenta. Grusch confirmó Magenta bajo juramento. Nadie ha confirmado Kecksburg bajo juramento. Es el eslabón más débil de la cadena más importante.", implication:"Si alguien testificara bajo juramento conectando Kecksburg con Magenta, la cadena de custodia de 1933 a 1965 quedaría completa.", confidence:"strong" },
-    { id:"sg6", title:"Salas→Nuclear→PURSUE: 59 años de hilo directo", type:"bridge", severity:"high", nodes:["salas","malmstrom1967","nuclear_pattern","pursue_r01"], headline:"El Capitán Salas (1967) conecta con PURSUE Release 01 (2026) a través del Patrón Nuclear", analysis:"El camino salas→malmstrom1967→nuclear_pattern→pursue_r01 es el único hilo que conecta un testimonio militar de 1967 con la desclasificación de 2026. nuclear_pattern tiene betweenness=222.9. Pero la anomalía más profunda: nuclear_pattern NO conecta con die_glocke ni con magenta1933. La firma morfológica de campana y la vigilancia nuclear son dos clusters separados.", implication:"El Release 02 podría ser el primer documento que conecte explícitamente el patrón nuclear con morfología específica de objeto.", confidence:"strong" },
-    { id:"sg7", title:"Juan XXIII→Enoc→Soulwatchers: el papa como precursor", type:"bridge", severity:"medium", nodes:["juan23","enoc","tsm","vaticano"], headline:"Juan XXIII (contacto NHI 1961) conecta con Soulwatchers 2026 solo a través del Libro de Enoc", analysis:"Juan XXIII tiene degree=2 y clustering=0.0. Su única ruta hacia la modernidad pasa por Enoc. El papa que convocó el Concilio Vaticano II tuvo un contacto NHI reportado en 1961 y murió en 1963 sin revelarlo. Soulwatchers incorpora ontología de pueblos originarios estructuralmente equivalente a la cosmología enóquica. Ninguno cita al otro.", implication:"Si el Vaticano abriera los archivos de Juan XXIII, Soulwatchers tendría el precedente institucional más alto de la historia.", confidence:"speculative" },
-    { id:"sg8", title:"Memo Wilson-Davis: el material está en manos privadas", type:"gap", severity:"critical", nodes:["davis","wilson_memo","imm_constellation","puthoff","grusch"], headline:"El único documento filtrado que establece que contratistas privados controlan material NHI", analysis:"La cadena Davis→wilson_memo→imm_constellation→grusch es el esqueleto documental del mayor encubrimiento moderno. El Almirante Wilson fue bloqueado con 'no tienes necesidad de saber' — fórmula para los programas más clasificados. Si un almirante de cuatro estrellas y ex director de la DIA fue bloqueado, el nivel de clasificación supera cualquier estructura de supervisión democrática conocida.", implication:"Los 'holdings empíricos sustantivos' de Grusch están probablemente en instalaciones privadas — no en instalaciones gubernamentales auditables.", confidence:"strong" },
+    {
+      id:"sg1", context:["all","programs"],
+      nodes:["kammler","die_glocke","paperclip","vonbraun","kecksburg1965"],
+      path:["kammler","die_glocke","paperclip","vonbraun"],
+      title:"Kammler: el nodo fantasma", type:"gap", severity:"critical",
+      headline:"El único actor del grafo con clustering perfecto (0.6) y cero registro postbélico",
+      analysis:"Hans Kammler tiene la mayor densidad local del grafo — sus vecinos están muy interconectados — pero betweenness irrelevante (5.6). Esto sugiere que sus conexiones fueron diseñadas para ser autosuficientes sin él. No necesitan de Kammler para comunicarse. Y sin embargo es el único nodo de toda la red con ausencia documental total post-1945. Su desaparición es el único gap en una cadena de custodia que va de Magenta (1933) a Roswell (1947) de forma continua.",
+      implication:"Si Kammler negoció inmunidad, alguien tiene su archivo. Ese archivo conectaría Die Glocke con el programa americano de ingeniería inversa.",
+      confidence:"strong"
+    },
+    {
+      id:"sg2", context:["all","persons"],
+      nodes:["rosin","vonbraun","y2027"],
+      path:["vonbraun","rosin","y2027"],
+      title:"Rosin: puente de 46 años y betweenness cero", type:"paradox", severity:"critical",
+      headline:"El único nodo que conecta la ciencia nazi de posguerra con el horizonte 2027",
+      analysis:"Rosin tiene degree=2 y clustering=0.0 — nodo lineal puro. Su único rol: puente entre Von Braun (1977) y el Umbral 2027. El contenido es explosivo: Von Braun le dijo que la secuencia de amenazas fabricadas culminaría en 'extraterrestres'. El mismo hombre que dijo 'tuvimos ayuda de ellos'. Estas dos declaraciones de Von Braun no están conectadas entre sí en el grafo — pertenecen a clusters distintos. O Von Braun mintió en una, o describía dos realidades distintas.",
+      implication:"La advertencia de Von Braun a Rosin sobre la 'falsa amenaza ET' cobra máxima relevancia exactamente en 2026-2027.",
+      confidence:"verified"
+    },
+    {
+      id:"sg3", context:["all","programs"],
+      nodes:["pio12","magenta1933","vaticano","paperclip"],
+      path:["magenta1933","pio12","vaticano","paperclip"],
+      title:"Pío XII: la intersección imposible", type:"bridge", severity:"critical",
+      headline:"Único nodo donde inteligencia vaticana, fascismo italiano e inteligencia americana convergen en una sola persona",
+      analysis:"Pío XII conecta Magenta 1933, el Vaticano y la Operación Paperclip. Ninguna de estas tres entidades se conecta entre sí sin pasar por él. La transferencia de la nave de Magenta a los americanos dependió estructuralmente de una única persona. Si hubiera tomado la decisión contraria, la cadena de custodia de la única nave NHI pre-Roswell documentada se habría roto.",
+      implication:"La Sol Foundation pidiendo acceso al Vaticano en 2024 no es casual — están buscando el archivo del intermediario.",
+      confidence:"strong"
+    },
+    {
+      id:"sg4", context:["all","incidents"],
+      nodes:["enoc","vaticano","aurora_pilot","tsm"],
+      path:["enoc","aurora_pilot","vaticano","tsm"],
+      title:"Enoc: 2.326 años de conexión directa", type:"temporal", severity:"high",
+      headline:"El Libro de Enoc (-300 a.C.) conecta el Piloto de Aurora (1897), el Vaticano (1933) y Soulwatchers (2026)",
+      analysis:"Enoc tiene clustering=0.167 y betweenness=41.8 para solo 4 conexiones. Conecta clusters que de otro modo estarían completamente desconectados. El Piloto de Aurora (1897) no tiene ninguna vía hacia el Vaticano que no pase por Enoc. Soulwatchers (2026) no tiene ninguna vía hacia el Piloto de Aurora sin pasar por Enoc. El texto suprimido del canon cristiano es el único nodo que mantiene la continuidad entre la antigüedad y la era moderna.",
+      implication:"Si la narrativa de los Vigilantes describe contacto NHI real, su supresión es la operación de encubrimiento más larga de la historia.",
+      confidence:"speculative"
+    },
+    {
+      id:"sg5", context:["all","incidents","programs"],
+      nodes:["magenta1933","die_glocke","kecksburg1965","rs33"],
+      path:["magenta1933","die_glocke","kecksburg1965"],
+      title:"La cadena de campana rota", type:"morphological", severity:"high",
+      headline:"Tres objetos en forma de campana en tres décadas — Kecksburg no conecta con Magenta directamente",
+      analysis:"Magenta (1933) → Die Glocke (1941) → Kecksburg (1965). La cadena existe solo a través de Die Glocke. Kecksburg NO conecta directamente con Magenta. Grusch confirmó Magenta bajo juramento. Nadie ha confirmado Kecksburg bajo juramento. Es el eslabón más débil de la cadena más importante.",
+      implication:"Si alguien testificara bajo juramento conectando Kecksburg con Magenta, la cadena de custodia de 1933 a 1965 quedaría completa.",
+      confidence:"strong"
+    },
+    {
+      id:"sg6", context:["all","official","incidents"],
+      nodes:["salas","malmstrom1967","nuclear_pattern","pursue_r01"],
+      path:["salas","malmstrom1967","nuclear_pattern","pursue_r01"],
+      title:"Salas→Nuclear→PURSUE: 59 años de hilo directo", type:"bridge", severity:"high",
+      headline:"El Capitán Salas (1967) conecta con PURSUE Release 01 (2026) a través del Patrón Nuclear",
+      analysis:"El camino salas→malmstrom1967→nuclear_pattern→pursue_r01 es el único hilo que conecta un testimonio militar de 1967 con la desclasificación de 2026. nuclear_pattern tiene betweenness=222.9. Pero la anomalía más profunda: nuclear_pattern NO conecta con die_glocke ni con magenta1933. La firma morfológica de campana y la vigilancia nuclear son dos clusters separados.",
+      implication:"El Release 02 podría ser el primer documento que conecte explícitamente el patrón nuclear con morfología específica de objeto.",
+      confidence:"strong"
+    },
+    {
+      id:"sg7", context:["all","persons"],
+      nodes:["juan23","enoc","tsm","vaticano"],
+      path:["juan23","enoc","tsm"],
+      title:"Juan XXIII→Enoc→Soulwatchers: el papa como precursor", type:"bridge", severity:"medium",
+      headline:"Juan XXIII (contacto NHI 1961) conecta con Soulwatchers 2026 solo a través del Libro de Enoc",
+      analysis:"Juan XXIII tiene degree=2 y clustering=0.0. Su única ruta hacia la modernidad pasa por Enoc. El papa que convocó el Concilio Vaticano II tuvo un contacto NHI reportado en 1961 y murió en 1963 sin revelarlo. Soulwatchers incorpora ontología de pueblos originarios estructuralmente equivalente a la cosmología enóquica. Ninguno cita al otro.",
+      implication:"Si el Vaticano abriera los archivos de Juan XXIII, Soulwatchers tendría el precedente institucional más alto de la historia.",
+      confidence:"speculative"
+    },
+    {
+      id:"sg8", context:["all","official","programs"],
+      nodes:["davis","wilson_memo","imm_constellation","puthoff","grusch"],
+      path:["davis","wilson_memo","imm_constellation","grusch"],
+      title:"Memo Wilson-Davis: el material está en manos privadas", type:"gap", severity:"critical",
+      headline:"El único documento filtrado que establece que contratistas privados controlan material NHI",
+      analysis:"La cadena Davis→wilson_memo→imm_constellation→grusch es el esqueleto documental del mayor encubrimiento moderno. El Almirante Wilson fue bloqueado con 'no tienes necesidad de saber' — fórmula para los programas más clasificados. Si un almirante de cuatro estrellas y ex director de la DIA fue bloqueado, el nivel de clasificación supera cualquier estructura de supervisión democrática conocida.",
+      implication:"Los 'holdings empíricos sustantivos' de Grusch están probablemente en instalaciones privadas — no en instalaciones gubernamentales auditables.",
+      confidence:"strong"
+    },
   ],
   en: [
-    { id:"sg1", title:"Kammler: the ghost node", type:"gap", severity:"critical", nodes:["kammler","die_glocke","paperclip","vonbraun","kecksburg1965"], headline:"The only actor with perfect clustering (0.6) and zero post-war record", analysis:"Hans Kammler has the highest local density in the graph — his neighbors are highly interconnected — but irrelevant betweenness (5.6). This suggests his connections were designed to be self-sufficient without him. They don't need Kammler to communicate. Yet he's the only node with total documentary absence post-1945. His disappearance is the only gap in a custody chain running continuously from Magenta (1933) to Roswell (1947).", implication:"If Kammler negotiated immunity, someone holds his file. That file would connect Die Glocke to the American reverse-engineering program.", confidence:"strong" },
-    { id:"sg2", title:"Rosin: 46-year bridge with zero betweenness", type:"paradox", severity:"critical", nodes:["rosin","vonbraun","y2027"], headline:"The only node connecting post-war Nazi science to the 2027 horizon", analysis:"Rosin has degree=2 and clustering=0.0 — pure linear node. Her only role: bridge between Von Braun (1977) and the 2027 Threshold. The content is explosive: Von Braun told her the sequence of fabricated threats would culminate in 'extraterrestrials'. The same man who said 'we had help from them'. These two Von Braun statements are not connected to each other in the graph — they belong to different clusters.", implication:"Von Braun's warning to Rosin about the 'fake ET threat' becomes maximally relevant exactly in 2026-2027.", confidence:"verified" },
-    { id:"sg3", title:"Pius XII: the impossible intersection", type:"bridge", severity:"critical", nodes:["pio12","magenta1933","vaticano","paperclip"], headline:"Only node where Vatican intelligence, Italian fascism and American intelligence converge in one person", analysis:"Pius XII connects Magenta 1933, the Vatican and Operation Paperclip. None of these three entities connect to each other without going through him. The transfer of the Magenta craft to the Americans structurally depended on a single individual. Had he decided otherwise, the custody chain of the only documented pre-Roswell NHI craft would have broken.", implication:"The Sol Foundation requesting Vatican access in 2024 is no coincidence — they're looking for the intermediary's archive.", confidence:"strong" },
-    { id:"sg4", title:"Enoch: 2,326 years of direct connection", type:"temporal", severity:"high", nodes:["enoc","vaticano","aurora_pilot","tsm"], headline:"The Book of Enoch (-300 BC) connects Aurora Pilot (1897), Vatican (1933) and Soulwatchers (2026)", analysis:"Enoch has clustering=0.167 and betweenness=41.8 for only 4 connections. It connects clusters that would otherwise be completely disconnected. The Aurora Pilot (1897) has no path to the Vatican without going through Enoch. Soulwatchers (2026) has no path to the Aurora Pilot without Enoch. The text suppressed from the Christian canon is the only node maintaining continuity between antiquity and the modern era.", implication:"If the Watchers narrative describes real NHI contact, its suppression is history's longest cover-up operation.", confidence:"speculative" },
-    { id:"sg5", title:"The broken bell-shape chain", type:"morphological", severity:"high", nodes:["magenta1933","die_glocke","kecksburg1965","rs33"], headline:"Three bell-shaped objects across three decades — Kecksburg doesn't connect directly to Magenta", analysis:"Magenta (1933) → Die Glocke (1941) → Kecksburg (1965). The chain only exists through Die Glocke. Kecksburg does NOT directly connect to Magenta. Grusch confirmed Magenta under oath. Nobody has confirmed Kecksburg under oath. It is the weakest link in the most important chain.", implication:"If someone testified under oath connecting Kecksburg to Magenta, the 1933-1965 custody chain would be complete.", confidence:"strong" },
-    { id:"sg6", title:"Salas→Nuclear→PURSUE: 59 years of direct thread", type:"bridge", severity:"high", nodes:["salas","malmstrom1967","nuclear_pattern","pursue_r01"], headline:"Captain Salas (1967) connects to PURSUE Release 01 (2026) through the Nuclear Pattern", analysis:"The path salas→malmstrom1967→nuclear_pattern→pursue_r01 is the only thread connecting a 1967 military testimony to the 2026 declassification. nuclear_pattern has betweenness=222.9. But the deepest anomaly: nuclear_pattern does NOT connect to die_glocke or magenta1933. The bell-shaped morphological signature and nuclear surveillance are two separate clusters.", implication:"Release 02 could be the first document explicitly connecting the nuclear pattern to specific object morphology.", confidence:"strong" },
-    { id:"sg7", title:"John XXIII→Enoch→Soulwatchers: the pope as precursor", type:"bridge", severity:"medium", nodes:["juan23","enoc","tsm","vaticano"], headline:"John XXIII (NHI contact 1961) connects to Soulwatchers 2026 only through the Book of Enoch", analysis:"John XXIII has degree=2 and clustering=0.0. His only route to modernity goes through Enoch. The pope who convened Vatican II had a reported NHI contact in 1961 and died in 1963 without revealing it. Soulwatchers incorporates indigenous ontology structurally equivalent to Enochian cosmology. Neither cites the other.", implication:"If the Vatican opened John XXIII's archives, Soulwatchers would have history's highest institutional precedent.", confidence:"speculative" },
-    { id:"sg8", title:"Wilson-Davis Memo: NHI material in private hands", type:"gap", severity:"critical", nodes:["davis","wilson_memo","imm_constellation","puthoff","grusch"], headline:"The only leaked document establishing that private contractors control NHI material", analysis:"The chain Davis→wilson_memo→imm_constellation→grusch is the documentary skeleton of the most significant modern cover-up. Admiral Wilson was blocked with 'you have no need to know' — a formula for the most classified programs. If a four-star admiral and former DIA Director was denied access, the classification level exceeds any known democratic oversight structure.", implication:"Grusch's 'substantive empirical holdings' are likely in private contractor facilities — not in auditable government installations.", confidence:"strong" },
+    {
+      id:"sg1", context:["all","programs"],
+      nodes:["kammler","die_glocke","paperclip","vonbraun","kecksburg1965"],
+      path:["kammler","die_glocke","paperclip","vonbraun"],
+      title:"Kammler: the ghost node", type:"gap", severity:"critical",
+      headline:"The only actor with perfect clustering (0.6) and zero post-war record",
+      analysis:"Hans Kammler has the highest local density in the graph — his neighbors are highly interconnected — but irrelevant betweenness (5.6). This suggests his connections were designed to be self-sufficient without him. They don't need Kammler to communicate. Yet he's the only node with total documentary absence post-1945. His disappearance is the only gap in a custody chain running continuously from Magenta (1933) to Roswell (1947).",
+      implication:"If Kammler negotiated immunity, someone holds his file. That file would connect Die Glocke to the American reverse-engineering program.",
+      confidence:"strong"
+    },
+    {
+      id:"sg2", context:["all","persons"],
+      nodes:["rosin","vonbraun","y2027"],
+      path:["vonbraun","rosin","y2027"],
+      title:"Rosin: 46-year bridge with zero betweenness", type:"paradox", severity:"critical",
+      headline:"The only node connecting post-war Nazi science to the 2027 horizon",
+      analysis:"Rosin has degree=2 and clustering=0.0 — pure linear node. Her only role: bridge between Von Braun (1977) and the 2027 Threshold. The content is explosive: Von Braun told her the sequence of fabricated threats would culminate in 'extraterrestrials'. The same man who said 'we had help from them'. These two Von Braun statements are not connected to each other in the graph — they belong to different clusters.",
+      implication:"Von Braun's warning to Rosin about the 'fake ET threat' becomes maximally relevant exactly in 2026-2027.",
+      confidence:"verified"
+    },
+    {
+      id:"sg3", context:["all","programs"],
+      nodes:["pio12","magenta1933","vaticano","paperclip"],
+      path:["magenta1933","pio12","vaticano","paperclip"],
+      title:"Pius XII: the impossible intersection", type:"bridge", severity:"critical",
+      headline:"Only node where Vatican intelligence, Italian fascism and American intelligence converge in one person",
+      analysis:"Pius XII connects Magenta 1933, the Vatican and Operation Paperclip. None of these three entities connect to each other without going through him. The transfer of the Magenta craft to the Americans structurally depended on a single individual. Had he decided otherwise, the custody chain of the only documented pre-Roswell NHI craft would have broken.",
+      implication:"The Sol Foundation requesting Vatican access in 2024 is no coincidence — they're looking for the intermediary's archive.",
+      confidence:"strong"
+    },
+    {
+      id:"sg4", context:["all","incidents"],
+      nodes:["enoc","vaticano","aurora_pilot","tsm"],
+      path:["enoc","aurora_pilot","vaticano","tsm"],
+      title:"Enoch: 2,326 years of direct connection", type:"temporal", severity:"high",
+      headline:"The Book of Enoch (-300 BC) connects Aurora Pilot (1897), Vatican (1933) and Soulwatchers (2026)",
+      analysis:"Enoch has clustering=0.167 and betweenness=41.8 for only 4 connections. It connects clusters that would otherwise be completely disconnected. The Aurora Pilot (1897) has no path to the Vatican without going through Enoch. Soulwatchers (2026) has no path to the Aurora Pilot without Enoch. The text suppressed from the Christian canon is the only node maintaining continuity between antiquity and the modern era.",
+      implication:"If the Watchers narrative describes real NHI contact, its suppression is history's longest cover-up operation.",
+      confidence:"speculative"
+    },
+    {
+      id:"sg5", context:["all","incidents","programs"],
+      nodes:["magenta1933","die_glocke","kecksburg1965","rs33"],
+      path:["magenta1933","die_glocke","kecksburg1965"],
+      title:"The broken bell-shape chain", type:"morphological", severity:"high",
+      headline:"Three bell-shaped objects across three decades — Kecksburg doesn't connect directly to Magenta",
+      analysis:"Magenta (1933) → Die Glocke (1941) → Kecksburg (1965). The chain only exists through Die Glocke. Kecksburg does NOT directly connect to Magenta. Grusch confirmed Magenta under oath. Nobody has confirmed Kecksburg under oath. It is the weakest link in the most important chain.",
+      implication:"If someone testified under oath connecting Kecksburg to Magenta, the 1933-1965 custody chain would be complete.",
+      confidence:"strong"
+    },
+    {
+      id:"sg6", context:["all","official","incidents"],
+      nodes:["salas","malmstrom1967","nuclear_pattern","pursue_r01"],
+      path:["salas","malmstrom1967","nuclear_pattern","pursue_r01"],
+      title:"Salas→Nuclear→PURSUE: 59 years of direct thread", type:"bridge", severity:"high",
+      headline:"Captain Salas (1967) connects to PURSUE Release 01 (2026) through the Nuclear Pattern",
+      analysis:"The path salas→malmstrom1967→nuclear_pattern→pursue_r01 is the only thread connecting a 1967 military testimony to the 2026 declassification. nuclear_pattern has betweenness=222.9. But the deepest anomaly: nuclear_pattern does NOT connect to die_glocke or magenta1933. The bell-shaped morphological signature and nuclear surveillance are two separate clusters.",
+      implication:"Release 02 could be the first document explicitly connecting the nuclear pattern to specific object morphology.",
+      confidence:"strong"
+    },
+    {
+      id:"sg7", context:["all","persons"],
+      nodes:["juan23","enoc","tsm","vaticano"],
+      path:["juan23","enoc","tsm"],
+      title:"John XXIII→Enoch→Soulwatchers: the pope as precursor", type:"bridge", severity:"medium",
+      headline:"John XXIII (NHI contact 1961) connects to Soulwatchers 2026 only through the Book of Enoch",
+      analysis:"John XXIII has degree=2 and clustering=0.0. His only route to modernity goes through Enoch. The pope who convened Vatican II had a reported NHI contact in 1961 and died in 1963 without revealing it. Soulwatchers incorporates indigenous ontology structurally equivalent to Enochian cosmology. Neither cites the other.",
+      implication:"If the Vatican opened John XXIII's archives, Soulwatchers would have history's highest institutional precedent.",
+      confidence:"speculative"
+    },
+    {
+      id:"sg8", context:["all","official","programs"],
+      nodes:["davis","wilson_memo","imm_constellation","puthoff","grusch"],
+      path:["davis","wilson_memo","imm_constellation","grusch"],
+      title:"Wilson-Davis Memo: NHI material in private hands", type:"gap", severity:"critical",
+      headline:"The only leaked document establishing that private contractors control NHI material",
+      analysis:"The chain Davis→wilson_memo→imm_constellation→grusch is the documentary skeleton of the most significant modern cover-up. Admiral Wilson was blocked with 'you have no need to know' — a formula for the most classified programs. If a four-star admiral and former DIA Director was denied access, the classification level exceeds any known democratic oversight structure.",
+      implication:"Grusch's 'substantive empirical holdings' are likely in private contractor facilities — not in auditable government installations.",
+      confidence:"strong"
+    },
   ]
 };
 
