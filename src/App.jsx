@@ -789,7 +789,28 @@ export default function UAPAtlas() {
     for (let y = 0; y < h; y += 60) grid.append("line").attr("x1",0).attr("y1",y).attr("x2",w).attr("y2",y).attr("stroke","#38bdf8");
 
     const g = svg.append("g");
-    const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => g.attr("transform", e.transform));
+    const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
+  g.attr("transform", e.transform);
+  const k = e.transform.k;
+
+  // Labels: ocultar si el nodo es demasiado pequeño en pantalla
+  g.selectAll("g.nd text:not(.yr):not(.badge-txt)").style("display", function(d) {
+    return d && nodeR(d) * k > 8 ? null : "none";
+  });
+
+  // Año: ocultar si no hay espacio real en pantalla
+  g.selectAll("g.nd text.yr").style("display", function(d) {
+    return d && nodeR(d) * k > 14 ? null : "none";
+  });
+
+  // Badge: tamaño constante en pantalla independiente del zoom
+  const s = 1 / k;
+  g.selectAll("g.nd circle.badge, g.nd text.badge-txt").attr("transform", function(d) {
+    if (!d) return "";
+    const r = nodeR(d);
+    return `translate(${r + 5}, ${-(r + 5)}) scale(${s})`;
+  });
+});
     svg.call(zoom);
 
     const nc = filteredNodes.map(n => ({ ...n, x: w/2 + (Math.random()-.5)*w*.5, y: h/2 + (Math.random()-.5)*h*.5 }));
@@ -858,13 +879,17 @@ ng.filter(d => srcCount(d) > 0).append("circle")
   .attr("r", 5.5).attr("fill", "#0d1117")
   .attr("stroke", d => hasOfficial(d) ? "#34d399" : "#fb923c")
   .attr("stroke-width", 1.2)
-  .attr("cx", d => nodeR(d) + 5).attr("cy", d => -(nodeR(d) + 5));
+  .attr("cx", 0).attr("cy", 0)
+  .attr("class", "badge")
+  .attr("transform", d => `translate(${nodeR(d) + 5}, ${-(nodeR(d) + 5)})`);
 ng.filter(d => srcCount(d) > 0).append("text")
   .text(d => srcCount(d))
   .attr("text-anchor", "middle")
-  .attr("x", d => nodeR(d) + 5).attr("y", d => -(nodeR(d) + 5) + 3.5)
+  .attr("x", 0).attr("y", 3.5)
   .attr("fill", "#e8edf3").attr("font-size", "7px")
-  .attr("font-family", "JetBrains Mono, monospace").attr("pointer-events", "none");
+  .attr("font-family", "JetBrains Mono, monospace").attr("pointer-events", "none")
+  .attr("class", "badge-txt")
+  .attr("transform", d => `translate(${nodeR(d) + 5}, ${-(nodeR(d) + 5)})`);
     
     // Label — two lines when density is low enough
     if (params.nodeScale >= 1.35) {
@@ -915,7 +940,7 @@ ng.filter(d => srcCount(d) > 0).append("text")
     }
 
     // Year — solo si el nodo tiene espacio suficiente
-ng.filter(d => nodeR(d) >= 9).append("text")
+ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
   .text(d => d.year < 0 ? `~${Math.abs(d.year)}${lang==="es"?"aC":"BC"}` : d.year)
   .attr("text-anchor", "middle").attr("dy", "0.35em")
   .attr("fill", d => CAT_COLORS[d.cat] + "bb")
@@ -1649,6 +1674,7 @@ ng.filter(d => nodeR(d) >= 9).append("text")
     </>
   );
 }
+
 
 
 
