@@ -304,10 +304,23 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
       <div class="header-sub">Panel interno · acceso restringido</div>
     </div>
     <span class="header-badge"><span class="badge-dot"></span> 77 nodos · 318 conexiones · v4.2</span>
-    <div class="header-right">
-      <span class="user-badge" id="userBadge"></span>
-      <button class="logout-btn" onclick="doLogout()">Salir</button>
+<div class="header-right">
+  <span class="user-badge" id="userBadge"></span>
+  <div style="display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;align-items:center;gap:6px">
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-..." 
+        style="width:200px;height:26px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-secondary);font-family:var(--font-mono);font-size:10px;padding:0 8px;outline:none;"
+        oninput="saveApiKey(this.value)"
+        onfocus="this.style.borderColor='var(--border-accent)'"
+        onblur="this.style.borderColor='var(--border)'"/>
+      <button class="logout-btn" onclick="clearApiKey()" title="Borrar key">✕</button>
     </div>
+    <div style="font-family:var(--font-mono);font-size:9px;color:var(--danger);letter-spacing:0.04em">
+      ⚠ Borra siempre la key al salir de la sesión
+    </div>
+  </div>
+  <button class="logout-btn" onclick="doLogout()">Salir</button>
+</div>
   </header>
 
   <nav class="nav">
@@ -637,10 +650,23 @@ function doLogin() {
   }
 }
 function doLogout() {
+  clearApiKey();
   sessionStorage.removeItem('uap_tools_auth');
   sessionStorage.removeItem('uap_tools_user');
   location.reload();
 }
+
+function saveApiKey(val) {
+  window._anthropicKey = val;
+}
+function clearApiKey() {
+  window._anthropicKey = '';
+  document.getElementById('apiKeyInput').value = '';
+}
+function getApiKey() {
+  return window._anthropicKey || '';
+}
+
 // Check session on load
 window.addEventListener('load', () => {
   const auth = sessionStorage.getItem('uap_tools_auth');
@@ -716,7 +742,12 @@ async function runEditorial() {
   document.getElementById('editOutput').innerHTML = `<div class="loading"><div class="spinner"></div><div class="loading-text">Evaluando contra ${ATLAS_CONTEXT.totalNodes} nodos...</div></div>`;
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
+      method:'POST', headers:{
+  'Content-Type':'application/json',
+  'x-api-key': getApiKey(),
+  'anthropic-version': '2023-06-01',
+  'anthropic-dangerous-direct-browser-access': 'true'
+},
       body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:4000, system:SYSTEM_PROMPT, messages:[{role:'user',content:input}] })
     });
     const data = await res.json();
@@ -856,7 +887,12 @@ async function runMonitor() {
   el.innerHTML = '<span style="color:var(--text-muted)">Consultando war.gov...</span>';
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
+      method:'POST', headers:{
+  'Content-Type':'application/json',
+  'x-api-key': getApiKey(),
+  'anthropic-version': '2023-06-01',
+  'anthropic-dangerous-direct-browser-access': 'true'
+},
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514', max_tokens:1000,
         messages:[{role:'user',content:`Fetch https://www.war.gov/UFO/ and extract all PR numbers visible in slideshow image filenames. Return ONLY a JSON array of strings like ["PR19","PR28",...]. No markdown, no explanation.`}],
@@ -1153,7 +1189,12 @@ Responde SOLO JSON (sin markdown):
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
+      method:'POST', headers:{
+  'Content-Type':'application/json',
+  'x-api-key': getApiKey(),
+  'anthropic-version': '2023-06-01',
+  'anthropic-dangerous-direct-browser-access': 'true'
+},
       body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:6000, messages:[{role:'user',content:gunsPrompt}] })
     });
     const data = await res.json();
@@ -1281,4 +1322,3 @@ ${enBlock},`;
 </script>
 </body>
 </html>
-
