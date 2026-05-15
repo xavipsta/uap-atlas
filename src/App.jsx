@@ -793,23 +793,41 @@ export default function UAPAtlas() {
   g.attr("transform", e.transform);
   const k = e.transform.k;
 
-  // Labels: ocultar si el nodo es demasiado pequeño en pantalla
-  g.selectAll("g.nd text:not(.yr):not(.badge-txt)").style("display", function(d) {
-    return d && nodeR(d) * k > 8 ? null : "none";
-  });
+  // ── LABELS: font-size constante en pantalla (mín 8px, máx 13px) ──
+  const labelPx = Math.min(13, Math.max(8, params.labelSize));
+  g.selectAll("g.nd text:not(.yr):not(.badge-txt)")
+    .style("display", function(d) {
+      return d && nodeR(d) * k > 6 ? null : "none";
+    })
+    .attr("font-size", `${labelPx / k}px`);
 
-  // Año: ocultar si no hay espacio real en pantalla
-  g.selectAll("g.nd text.yr").style("display", function(d) {
-    return d && nodeR(d) * k > 14 ? null : "none";
-  });
+  // ── AÑO: centrado, font-size constante (mín 6px, máx 9px) ──
+  const yearPx = Math.min(9, Math.max(6, params.yearSize));
+  g.selectAll("g.nd text.yr")
+    .style("display", function(d) {
+      return d && nodeR(d) * k > 10 ? null : "none";
+    })
+    .attr("font-size", `${yearPx / k}px`)
+    .attr("dy", "0.35em");
 
-  // Badge: tamaño constante en pantalla independiente del zoom
-  const s = Math.min(1, 1 / k);
-g.selectAll("g.nd circle.badge, g.nd text.badge-txt").attr("transform", function(d) {
-  if (!d) return "";
-  const r = nodeR(d);
-  return `translate(${r + 5}, ${-(r + 5)}) scale(${s})`;
-  });
+  // ── BADGE: escala proporcional con límites (mín 4px, máx 7px en pantalla) ──
+  const badgeR = Math.min(7, Math.max(4, 5.5 * k)) / k;
+  const badgeFontPx = Math.min(8, Math.max(5, 7 * k)) / k;
+  g.selectAll("g.nd circle.badge")
+    .attr("r", badgeR)
+    .attr("transform", function(d) {
+      if (!d) return "";
+      const r = nodeR(d);
+      return `translate(${r + badgeR + 2}, ${-(r + badgeR + 2)})`;
+    });
+  g.selectAll("g.nd text.badge-txt")
+    .attr("font-size", `${badgeFontPx}px`)
+    .attr("y", badgeR * 0.4)
+    .attr("transform", function(d) {
+      if (!d) return "";
+      const r = nodeR(d);
+      return `translate(${r + badgeR + 2}, ${-(r + badgeR + 2)})`;
+    });
 });
     svg.call(zoom);
 
@@ -859,14 +877,25 @@ g.selectAll("g.nd circle.badge, g.nd text.badge-txt").attr("transform", function
       .attr("stroke-dasharray", d => hasOfficial(d) ? "none" : hasSrc(d) ? "none" : "3,3")
       .attr("class", "ev-ring");
 
-    // Main circle
-    ng.append("circle")
-      .attr("r", d => nodeR(d))
-      .attr("fill", d => CAT_COLORS[d.cat] + "1a")
-      .attr("stroke", d => CAT_COLORS[d.cat])
-      .attr("stroke-width", 1.5)
-      .style("filter", "url(#glow)")
-      .attr("class", "ic");
+    // Gradiente radial por categoría — uno por nodo
+ng.each(function(d) {
+  const gradId = `rg-${d.id}`;
+  const grad = defs.append("radialGradient")
+    .attr("id", gradId)
+    .attr("cx", "35%").attr("cy", "35%")
+    .attr("r", "65%");
+  grad.append("stop").attr("offset", "0%")
+    .attr("stop-color", CAT_COLORS[d.cat]).attr("stop-opacity", 0.18);
+  grad.append("stop").attr("offset", "100%")
+    .attr("stop-color", CAT_COLORS[d.cat]).attr("stop-opacity", 0.04);
+  d3.select(this).append("circle")
+    .attr("r", nodeR(d))
+    .attr("fill", `url(#${gradId})`)
+    .attr("stroke", CAT_COLORS[d.cat])
+    .attr("stroke-width", 1.5)
+    .style("filter", "url(#glow)")
+    .attr("class", "ic");
+});
 
     // Source badge — FUERA del anillo exterior
 ng.filter(d => srcCount(d) > 0).append("circle")
@@ -1668,13 +1697,6 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
     </>
   );
 }
-
-
-
-
-
-
-
 
 
 
