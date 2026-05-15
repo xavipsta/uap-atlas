@@ -853,19 +853,19 @@ export default function UAPAtlas() {
       .attr("fill", d => CAT_COLORS[d.cat])
       .attr("class", "cd");
 
-    // Source badge
-    ng.filter(d => srcCount(d) > 0).append("circle")
-      .attr("r", 5.5).attr("fill", "#0d1117")
-      .attr("stroke", d => hasOfficial(d) ? "#34d399" : "#fb923c")
-      .attr("stroke-width", 1.2)
-      .attr("cx", d => nodeR(d) * 0.72).attr("cy", d => -nodeR(d) * 0.72);
-    ng.filter(d => srcCount(d) > 0).append("text")
-      .text(d => srcCount(d))
-      .attr("text-anchor", "middle")
-      .attr("x", d => nodeR(d) * 0.72).attr("y", d => -nodeR(d) * 0.72 + 3.5)
-      .attr("fill", "#e8edf3").attr("font-size", "7px")
-      .attr("font-family", "JetBrains Mono, monospace").attr("pointer-events", "none");
-
+    // Source badge — FUERA del anillo exterior
+ng.filter(d => srcCount(d) > 0).append("circle")
+  .attr("r", 5.5).attr("fill", "#0d1117")
+  .attr("stroke", d => hasOfficial(d) ? "#34d399" : "#fb923c")
+  .attr("stroke-width", 1.2)
+  .attr("cx", d => nodeR(d) + 5).attr("cy", d => -(nodeR(d) + 5));
+ng.filter(d => srcCount(d) > 0).append("text")
+  .text(d => srcCount(d))
+  .attr("text-anchor", "middle")
+  .attr("x", d => nodeR(d) + 5).attr("y", d => -(nodeR(d) + 5) + 3.5)
+  .attr("fill", "#e8edf3").attr("font-size", "7px")
+  .attr("font-family", "JetBrains Mono, monospace").attr("pointer-events", "none");
+    
     // Label — two lines when density is low enough
     if (params.nodeScale >= 1.35) {
       // Low density: try to show full label, wrap if needed
@@ -914,14 +914,14 @@ export default function UAPAtlas() {
         .attr("pointer-events", "none");
     }
 
-    // Year
-    ng.append("text")
-      .text(d => d.year < 0 ? `~${Math.abs(d.year)}${lang==="es"?"aC":"BC"}` : d.year)
-      .attr("text-anchor", "middle").attr("dy", "0.35em")
-      .attr("fill", d => CAT_COLORS[d.cat] + "bb")
-      .attr("font-size", `${params.yearSize}px`)
-      .attr("font-family", "JetBrains Mono, monospace")
-      .attr("pointer-events", "none");
+    // Year — solo si el nodo tiene espacio suficiente
+ng.filter(d => nodeR(d) >= 16).append("text")
+  .text(d => d.year < 0 ? `~${Math.abs(d.year)}${lang==="es"?"aC":"BC"}` : d.year)
+  .attr("text-anchor", "middle").attr("dy", "0.35em")
+  .attr("fill", d => CAT_COLORS[d.cat] + "bb")
+  .attr("font-size", `${params.yearSize}px`)
+  .attr("font-family", "JetBrains Mono, monospace")
+  .attr("pointer-events", "none");
 
     // Tooltip
     ng.append("title").text(d => {
