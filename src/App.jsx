@@ -915,7 +915,7 @@ ng.filter(d => srcCount(d) > 0).append("text")
     }
 
     // Year — solo si el nodo tiene espacio suficiente
-ng.filter(d => nodeR(d) >= 16).append("text")
+ng.filter(d => nodeR(d) >= 9).append("text")
   .text(d => d.year < 0 ? `~${Math.abs(d.year)}${lang==="es"?"aC":"BC"}` : d.year)
   .attr("text-anchor", "middle").attr("dy", "0.35em")
   .attr("fill", d => CAT_COLORS[d.cat] + "bb")
