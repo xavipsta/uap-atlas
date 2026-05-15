@@ -748,7 +748,7 @@ async function runEditorial() {
   'anthropic-version': '2023-06-01',
   'anthropic-dangerous-direct-browser-access': 'true'
 },
-      body: JSON.stringify({ model:'claude-sonnet-4-5-20251001', max_tokens:4000, system:SYSTEM_PROMPT, messages:[{role:'user',content:input}] })
+      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:4000, system:SYSTEM_PROMPT, messages:[{role:'user',content:input}] })
     });
     const data = await res.json();
     const text = data.content?.find(b=>b.type==='text')?.text || '';
@@ -894,7 +894,7 @@ async function runMonitor() {
   'anthropic-dangerous-direct-browser-access': 'true'
 },
       body: JSON.stringify({
-        model:'claude-sonnet-4-5-20251001', max_tokens:1000,
+        model:'claude-haiku-4-5-20251001', max_tokens:1000,
         messages:[{role:'user',content:`Fetch https://www.war.gov/UFO/ and extract all PR numbers visible in slideshow image filenames. Return ONLY a JSON array of strings like ["PR19","PR28",...]. No markdown, no explanation.`}],
         tools:[{type:'web_search_20250305',name:'web_search'}]
       })
@@ -1195,7 +1195,7 @@ Responde SOLO JSON (sin markdown):
   'anthropic-version': '2023-06-01',
   'anthropic-dangerous-direct-browser-access': 'true'
 },
-      body: JSON.stringify({ model:'claude-sonnet-4-5-20251001', max_tokens:6000, messages:[{role:'user',content:gunsPrompt}] })
+      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:6000, messages:[{role:'user',content:gunsPrompt}] })
     });
     const data = await res.json();
     const text = data.content?.find(b=>b.type==='text')?.text || '';
