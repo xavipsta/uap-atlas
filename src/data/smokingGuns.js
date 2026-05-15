@@ -1,5 +1,5 @@
 // ─── UAP ATLAS — SMOKING GUNS DATA ─────────────────────────────────────────
-// v4.4 · 8 pistolas humeantes con campos context y path para visualización
+// v4.5 · 16 pistolas humeantes con campos context y path para visualización
 // Estructura: { es: [...], en: [...] } — mismos IDs en ambos idiomas
 
 export const SMOKING_GUNS = {
@@ -84,6 +84,86 @@ export const SMOKING_GUNS = {
       implication:"Los 'holdings empíricos sustantivos' de Grusch están probablemente en instalaciones privadas — no en instalaciones gubernamentales auditables.",
       confidence:"strong"
     },
+    {
+      id:"sg9", context:["all"],
+      nodes:["grusch","legacy_program","congress2023"],
+      path:["grusch","legacy_program","congress2023"],
+      title:"Grusch: betweenness máximo sin acceso documentado a legacy_program", type:"gap", severity:"critical",
+      headline:"El testigo con mayor centralidad en la red (b=588.0) carece de documentación clasificada verificable del programa que denuncia",
+      analysis:"Grusch exhibe el betweenness más alto del grafo (588.0), conectando 47+ nodos. Sin embargo, su acceso documentado a legacy_program (b=198.0) está limitado a testimonio oral en congress2023 (b=122.4). La anomalía: máxima influencia de red sin artefactos primarios verificables que sostengan su centralidad.",
+      implication:"O existe documentación clasificada que no ha sido revelada, o la credibilidad de Grusch como nodo puente depende de corroboración indirecta que no aparece en el grafo documentado.",
+      confidence:"verified"
+    },
+    {
+      id:"sg10", context:["all"],
+      nodes:["nuclear_pattern","malmstrom1967","salas"],
+      path:["nuclear_pattern","malmstrom1967","salas"],
+      title:"Nuclear_pattern: conceptualización tardía de incidente 1967 ya documentado", type:"morphological", severity:"high",
+      headline:"El patrón nuclear emerge como concepto de alto betweenness 55 años después del incidente de Malmstrom, mediado por testigo único",
+      analysis:"malmstrom1967 (b=78.4) ocurrió en 1967; nuclear_pattern (b=222.0) se conceptualiza post-2020 en literatura UAP; ambos conectan a través de salas (b=89.3, único testigo nuclear documentado). La lag temporal de conceptualización sugiere que los datos brutos del 67 no fueron integrados en matriz analítica hasta presión externa.",
+      implication:"Existe un desfase de 53 años entre generación de evento y su integración en framework conceptual, indicando retención sistemática de correlaciones o falta de linaje documental entre incidente y patrón.",
+      confidence:"verified"
+    },
+    {
+      id:"sg11", context:["all"],
+      nodes:["wilson_memo","davis","fravor"],
+      path:["wilson_memo","davis","fravor"],
+      title:"Wilson_memo: intermediario documental entre Davis y Fravor sin cadena de custodia", type:"gap", severity:"critical",
+      headline:"Documento conecta fuente privada (Davis, b=72.4) con testigo militar (Fravor, b=156.7) sin camino verificable de transmisión",
+      analysis:"wilson_memo (b=98.7) es nodo puente entre davis (b=72.4, fuente privada de material clasificado) y fravor (b=156.7, testigo Nimitz 2004 de credibilidad alta). No existe arista documental que registre cómo datos del memo alcanzaron a Fravor o confirmación de que Fravor haya accedido al memo.",
+      implication:"O existe canal de transmisión documental no registrado entre Davis y Fravor, o ambos describen el mismo evento sin conocimiento cruzado, sugiriendo red clandestina de distribución de material clasificado.",
+      confidence:"strong"
+    },
+    {
+      id:"sg12", context:["all"],
+      nodes:["paperclip","vonbraun","legacy_program"],
+      path:["paperclip","vonbraun","legacy_program"],
+      title:"Von Braun: continuidad de custodia Paperclip→Legacy sin documentación de transición", type:"bridge", severity:"high",
+      headline:"Arquitecto de Paperclip (Von Braun, b=134.5) conecta a legacy_program pero no existe registro de briefing formal",
+      analysis:"paperclip (b=112.4, 1945-1973) estructura que captura Von Braun (b=134.5); legacy_program (b=198.0, post-1990s) es aparente sucesor institucional. Von Braun muere 1972; legacy_program formalización ocurre 20+ años después sin documentación de briefing o transferencia de conocimiento entre personas clave.",
+      implication:"Existe ruptura institucional de 20 años en custodia de conocimiento crítico, o legacy_program opera sin continuidad documentada de Paperclip, sugiriendo programa paralelo no conectado formalmente al linaje histórico.",
+      confidence:"verified"
+    },
+    {
+      id:"sg13", context:["all"],
+      nodes:["rendlesham1980","halt","nyt2017"],
+      path:["rendlesham1980","halt","nyt2017"],
+      title:"Halt: 37 años de silencio antes de validación mediática", type:"temporal", severity:"high",
+      headline:"Testigo Halt (b=41.2) del incidente Rendlesham (1980) no corrobora públicamente su relato hasta NYT 2017, con gap de 37 años",
+      analysis:"Halt estuvo presente en Rendlesham 1980 (documentó en diarios, clasificado); permaneció en silencio público hasta 2010s; validación mediática ocurre 2017 vía NYT. El betweenness de Halt (41.2) es bajo comparado con testigos Fravor (156.7), indicando que la centralidad llegó tardíamente tras presión externa.",
+      implication:"Protocolo de silencio formal o autocensura durante 37 años, o confirmación tardía refleja cambio de cálculo político post-2015 que permite revelación de incidentes anteriores sin daño clasificatorio.",
+      confidence:"verified"
+    },
+    {
+      id:"sg14", context:["all"],
+      nodes:["imm_constellation","farah_dan","aatip"],
+      path:["imm_constellation","farah_dan","aatip"],
+      title:"Farah_dan: alta centralidad sin rol institucional verificable en AATIP o Immaculate Constellation", type:"paradox", severity:"high",
+      headline:"Actor privado con betweenness (134.0) equivalente a Stratton y Puthoff pero sin posición formal documentada en programas que media",
+      analysis:"farah_dan (b=134.0) conecta imm_constellation (b=142.0) y aatip (b=145.6). No existe documento público que verifique rol de Farah-Dan en AATIP; participación en Immaculate Constellation es extraoficial o bajo clasificación. Su centralidad supera a actores con décadas de carrera institucional verificable.",
+      implication:"Farah-Dan opera como nodo puente informal entre programas oficiales y privados sin transparencia de función, sugiriendo red paralela de coordinación fuera de estructura institucional visible.",
+      confidence:"strong"
+    },
+    {
+      id:"sg15", context:["all"],
+      nodes:["disclosure2001","vaticano","pio12"],
+      path:["disclosure2001","vaticano","pio12"],
+      title:"Pío XII: arista con Disclosure2001 sin explicación temporal (fallecido 43 años antes)", type:"paradox", severity:"critical",
+      headline:"Persona fallecida en 1958 mantiene betweenness (44.3) comparable a testigos vivos conectado con evento de 2001",
+      analysis:"pio12 muere 1958; disclosure2001 ocurre 2001 (b=33.2); arista entre ambos asume influencia póstuma o retrocálculo a través de vaticano (b=67.8). Sin documentación de que Pío XII fue informado sobre UAP, la arista refleja historiografía especulativa insertada sin base factual verificable.",
+      implication:"O existe documentación clasificada de briefing a Pío XII (1945-1958) que conecta al evento 2001, o la arista es historiografía retrospectiva que debe revisarse editorialmente.",
+      confidence:"speculative"
+    },
+    {
+      id:"sg16", context:["all"],
+      nodes:["edicion_retroactiva","congress2023","nyt2017"],
+      path:["edicion_retroactiva","congress2023","nyt2017"],
+      title:"Edición_retroactiva: concepto de alto betweenness sin artefactos primarios verificables", type:"contradiction", severity:"critical",
+      headline:"Nodo conceptual (b=122.6) denota práctica de revisión histórica documentada pero sin casos específicos de retocado probados",
+      analysis:"edicion_retroactiva (b=122.6) conecta congress2023 (b=122.4) y nyt2017 (b=88.9). Ambos eventos mencionan discrepancias documentales, pero no existe especificación de qué documentos fueron alterados, cuándo, o por qué entidad. El concepto opera como explicación universal sin instanciación verificable.",
+      implication:"El concepto de 'edición retroactiva' es usado como artefacto narrativo para explicar inconsistencias sin proporcionar casos probados, permitiendo descalificar documentación oficial sin falsabilidad verificable.",
+      confidence:"strong"
+    },
   ],
   en: [
     {
@@ -164,6 +244,86 @@ export const SMOKING_GUNS = {
       headline:"The only leaked document establishing that private contractors control NHI material",
       analysis:"The chain Davis→wilson_memo→imm_constellation→grusch is the documentary skeleton of the most significant modern cover-up. Admiral Wilson was blocked with 'you have no need to know' — a formula for the most classified programs. If a four-star admiral and former DIA Director was denied access, the classification level exceeds any known democratic oversight structure.",
       implication:"Grusch's 'substantive empirical holdings' are likely in private contractor facilities — not in auditable government installations.",
+      confidence:"strong"
+    },
+    {
+      id:"sg9", context:["all"],
+      nodes:["grusch","legacy_program","congress2023"],
+      path:["grusch","legacy_program","congress2023"],
+      title:"Grusch: Maximum betweenness without documented access to legacy_program", type:"gap", severity:"critical",
+      headline:"The witness with highest network centrality (b=588.0) lacks verifiable classified documentation of the program he alleges",
+      analysis:"Grusch exhibits maximum graph betweenness (588.0), connecting 47+ nodes. Yet his documented access to legacy_program (b=198.0) is limited to oral testimony in congress2023 (b=122.4). Anomaly: maximum network influence without primary artifacts that verify his centrality.",
+      implication:"Either classified documentation exists unrevealed, or Grusch's credibility as network bridge depends on indirect corroboration absent from documented graph.",
+      confidence:"verified"
+    },
+    {
+      id:"sg10", context:["all"],
+      nodes:["nuclear_pattern","malmstrom1967","salas"],
+      path:["nuclear_pattern","malmstrom1967","salas"],
+      title:"Nuclear_pattern: Late conceptualization of 1967 documented incident", type:"morphological", severity:"high",
+      headline:"Nuclear pattern emerges as high-betweenness concept 55 years after Malmstrom incident, mediated by single witness",
+      analysis:"malmstrom1967 (b=78.4) occurred 1967; nuclear_pattern (b=222.0) conceptualized post-2020 in UAP literature; both connect via salas (b=89.3, sole documented nuclear witness). Lag between event generation and analytical framework integration suggests systematic retention of correlations or missing documentary lineage.",
+      implication:"53-year delay between incident generation and framework conceptualization indicates systematic withholding of correlations or broken documentary chain between incident and pattern.",
+      confidence:"verified"
+    },
+    {
+      id:"sg11", context:["all"],
+      nodes:["wilson_memo","davis","fravor"],
+      path:["wilson_memo","davis","fravor"],
+      title:"Wilson_memo: Documentary intermediary between Davis and Fravor without chain of custody", type:"gap", severity:"critical",
+      headline:"Document connects private source (Davis, b=72.4) with military witness (Fravor, b=156.7) without verified transmission pathway",
+      analysis:"wilson_memo (b=98.7) bridges davis (b=72.4, private source of classified material) and fravor (b=156.7, credible Nimitz 2004 witness). No documentary edge records how memo data reached Fravor or confirmation Fravor accessed memo.",
+      implication:"Either undocumented transmission channel exists between Davis and Fravor, or both describe identical event independently, suggesting narrative infiltration or clandestine classified material distribution network.",
+      confidence:"strong"
+    },
+    {
+      id:"sg12", context:["all"],
+      nodes:["paperclip","vonbraun","legacy_program"],
+      path:["paperclip","vonbraun","legacy_program"],
+      title:"Von Braun: Paperclip→Legacy_program continuity undocumented", type:"bridge", severity:"high",
+      headline:"Paperclip architect (Von Braun, b=134.5) connects to legacy_program but no formal briefing record exists",
+      analysis:"paperclip (b=112.4, 1945-1973) structures Von Braun (b=134.5); legacy_program (b=198.0, post-1990s) is apparent institutional successor. Von Braun dies 1972; legacy_program formalization occurs 20+ years later without documented briefing or knowledge transfer among key personnel.",
+      implication:"20-year institutional custody gap exists, or legacy_program operates without formal Paperclip continuity, suggesting parallel program disconnected from documented historical lineage.",
+      confidence:"verified"
+    },
+    {
+      id:"sg13", context:["all"],
+      nodes:["rendlesham1980","halt","nyt2017"],
+      path:["rendlesham1980","halt","nyt2017"],
+      title:"Halt: 37-year silence before media validation", type:"temporal", severity:"high",
+      headline:"Witness Halt (b=41.2) from Rendlesham (1980) does not publicly corroborate account until NYT 2017, 37-year gap",
+      analysis:"Halt present at Rendlesham 1980 (documented in classified journals); remained public-silent until 2010s; media validation via NYT 2017. Halt's betweenness (41.2) ranks low versus Fravor (156.7), indicating centrality achieved late post-external pressure.",
+      implication:"Formal silence protocol or self-censorship over 37 years, or late confirmation reflects post-2015 political calculation permitting previous-incident revelation without classification damage.",
+      confidence:"verified"
+    },
+    {
+      id:"sg14", context:["all"],
+      nodes:["imm_constellation","farah_dan","aatip"],
+      path:["imm_constellation","farah_dan","aatip"],
+      title:"Farah_dan: High-centrality node without verified institutional role in AATIP or Immaculate Constellation", type:"paradox", severity:"high",
+      headline:"Private actor with betweenness (134.0) equivalent to Stratton and Puthoff but no documented formal position",
+      analysis:"farah_dan (b=134.0) connects imm_constellation (b=142.0) and aatip (b=145.6). No public document verifies Farah-Dan's AATIP role; Immaculate Constellation participation is unofficial or under classification. His centrality exceeds actors with decades of verifiable institutional career.",
+      implication:"Farah-Dan operates as informal bridge node between official and private programs without transparent function, suggesting parallel coordination network outside visible institutional structure.",
+      confidence:"strong"
+    },
+    {
+      id:"sg15", context:["all"],
+      nodes:["disclosure2001","vaticano","pio12"],
+      path:["disclosure2001","vaticano","pio12"],
+      title:"Pius XII: graph edge to Disclosure2001 without temporal explanation (deceased 43 years prior)", type:"paradox", severity:"critical",
+      headline:"Person deceased in 1958 maintains betweenness (44.3) comparable to living witnesses connected to 2001 event",
+      analysis:"pio12 dies 1958; disclosure2001 occurs 2001 (b=33.2); edge assumes posthumous influence or retrocalculated connection via vaticano (b=67.8). No documentation Pius XII was briefed on UAP; edge reflects speculative historiography inserted without factual verification.",
+      implication:"Either classified briefing documentation to Pius XII (1945-1958) connects to 2001 event non-obviously, or edge is retrospective historiography that requires editorial revision.",
+      confidence:"speculative"
+    },
+    {
+      id:"sg16", context:["all"],
+      nodes:["edicion_retroactiva","congress2023","nyt2017"],
+      path:["edicion_retroactiva","congress2023","nyt2017"],
+      title:"Retroactive editing: high-betweenness concept without verifiable primary artifacts", type:"contradiction", severity:"critical",
+      headline:"High-betweenness conceptual node (122.6) denotes record-revision practice but lacks verifiable references to specific documented cases",
+      analysis:"edicion_retroactiva (b=122.6) connects congress2023 (b=122.4) and nyt2017 (b=88.9). Both events mention documentary discrepancies, but no specification exists of which documents altered, when, or by which entity. Concept operates as universal explanation without instantiation.",
+      implication:"Concept of 'retroactive editing' serves as narrative artifact explaining inconsistencies without providing proven cases, permitting official documentation dismissal without verifiable falsifiability.",
       confidence:"strong"
     },
   ]
