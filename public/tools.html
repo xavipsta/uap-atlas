@@ -182,7 +182,7 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
 </style>
 </head>
 <body>
-
+ 
 <!-- ══ LOGIN ══════════════════════════════════════════════════════════════════ -->
 <div id="loginScreen">
   <div class="login-box">
@@ -204,10 +204,10 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
     <div class="login-error" id="loginError">Credenciales incorrectas</div>
   </div>
 </div>
-
+ 
 <!-- ══ APP ════════════════════════════════════════════════════════════════════ -->
 <div id="appShell">
-
+ 
   <header class="header">
     <span class="header-logo">◈</span>
     <div>
@@ -215,7 +215,7 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
       <div class="header-sub">Panel interno · acceso restringido</div>
     </div>
     <span class="header-badge"><span class="badge-dot"></span> 80 nodos · 366 conexiones · v4.5</span>
-
+ 
     <div class="header-right">
       <!-- Keys section -->
       <div class="header-keys">
@@ -233,13 +233,13 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
         </div>
         <div class="security-note">⚠ Borra siempre las keys al salir</div>
       </div>
-
+ 
       <div style="width:1px;height:36px;background:var(--border);margin:0 4px"></div>
       <span class="user-badge" id="userBadge"></span>
       <button class="logout-btn" onclick="doLogout()">Salir</button>
     </div>
   </header>
-
+ 
   <nav class="nav">
     <button class="nav-tab active" onclick="showTab('home')" id="tab-home"><span class="tab-dot"></span>Inicio</button>
     <button class="nav-tab" onclick="showTab('editorial')" id="tab-editorial"><span class="tab-dot"></span>Editorial Intelligence</button>
@@ -248,9 +248,9 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
     <button class="nav-tab" onclick="showTab('prompts')" id="tab-prompts"><span class="tab-dot"></span>Prompts</button>
     <button class="nav-tab" onclick="showTab('guns')" id="tab-guns"><span class="tab-dot"></span>Pistolas</button>
   </nav>
-
+ 
   <div class="content">
-
+ 
     <!-- ── HOME ── -->
     <div id="view-home">
       <div class="section-header" style="margin-bottom:24px">
@@ -301,7 +301,7 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
         </div>
       </div>
     </div>
-
+ 
     <!-- ── EDITORIAL ── -->
     <div id="view-editorial" style="display:none">
       <div class="section-header">
@@ -336,7 +336,7 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
         </div>
       </div>
     </div>
-
+ 
     <!-- ── MONITOR ── -->
     <div id="view-monitor" style="display:none">
       <div class="section-header">
@@ -363,7 +363,7 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
         </div>
       </div>
     </div>
-
+ 
     <!-- ── STATS ── -->
     <div id="view-stats" style="display:none">
       <div class="section-header">
@@ -399,7 +399,7 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
         </div>
       </div>
     </div>
-
+ 
     <!-- ── PROMPTS ── -->
     <div id="view-prompts" style="display:none">
       <div class="section-header">
@@ -408,14 +408,14 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
       </div>
       <div class="prompts-grid" id="promptsGrid"></div>
     </div>
-
+ 
     <!-- ── PISTOLAS HUMEANTES ── -->
     <div id="view-guns" style="display:none">
       <div class="section-header">
         <div class="section-title">Generador de Pistolas Humeantes</div>
         <div class="section-sub">Claude analiza el grafo y detecta patrones anómalos. Aprueba y publica directamente en GitHub — deploy automático en ~60s.</div>
       </div>
-
+ 
       <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px">
         <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px">Filtros de contexto</div>
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px">
@@ -430,7 +430,7 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
           <div style="display:flex;align-items:center;gap:8px">
             <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">Cantidad:</div>
             <select id="gunsCount" style="background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-secondary);font-family:var(--font-mono);font-size:11px;padding:3px 8px">
-              <option value="4">4</option><option value="6">6</option><option value="8" selected>8</option><option value="10">10</option>
+              <option value="4" selected>4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option>
             </select>
           </div>
           <div style="display:flex;align-items:center;gap:8px">
@@ -445,12 +445,12 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
           </div>
         </div>
       </div>
-
+ 
       <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px">
         <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Pistolas actuales en el atlas</div>
         <div id="gunsCurrentList" style="display:flex;flex-wrap:wrap;gap:6px"></div>
       </div>
-
+ 
       <div style="display:flex;gap:8px;margin-bottom:8px">
         <button class="btn btn-primary" id="gunsBtn" onclick="runGuns()" style="flex:1">◎ Generar pistolas con IA</button>
         <button class="btn btn-ghost" onclick="clearGuns()">Limpiar</button>
@@ -458,7 +458,7 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
         <span id="gunsStatus" style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">Listo · ~$0.05 con Haiku</span>
       </div>
-
+ 
       <div id="gunsOutput">
         <div class="empty-state">
           <div class="empty-icon">◎</div>
@@ -467,16 +467,16 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
         </div>
       </div>
     </div>
-
+ 
   </div>
 </div>
-
+ 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 const GH_OWNER = 'xavipsta';
 const GH_REPO  = 'uap-atlas';
 const GH_BRANCH = 'main';
-
+ 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 const _t = 'VmFsaWFuVGhvcjpWaWoqbj82aQ==';
 function doLogin() {
@@ -513,10 +513,10 @@ window.addEventListener('load', () => {
     document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
   });
 });
-
+ 
 // ── KEYS ──────────────────────────────────────────────────────────────────────
 window._keys = { ant: '', gh: '' };
-
+ 
 function onKeyChange(type, val) {
   window._keys[type] = val;
   const st = document.getElementById(type+'-status');
@@ -537,7 +537,7 @@ function clearKey(type) {
 }
 function getApiKey() { return window._keys.ant || ''; }
 function getGhKey()  { return window._keys.gh  || ''; }
-
+ 
 function anthHeaders() {
   return {
     'Content-Type': 'application/json',
@@ -554,21 +554,21 @@ function ghHeaders() {
     'Content-Type': 'application/json'
   };
 }
-
+ 
 // ── GITHUB PUBLISH ────────────────────────────────────────────────────────────
 async function publishToGitHub(filepath, content, commitMsg) {
   if (!getGhKey()) throw new Error('GitHub token no configurado. Pega el token GH en el header.');
   const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${filepath}`;
-
+ 
   // 1. Get current SHA
   const getRes = await fetch(apiUrl, { headers: ghHeaders() });
   if (!getRes.ok) throw new Error(`Error leyendo ${filepath}: ${getRes.status}`);
   const current = await getRes.json();
   const sha = current.sha;
-
+ 
   // 2. Encode content
   const encoded = btoa(unescape(encodeURIComponent(content)));
-
+ 
   // 3. Commit
   const putRes = await fetch(apiUrl, {
     method: 'PUT',
@@ -586,7 +586,7 @@ async function publishToGitHub(filepath, content, commitMsg) {
   }
   return await putRes.json();
 }
-
+ 
 function publishBtn(id, filepath, getContent, commitMsg) {
   const btn = document.getElementById(id);
   if (!btn) return;
@@ -606,7 +606,7 @@ function publishBtn(id, filepath, getContent, commitMsg) {
       alert('Error publicando: ' + err.message);
     });
 }
-
+ 
 // ── TABS ──────────────────────────────────────────────────────────────────────
 function showTab(name) {
   ['home','editorial','monitor','stats','prompts','guns'].forEach(t => {
@@ -618,7 +618,7 @@ function showTab(name) {
   if (name==='guns') initGunsView();
   if (name==='editorial') view.style.display = 'flex';
 }
-
+ 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 function initApp() {
   renderPrompts();
@@ -628,28 +628,28 @@ function initApp() {
     document.getElementById('editBtn').disabled = l < 20;
   });
 }
-
+ 
 // ── EDITORIAL ─────────────────────────────────────────────────────────────────
 const ATLAS_CONTEXT = {
   totalNodes: 80, totalLinks: 366, version: '4.5',
   existingNodeIds: ['aurora1897','magenta1933','la_battle','foo_fighters','roswell1947','malmstrom1967','kecksburg1965','nimitz2004','western_us_2025','rendlesham1980','varginha1996','colares1977','rs33','die_glocke','paperclip','blue_book','aatip','imm_constellation','pursue_r01','legacy_program','elizondo','grusch','gallaudet','kirkpatrick','vonbraun','kammler','nell','luna','burchett','nolan','puthoff','davis','mellon','stratton','semivan','fravor','salas','burlison','shellenberger','halt','greer','vallee','hynek','pio12','juan23','rosin','aurora_pilot','marconi','aaro','sol_foundation','vaticano','nasa','fbi','nyt2017','congress2023','wilson_memo','rendlesham_memo','disclosure2001','nuclear_pattern','cat_disclosure','y2027','tsm','enoc','tompkins','forrestal','ontological_shock','capovilla','george_bush_sr','patron_muertes','patron_encubrimiento','coulthart','barber','lacatski','villarroel','tictac_arv','nhi_agreements','edicion_retroactiva','farah_dan','age_of_disclosure','marco_rubio'],
 };
-
+ 
 const SYSTEM_PROMPT = `Eres el analista editorial del UAP Intelligence Atlas, sistema de inteligencia relacional con ${ATLAS_CONTEXT.totalNodes} nodos y ${ATLAS_CONTEXT.totalLinks} conexiones (v${ATLAS_CONTEXT.version}).
-
+ 
 NODOS EXISTENTES: ${ATLAS_CONTEXT.existingNodeIds.join(', ')}
-
+ 
 FILOSOFÍA: sistema de inteligencia relacional, no web de OVNIs. Solo entra lo que tiene base documental verificable. Credibilidad: high=juramento/oficial/FOIA, medium=fuente verificable, low=hipótesis.
-
+ 
 Para cada input, decide: NODO NUEVO, ACTUALIZAR NODO EXISTENTE, o AÑADIR FUENTE.
-
+ 
 Si nodo nuevo: genera objeto JS completo con id (snake_case), label{es,en}, year, cat (incident/program/person/institution/concept/event), sub{es,en}, credibility, desc{es,en} (2-4 frases densas con datos concretos), links[] (IDs existentes relevantes).
-
+ 
 RESPONDE SOLO JSON:
 {"summary":"2-3 frases","relevance":"high|medium|low","decisions":[{"type":"new_node|update_node|add_source","reasoning":"por qué entra","patterns_activated":[],"data":{objeto completo}}],"editorial_note":"qué NO incluir si aplica"}`;
-
+ 
 let _decisions = [], _approvals = {};
-
+ 
 function clearEdit() {
   document.getElementById('editInput').value = '';
   document.getElementById('editCharCount').textContent = '0 caracteres';
@@ -657,7 +657,7 @@ function clearEdit() {
   document.getElementById('editOutput').innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-title">Analizador listo</div><div class="empty-desc">Introduce cualquier contenido nuevo para evaluar su relevancia editorial.</div></div>`;
   document.getElementById('editStatus').textContent = 'Esperando input';
 }
-
+ 
 async function runEditorial() {
   const input = document.getElementById('editInput').value.trim();
   if (!input) return;
@@ -679,7 +679,7 @@ async function runEditorial() {
   }
   document.getElementById('editBtn').disabled = false;
 }
-
+ 
 function renderEditorial(result) {
   _decisions = result.decisions || [];
   _approvals = {};
@@ -687,10 +687,10 @@ function renderEditorial(result) {
   const typeL = {new_node:'Nodo nuevo',update_node:'Actualizar',add_source:'Fuente nueva'};
   const typeC = {new_node:'type-new',update_node:'type-update',add_source:'type-source'};
   const rColor = {high:'var(--success)',medium:'var(--warning)',low:'var(--text-muted)'};
-
+ 
   let h = `<div class="analysis-summary-box"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="font-size:13px;font-weight:700;color:var(--text-primary)">Análisis completado</div><span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;border-radius:3px;color:${rColor[result.relevance]};background:${rColor[result.relevance]}18;border:1px solid ${rColor[result.relevance]}33">${(result.relevance||'').toUpperCase()}</span></div><p>${result.summary||''}</p></div>`;
   h += `<div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">Decisiones (${_decisions.length})</div>`;
-
+ 
   _decisions.forEach((d,i) => {
     const title = d.data?.label?.es || d.data?.title?.es || d.data?.nodeId || d.data?.id || 'Actualización';
     h += `<div class="decision-card" id="dcard-${i}">
@@ -708,17 +708,17 @@ function renderEditorial(result) {
       </div>
     </div>`;
   });
-
+ 
   h += `<div style="display:flex;gap:8px;margin:16px 0">
     <button class="btn btn-primary" onclick="generateEditCode()" style="flex:1">◈ Generar código aprobados</button>
   </div>`;
   h += `<div id="editCodeOutput"></div>`;
   if (result.editorial_note) h += `<div style="padding:10px 12px;background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.15);border-radius:var(--radius-sm);margin-top:12px"><div style="font-family:var(--font-mono);font-size:9px;color:var(--warning);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px">Nota editorial</div><div style="font-size:11px;color:var(--text-muted);line-height:1.6">${result.editorial_note}</div></div>`;
-
+ 
   document.getElementById('editOutput').innerHTML = h;
   document.getElementById('editStatus').textContent = `${_decisions.length} decisiones · pendiente aprobación`;
 }
-
+ 
 function renderNodePrev(d) {
   return `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">${[['ID',d.id||'—'],['Cat',d.cat||'—'],['Año',d.year||'—']].map(([l,v])=>`<div class="field-group" style="margin-bottom:0"><div class="field-label">${l}</div><div class="field-value field-mono">${v}</div></div>`).join('')}</div><div class="field-group"><div class="field-label">Desc ES</div><div class="field-value">${d.desc?.es||'—'}</div></div><div class="field-group"><div class="field-label">Links</div><div class="links-list">${(d.links||[]).map(l=>`<span class="link-tag">${l}</span>`).join('')}</div></div>`;
 }
@@ -729,7 +729,7 @@ function setApproval(i,state) {
   const approved=Object.values(_approvals).filter(v=>v==='approved').length;
   document.getElementById('editStatus').textContent=`${approved}/${Object.keys(_approvals).length} aprobados`;
 }
-
+ 
 let _editNodeContent = '';
 function generateEditCode() {
   const approved = Object.entries(_approvals).filter(([,v])=>v==='approved').map(([k])=>parseInt(k));
@@ -737,7 +737,7 @@ function generateEditCode() {
   const decs = approved.map(i=>_decisions[i]);
   const newNodes = decs.filter(d=>d.type==='new_node').map(d=>`  ${JSON.stringify(d.data,null,2).replace(/\n/g,'\n  ')},`);
   const newSrcs = decs.filter(d=>d.type==='add_source');
-
+ 
   _editNodeContent = newNodes.join('\n\n');
   const id = 'edit-code-nodes';
   let h = '';
@@ -749,11 +749,11 @@ function generateEditCode() {
   document.getElementById('editCodeOutput').innerHTML = `<div class="code-section"><div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">Código generado</div>${h}</div>`;
   document.getElementById('editCodeOutput').scrollIntoView({behavior:'smooth'});
 }
-
+ 
 async function publishNodeCode() {
   alert('Para nodes.js necesitas pegar el nodo en el archivo completo. Usa el botón Copiar y edita el archivo en GitHub manualmente, o usa la herramienta Claude en la próxima sesión para generar el nodes.js completo.');
 }
-
+ 
 // ── MONITOR ───────────────────────────────────────────────────────────────────
 const KNOWN_PRS = ['PR19','PR26','PR28','PR34','PR35','PR38','PR43','PR45','PR46','PR49'];
 async function runMonitor() {
@@ -786,7 +786,7 @@ async function runMonitor() {
     el.innerHTML = `<span style="color:var(--danger)">Error: ${e.message}</span>`;
   }
 }
-
+ 
 // ── PROMPTS ───────────────────────────────────────────────────────────────────
 const PROMPTS = [
   { name:'Actualizar nodes.js', use:'Añadir nodos nuevos con JSON correcto', prompt:`Actúa como arquitecto de datos del UAP Intelligence Atlas (v4.5, 80 nodos, 366 conexiones). Necesito añadir el siguiente nodo al archivo nodes.js. Esquema: { id, label:{es,en}, year, cat (incident/program/person/institution/concept/event), sub:{es,en}, credibility (high/medium/low), desc:{es,en}, links:[] }. Genera el objeto JavaScript completo, bilingüe, con descripción densa de 2-4 frases con datos concretos, y links a los IDs existentes más relevantes. Nodo a crear: [DESCRIBE EL NODO AQUÍ]` },
@@ -795,7 +795,7 @@ const PROMPTS = [
   { name:'Procesar release war.gov', use:'Protocolo de actualización viernes', prompt:`Actúa como analista editorial del UAP Intelligence Atlas (v4.5, 80 nodos). Acaba de publicarse nueva información en war.gov/UFO. Analiza el siguiente contenido y determina qué añadir: nodos nuevos, actualizaciones, fuentes. Sé conservador — mejor pocos nodos bien documentados. Contenido: [PEGA AQUÍ]` },
   { name:'Generar pistola humeante', use:'Crear un análisis de smoking gun manual', prompt:`Actúa como analista senior del UAP Intelligence Atlas. Genera una pistola humeante en formato JSON: { id, context, nodes[], path[], title, type (gap/paradox/bridge/temporal/morphological/contradiction), severity (critical/high/medium), headline, analysis, implication, confidence }. Bilingüe (es+en). Tema: [DESCRIBE EL TEMA]` },
 ];
-
+ 
 function renderPrompts() {
   document.getElementById('promptsGrid').innerHTML = PROMPTS.map((p,i)=>`<div class="prompt-card"><div class="prompt-name">${p.name}</div><div class="prompt-use">${p.use}</div><div class="prompt-preview" onclick="copyPrompt(${i},this)">${p.prompt.substring(0,180)}...</div><div class="prompt-footer"><button class="btn btn-primary btn-sm" onclick="copyPrompt(${i},this)">Copiar</button><button class="btn btn-ghost btn-sm" onclick="togglePrompt(${i})">Ver</button></div><div id="prompt-full-${i}" style="display:none;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);line-height:1.65;white-space:pre-wrap">${p.prompt}</div></div>`).join('');
 }
@@ -803,7 +803,7 @@ function copyPrompt(i, btn) {
   navigator.clipboard.writeText(PROMPTS[i].prompt).then(()=>{ const o=btn.textContent; btn.textContent='✓ Copiado'; setTimeout(()=>btn.textContent=o,2000); });
 }
 function togglePrompt(i) { const el=document.getElementById(`prompt-full-${i}`); el.style.display=el.style.display==='none'?'block':'none'; }
-
+ 
 // ── PISTOLAS HUMEANTES ────────────────────────────────────────────────────────
 const CURRENT_GUNS = [
   {id:'sg1',title:'Kammler: el nodo fantasma',severity:'critical',type:'gap'},
@@ -823,15 +823,15 @@ const CURRENT_GUNS = [
   {id:'sg15',title:'Pío XII: arista con Disclosure2001 sin explicación temporal',severity:'critical',type:'paradox'},
   {id:'sg16',title:'Edición_retroactiva: concepto sin artefactos primarios',severity:'critical',type:'contradiction'},
 ];
-
+ 
 const NODES_SUMMARY = [
   {id:'aurora1897',cat:'incident',credibility:'medium',betweenness:11.2},{id:'magenta1933',cat:'incident',credibility:'high',betweenness:554},{id:'la_battle',cat:'incident',credibility:'medium',betweenness:8.3},{id:'foo_fighters',cat:'incident',credibility:'high',betweenness:45.1},{id:'roswell1947',cat:'incident',credibility:'high',betweenness:351},{id:'malmstrom1967',cat:'incident',credibility:'high',betweenness:78.4},{id:'kecksburg1965',cat:'incident',credibility:'medium',betweenness:42.7},{id:'nimitz2004',cat:'incident',credibility:'high',betweenness:188.3},{id:'western_us_2025',cat:'incident',credibility:'high',betweenness:33.2},{id:'rendlesham1980',cat:'incident',credibility:'high',betweenness:55.9},{id:'varginha1996',cat:'incident',credibility:'medium',betweenness:22.1},{id:'colares1977',cat:'incident',credibility:'medium',betweenness:18.6},{id:'rs33',cat:'incident',credibility:'medium',betweenness:14.3},{id:'die_glocke',cat:'program',credibility:'medium',betweenness:89.2},{id:'paperclip',cat:'program',credibility:'high',betweenness:112.4},{id:'blue_book',cat:'program',credibility:'high',betweenness:67.8},{id:'aatip',cat:'program',credibility:'high',betweenness:145.6},{id:'imm_constellation',cat:'program',credibility:'medium',betweenness:142},{id:'pursue_r01',cat:'program',credibility:'high',betweenness:98.3},{id:'legacy_program',cat:'program',credibility:'medium',betweenness:198},{id:'grusch',cat:'person',credibility:'high',betweenness:588},{id:'elizondo',cat:'person',credibility:'high',betweenness:312},{id:'gallaudet',cat:'person',credibility:'high',betweenness:44.2},{id:'kirkpatrick',cat:'person',credibility:'high',betweenness:55.7},{id:'vonbraun',cat:'person',credibility:'high',betweenness:134.5},{id:'kammler',cat:'person',credibility:'medium',betweenness:5.6},{id:'nell',cat:'person',credibility:'medium',betweenness:12.1},{id:'luna',cat:'person',credibility:'low',betweenness:8.4},{id:'burchett',cat:'person',credibility:'high',betweenness:38.9},{id:'nolan',cat:'person',credibility:'high',betweenness:67.3},{id:'puthoff',cat:'person',credibility:'medium',betweenness:88.1},{id:'davis',cat:'person',credibility:'medium',betweenness:72.4},{id:'mellon',cat:'person',credibility:'high',betweenness:94.2},{id:'stratton',cat:'person',credibility:'high',betweenness:122.8},{id:'semivan',cat:'person',credibility:'medium',betweenness:44.6},{id:'fravor',cat:'person',credibility:'high',betweenness:156.7},{id:'salas',cat:'person',credibility:'high',betweenness:89.3},{id:'burlison',cat:'person',credibility:'high',betweenness:33.1},{id:'shellenberger',cat:'person',credibility:'high',betweenness:28.4},{id:'halt',cat:'person',credibility:'high',betweenness:41.2},{id:'greer',cat:'person',credibility:'low',betweenness:22.8},{id:'vallee',cat:'person',credibility:'high',betweenness:78.9},{id:'hynek',cat:'person',credibility:'high',betweenness:66.4},{id:'pio12',cat:'person',credibility:'medium',betweenness:44.3},{id:'juan23',cat:'person',credibility:'low',betweenness:11.2},{id:'rosin',cat:'person',credibility:'medium',betweenness:8.7},{id:'marco_rubio',cat:'person',credibility:'high',betweenness:88.4},{id:'farah_dan',cat:'person',credibility:'medium',betweenness:134},{id:'aaro',cat:'institution',credibility:'high',betweenness:78.3},{id:'sol_foundation',cat:'institution',credibility:'medium',betweenness:44.2},{id:'vaticano',cat:'institution',credibility:'medium',betweenness:67.8},{id:'nasa',cat:'institution',credibility:'high',betweenness:55.1},{id:'fbi',cat:'institution',credibility:'high',betweenness:33.4},{id:'nyt2017',cat:'event',credibility:'high',betweenness:88.9},{id:'congress2023',cat:'event',credibility:'high',betweenness:122.4},{id:'wilson_memo',cat:'event',credibility:'medium',betweenness:98.7},{id:'rendlesham_memo',cat:'event',credibility:'high',betweenness:44.3},{id:'disclosure2001',cat:'event',credibility:'medium',betweenness:33.2},{id:'nuclear_pattern',cat:'concept',credibility:'high',betweenness:222},{id:'cat_disclosure',cat:'concept',credibility:'medium',betweenness:55.4},{id:'y2027',cat:'concept',credibility:'medium',betweenness:78.3},{id:'tsm',cat:'concept',credibility:'medium',betweenness:44.2},{id:'enoc',cat:'concept',credibility:'medium',betweenness:41.8},{id:'tompkins',cat:'person',credibility:'low',betweenness:18.4},{id:'forrestal',cat:'person',credibility:'medium',betweenness:33.7},{id:'ontological_shock',cat:'concept',credibility:'medium',betweenness:55.9},{id:'capovilla',cat:'person',credibility:'medium',betweenness:22.1},{id:'george_bush_sr',cat:'person',credibility:'medium',betweenness:28.4},{id:'patron_muertes',cat:'concept',credibility:'medium',betweenness:44.6},{id:'patron_encubrimiento',cat:'concept',credibility:'high',betweenness:178.3},{id:'coulthart',cat:'person',credibility:'high',betweenness:67.2},{id:'barber',cat:'person',credibility:'high',betweenness:33.4},{id:'lacatski',cat:'person',credibility:'medium',betweenness:55.1},{id:'villarroel',cat:'person',credibility:'high',betweenness:22.8},{id:'tictac_arv',cat:'concept',credibility:'high',betweenness:89.4},{id:'nhi_agreements',cat:'concept',credibility:'low',betweenness:33.2},{id:'edicion_retroactiva',cat:'concept',credibility:'high',betweenness:122.6},{id:'age_of_disclosure',cat:'event',credibility:'medium',betweenness:118},
 ];
-
+ 
 let _gunsCtx = new Set(['all']);
 let _gunsDecisions = [], _gunsApprovals = {};
 let _gunsGeneratedEs = [], _gunsGeneratedEn = [];
-
+ 
 function gunsCtxChange(key, checked) {
   if (key==='all') {
     if (checked) { _gunsCtx=new Set(['all']); ['incidents','programs','persons','concepts','official'].forEach(k=>{const el=document.getElementById('ctx-'+k);if(el)el.checked=false;}); }
@@ -842,25 +842,25 @@ function gunsCtxChange(key, checked) {
     if (_gunsCtx.size===0) { _gunsCtx.add('all'); document.getElementById('ctx-all').checked=true; }
   }
 }
-
+ 
 function initGunsView() {
   const list=document.getElementById('gunsCurrentList');
   if (!list||list.innerHTML) return;
   const sevColor={critical:'var(--danger)',high:'var(--warning)',medium:'var(--accent)'};
   list.innerHTML=CURRENT_GUNS.map(g=>`<span style="font-family:var(--font-mono);font-size:10px;padding:3px 8px;border-radius:3px;background:${sevColor[g.severity]}18;border:1px solid ${sevColor[g.severity]}33;color:${sevColor[g.severity]}">${g.id}</span>`).join('');
 }
-
+ 
 function clearGuns() {
   _gunsDecisions=[]; _gunsApprovals={}; _gunsGeneratedEs=[]; _gunsGeneratedEn=[];
   document.getElementById('gunsOutput').innerHTML=`<div class="empty-state"><div class="empty-icon">◎</div><div class="empty-title">Generador listo</div><div class="empty-desc">Configura los filtros y pulsa Generar.</div></div>`;
   document.getElementById('gunsStatus').textContent='Listo · ~$0.05 con Haiku';
 }
-
+ 
 async function runGuns() {
   const ctx=[..._gunsCtx];
   const count=document.getElementById('gunsCount').value;
   const emphasis=document.getElementById('gunsEmphasis').value;
-
+ 
   let filteredNodes=NODES_SUMMARY;
   if (!ctx.includes('all')) {
     const catMap={incidents:'incident',programs:'program',persons:'person',concepts:'concept'};
@@ -873,7 +873,7 @@ async function runGuns() {
   } else if (ctx.includes('official')) {
     filteredNodes=NODES_SUMMARY.filter(n=>n.credibility==='high');
   }
-
+ 
   const emphasisInstr={
     balanced:'Equilibra: gaps documentales, paradojas de red, nodos puente únicos y cadenas temporales.',
     gaps:'Prioriza gaps documentales — cadenas de custodia rotas, ausencias que requieren explicación.',
@@ -881,32 +881,32 @@ async function runGuns() {
     bridges:'Prioriza nodos puente únicos — cuya eliminación desconecta clusters completos.',
     temporal:'Prioriza cadenas temporales — secuencias que atraviesan décadas con continuidad documental.',
   }[emphasis];
-
+ 
   const nextId = CURRENT_GUNS.length + 1;
-
+ 
   const gunsPrompt=`Eres analista senior del UAP Intelligence Atlas v4.5 (80 nodos, 366 conexiones).
-
+ 
 PISTOLAS ACTUALES (no repetir):
 ${CURRENT_GUNS.map(g=>`- ${g.id}: "${g.title}" (${g.severity}, ${g.type})`).join('\n')}
-
+ 
 SUBGRAFO (${filteredNodes.length} nodos):
 ${filteredNodes.map(n=>`${n.id}[${n.cat},${n.credibility},b=${n.betweenness.toFixed(1)}]`).join(' · ')}
-
+ 
 ÉNFASIS: ${emphasisInstr}
-
+ 
 Genera exactamente ${count} pistolas NUEVAS. IDs desde sg${nextId}. Cada pistola: base documental o estructural verificable, ≥2 nodos del subgrafo, tensión real entre ellos, implicación concreta y falsificable.
-
+ 
 JSON PURO (sin markdown):
 {"guns_es":[{"id":"sg${nextId}","context":["all"],"nodes":[],"path":[],"title":"","type":"gap|paradox|bridge|temporal|morphological|contradiction","severity":"critical|high|medium","headline":"","analysis":"","implication":"","confidence":"verified|strong|speculative"}],"guns_en":[{...mismo schema en inglés...}]}`;
-
+ 
   document.getElementById('gunsBtn').disabled=true;
   document.getElementById('gunsStatus').textContent='Analizando grafo…';
   document.getElementById('gunsOutput').innerHTML=`<div class="loading"><div class="spinner"></div><div class="loading-text">Claude detectando patrones en ${filteredNodes.length} nodos…</div></div>`;
-
+ 
   try {
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',headers:anthHeaders(),
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:6000,messages:[{role:'user',content:gunsPrompt}]})
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:8000,messages:[{role:'user',content:gunsPrompt}]})
     });
     const data=await res.json();
     const text=data.content?.find(b=>b.type==='text')?.text||'';
@@ -921,19 +921,19 @@ JSON PURO (sin markdown):
   }
   document.getElementById('gunsBtn').disabled=false;
 }
-
+ 
 function renderGuns(result) {
   const gunsEs=result.guns_es||[];
   const gunsEn=result.guns_en||[];
   _gunsDecisions=gunsEs.map((g,i)=>({es:g,en:gunsEn[i]||g}));
   _gunsApprovals={};
   _gunsDecisions.forEach((_,i)=>_gunsApprovals[i]='pending');
-
+ 
   const sevColor={critical:'var(--danger)',high:'var(--warning)',medium:'var(--accent)'};
   const typeLabel={gap:'Gap documental',paradox:'Paradoja de red',bridge:'Nodo puente',temporal:'Cadena temporal',morphological:'Morfológica',contradiction:'Contradicción'};
-
+ 
   let h=`<div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px">${gunsEs.length} pistolas generadas · revisa y aprueba</div>`;
-
+ 
   _gunsDecisions.forEach((d,i)=>{
     const g=d.es; const sev=g.severity||'medium';
     h+=`<div class="decision-card" id="gcard-${i}">
@@ -954,16 +954,16 @@ function renderGuns(result) {
       </div>
     </div>`;
   });
-
+ 
   h+=`<div style="display:flex;gap:8px;margin:16px 0">
     <button class="btn btn-primary" onclick="generateGunsCode()" style="flex:1">◎ Preparar código aprobadas</button>
   </div>`;
   h+=`<div id="gunsCodeOutput"></div>`;
-
+ 
   document.getElementById('gunsOutput').innerHTML=h;
   document.getElementById('gunsStatus').textContent=`${gunsEs.length} generadas · 0 aprobadas`;
 }
-
+ 
 function toggleGCard(i){const b=document.getElementById(`gbody-${i}`);b.style.display=b.style.display==='none'?'block':'none';}
 function setGunsApproval(i,state){
   _gunsApprovals[i]=state;
@@ -971,23 +971,23 @@ function setGunsApproval(i,state){
   const approved=Object.values(_gunsApprovals).filter(v=>v==='approved').length;
   document.getElementById('gunsStatus').textContent=`${approved}/${Object.keys(_gunsApprovals).length} aprobadas`;
 }
-
+ 
 function fmtGun(g) {
   return `    {\n      id:"${g.id}", context:${JSON.stringify(g.context||['all'])},\n      nodes:${JSON.stringify(g.nodes||[])},\n      path:${JSON.stringify(g.path||[])},\n      title:"${(g.title||'').replace(/"/g,'\\"')}", type:"${g.type}", severity:"${g.severity}",\n      headline:"${(g.headline||'').replace(/"/g,'\\"')}",\n      analysis:"${(g.analysis||'').replace(/"/g,'\\"')}",\n      implication:"${(g.implication||'').replace(/"/g,'\\"')}",\n      confidence:"${g.confidence}"\n    }`;
 }
-
+ 
 let _gunsCodeContent = '';
-
+ 
 function generateGunsCode() {
   const approvedIdxs=Object.entries(_gunsApprovals).filter(([,v])=>v==='approved').map(([k])=>parseInt(k));
   if (!approvedIdxs.length){alert('Aprueba al menos una pistola.');return;}
-
+ 
   const approved=approvedIdxs.map(i=>_gunsDecisions[i]);
   const esBlock=approved.map(d=>fmtGun(d.es)).join(',\n');
   const enBlock=approved.map(d=>fmtGun(d.en||d.es)).join(',\n');
-
+ 
   _gunsCodeContent=`// ── Añadir al array SMOKING_GUNS.es[] ──\n${esBlock},\n\n// ── Añadir al array SMOKING_GUNS.en[] ──\n${enBlock},`;
-
+ 
   const codeId='guns-export-code';
   const html=`<div class="code-section">
     <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">
@@ -1006,16 +1006,16 @@ function generateGunsCode() {
     <div class="publish-notice" style="margin-top:8px">⚡ "Publicar en GitHub" actualiza smokingGuns.js y dispara el deploy de Vercel en ~60s</div>
     <div id="guns-publish-result" style="margin-top:8px"></div>
   </div>`;
-
+ 
   document.getElementById('gunsCodeOutput').innerHTML=html;
   document.getElementById('gunsCodeOutput').scrollIntoView({behavior:'smooth'});
 }
-
+ 
 async function publishGunsToGitHub() {
   const btn = document.getElementById('pub-guns-btn');
   btn.classList.add('publishing');
   btn.textContent = '⏳ Leyendo archivo actual...';
-
+ 
   try {
     // 1. Leer smokingGuns.js actual de GitHub
     const filepath = 'src/data/smokingGuns.js';
@@ -1024,29 +1024,29 @@ async function publishGunsToGitHub() {
     if (!getRes.ok) throw new Error(`Error leyendo ${filepath}: ${getRes.status}`);
     const current = await getRes.json();
     const currentContent = decodeURIComponent(escape(atob(current.content.replace(/\n/g,''))));
-
+ 
     btn.textContent = '⏳ Generando archivo completo...';
-
+ 
     // 2. Extraer las nuevas pistolas aprobadas
     const approvedIdxs = Object.entries(_gunsApprovals).filter(([,v])=>v==='approved').map(([k])=>parseInt(k));
     const approved = approvedIdxs.map(i=>_gunsDecisions[i]);
-
+ 
     // 3. Insertar antes del cierre del array es[] y en[]
     const esEntries = approved.map(d=>fmtGun(d.es)).join(',\n');
     const enEntries = approved.map(d=>fmtGun(d.en||d.es)).join(',\n');
-
+ 
     // Insertar antes del cierre de es: [...] y en: [...]
     let newContent = currentContent;
     // Buscar el último ], en la sección es y en
     newContent = newContent.replace(/(\s*\],\s*\n\s*en:\s*\[)/, `,\n${esEntries}\n  $1`);
     newContent = newContent.replace(/(\s*\]\s*\n\};)/, `,\n${enEntries}\n  $1`);
-
+ 
     // Actualizar el comentario de versión
     const gunCount = CURRENT_GUNS.length + approved.length;
     newContent = newContent.replace(/v\d+\.\d+ · \d+ pistolas/, `v4.5 · ${gunCount} pistolas`);
-
+ 
     btn.textContent = '⏳ Publicando en GitHub...';
-
+ 
     // 4. Commit
     const encoded = btoa(unescape(encodeURIComponent(newContent)));
     const putRes = await fetch(apiUrl, {
@@ -1059,18 +1059,18 @@ async function publishGunsToGitHub() {
         branch: GH_BRANCH
       })
     });
-
+ 
     if (!putRes.ok) {
       const err = await putRes.json();
       throw new Error(err.message || `Error ${putRes.status}`);
     }
-
+ 
     btn.textContent = '✓ Publicado';
     btn.classList.remove('publishing');
     btn.classList.add('published');
     btn.disabled = true;
     document.getElementById('guns-publish-result').innerHTML = `<div class="publish-notice">✓ ${approved.length} pistola(s) publicada(s) en GitHub · Deploy de Vercel iniciado · Listo en ~60s · <a href="https://atlas-uap.vercel.app" target="_blank" style="color:var(--accent)">Ver atlas →</a></div>`;
-
+ 
   } catch(err) {
     btn.textContent = '✕ Error';
     btn.classList.remove('publishing');
@@ -1078,7 +1078,7 @@ async function publishGunsToGitHub() {
     document.getElementById('guns-publish-result').innerHTML = `<div class="publish-error">✕ Error: ${err.message}</div>`;
   }
 }
-
+ 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function copyCode(btn,id){
@@ -1090,3 +1090,4 @@ function copyCode(btn,id){
 </script>
 </body>
 </html>
+ 
