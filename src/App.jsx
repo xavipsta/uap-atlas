@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import * as d3 from "d3";
 import { NODES, LINKS_DATA, CAT_COLORS, CRED_COLORS, BETWEENNESS, CLUSTERING } from "./data/nodes.js";
@@ -869,6 +867,12 @@ g.selectAll("g.nd circle.badge, g.nd text.badge-txt").attr("transform", function
       .style("filter", "url(#glow)")
       .attr("class", "ic");
 
+    // Core dot
+    ng.append("circle")
+      .attr("r", d => Math.min(4, nodeR(d) * 0.3))
+      .attr("fill", d => CAT_COLORS[d.cat])
+      .attr("class", "cd");
+
     // Source badge — FUERA del anillo exterior
 ng.filter(d => srcCount(d) > 0).append("circle")
   .attr("r", 5.5).attr("fill", "#0d1117")
@@ -1669,6 +1673,8 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
     </>
   );
 }
+
+
 
 
 
