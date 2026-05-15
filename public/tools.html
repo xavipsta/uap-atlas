@@ -910,22 +910,18 @@ JSON PURO (sin markdown):
     });
     const data=await res.json();
     const text=data.content?.find(b=>b.type==='text')?.text||'';
-    const clean=text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-    // Limpiar caracteres de control que rompen JSON
-const sanitized = clean
-  .replace(/[\u0000-\u001F\u007F]/g, ' ')  // control chars
-  .replace(/\n/g, ' ')
-  .replace(/\r/g, ' ')
-  .replace(/\t/g, ' ');
-const result = JSON.parse(sanitized);
-    _gunsGeneratedEs=result.guns_es||[];
-    _gunsGeneratedEn=result.guns_en||[];
-    renderGuns(result);
-  } catch(err) {
-    document.getElementById('gunsOutput').innerHTML=`<div class="empty-state"><div class="empty-icon" style="color:var(--danger)">⚠</div><div class="empty-title" style="color:var(--danger)">Error</div><div class="empty-desc">${err.message}</div></div>`;
-    document.getElementById('gunsStatus').textContent='Error';
-  }
-  document.getElementById('gunsBtn').disabled=false;
+    const clean = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+const jsonMatch = clean.match(/\{[\s\S]*\}/);
+if (!jsonMatch) throw new Error('No se encontró JSON válido en la respuesta');
+const result = JSON.parse(jsonMatch[0]);
+_gunsGeneratedEs = result.guns_es || [];
+_gunsGeneratedEn = result.guns_en || [];
+renderGuns(result);
+} catch(err) {
+  document.getElementById('gunsOutput').innerHTML = `<div class="empty-state"><div class="empty-icon" style="color:var(--danger)">⚠</div><div class="empty-title" style="color:var(--danger)">Error</div><div class="empty-desc">${err.message}</div></div>`;
+  document.getElementById('gunsStatus').textContent = 'Error';
+}
+document.getElementById('gunsBtn').disabled = false;
 }
  
 function renderGuns(result) {
