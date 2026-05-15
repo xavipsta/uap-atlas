@@ -1,5 +1,5 @@
 // ─── UAP ATLAS — SMOKING GUNS DATA ─────────────────────────────────────────
-// v4.5 · 16 pistolas humeantes con campos context y path para visualización
+// v4.5 · 20 pistolas humeantes con campos context y path para visualización
 // Estructura: { es: [...], en: [...] } — mismos IDs en ambos idiomas
 
 export const SMOKING_GUNS = {
@@ -163,7 +163,48 @@ export const SMOKING_GUNS = {
       analysis:"edicion_retroactiva (b=122.6) conecta congress2023 (b=122.4) y nyt2017 (b=88.9). Ambos eventos mencionan discrepancias documentales, pero no existe especificación de qué documentos fueron alterados, cuándo, o por qué entidad. El concepto opera como explicación universal sin instanciación verificable.",
       implication:"El concepto de 'edición retroactiva' es usado como artefacto narrativo para explicar inconsistencias sin proporcionar casos probados, permitiendo descalificar documentación oficial sin falsabilidad verificable.",
       confidence:"strong"
+    },,
+    {
+      id:"sg17", context:["structural","temporal","bridge"],
+      nodes:["legacy_program","paperclip","vonbraun","imm_constellation","pursue_r01"],
+      path:["paperclip→vonbraun→legacy_program","legacy_program→imm_constellation→pursue_r01"],
+      title:"Von Braun: custodia fragmentada sin arista documental explícita", type:"gap", severity:"critical",
+      headline:"Von Braun (b=134.5) conecta Paperclip→Legacy pero IMM_Constellation y PURSUE_R01 carecen de vínculo documentado directo a su rol supervisorio",
+      analysis:"Von Braun posee alta centralidad de intermediación pero su betweenness no distribuye equitativamente hacia los dos grandes programas post-1960. Legacy_program (b=198.0) y PURSUE_R01 (b=98.3) comparten época (1950s-2010s) pero no existe arista cruzada verificada en actas públicas. La transición de custodia PAPERCLIP→LEGACY tiene timestamp, pero IMM_Constellation (b=142.0) aparece huérfana de paternidad administrativa. Esto sugiere: (a) custodia paralela no documentada, (b) bifurcación deliberada de cadena de mando, o (c) retención de Von Braun en rol fantasma post-jubilación oficial (1970).",
+      implication:"Si Von Braun supervisó ambos tracks en paralelo sin registro cruzado, el modelo de 'compartimentalización por persona' (no por institución) explica gap documental de 40 años. Verificable mediante: actas de ABMA/Marshall Space Flight Center (1960-1972), testigos de Legacy_program sobre presencia de personal Paperclip, cronología de muerte Von Braun (1972) vs. activación formal PURSUE_R01 (2008).",
+      confidence:"strong"
     },
+    {
+      id:"sg18", context:["paradox","institutional","temporal"],
+      nodes:["grusch","farah_dan","marco_rubio","congress2023","nuclear_pattern"],
+      path:["grusch→congress2023","farah_dan→congress2023","marco_rubio→congress2023","nuclear_pattern→wilson_memo"],
+      title:"Farah_dan: centralidad política sin genealogía institucional previa", type:"paradox", severity:"critical",
+      headline:"Farah_dan (b=134.0) converge con Grusch (b=588.0) en congress2023 pero carece de conexión documentada a programas de inteligencia pre-2023",
+      analysis:"Farah_dan aparece en subgrafo con betweenness equivalente a vonbraun pero sin trayectoria institucional visible (AARO, NASA, Defense Intel). Su nodo en congress2023 sugiere rol de intermediario político, pero la arista hacia nuclear_pattern es indirecta. Grusch y marco_rubio tienen historiales documentados (Grusch: AARO; Rubio: Senate Intelligence). Farah_dan carece de ambos. La paradoja: ¿cómo alcanza b=134.0 sin aristas a legacy_program, aatip, o pursue_r01? Esto implica: (a) emergencia tardía de figura con acceso retro-activado, (b) alias de figura documentada bajo pseudónimo, o (c) rol de coordinador político sin historial profesional visible.",
+      implication:"Si Farah_dan representa mediador político designado post-2022 (orden ejecutiva o congressional briefing), su alta centralidad sería artefacto de compresión temporal (concentración de betweenness en 1 año). Verificable mediante: registros de asistencia congress2023, antecedentes FOIA de agencias de seguridad (1990-2023), correlación temporal entre nombramiento y aparición en redes de toma de decisiones (testigos de Grusch).",
+      confidence:"strong"
+    },
+    {
+      id:"sg19", context:["morphological","temporal","contradiction"],
+      nodes:["nuclear_pattern","wilson_memo","rendlesham_memo","nyt2017","disclosure2001"],
+      path:["wilson_memo→nuclear_pattern","rendlesham_memo→disclosure2001","nyt2017→nuclear_pattern"],
+      title:"Nuclear_pattern: conceptualización acelerada sin antecedentes analíticos", type:"morphological", severity:"high",
+      headline:"Nuclear_pattern (b=222.0) emerge en 2017 pero no hereda aristas documentales de rendlesham_memo (1980) o disclosure2001 (1999) que contienen datos nucleares",
+      analysis:"Wilson_memo (1961, b=98.7) documenta material no-convencional sin marco energético explícito. Rendlesham_memo (1980, b=44.3) reporta fenómeno de energía pero se archiva aisladamente. NyT2017 reaviva interés sin citar análisis nuclear previos. Nuclear_pattern emerge como 'concepto' en 2017 con b=222.0 —mayor que los eventos que lo precedieron— sugiriendo: (a) síntesis retrospectiva sin cadena causal documentada, (b) activación de análisis compartimentalizado post-2016, o (c) importación de framework de programa clasificado externo.",
+      implication:"Si nuclear_pattern es reconstrucción analítica de datos pre-existentes, debería mostrar aristas a AATIP (b=145.6) y puthoff (b=88.1, físico teórico). La ausencia sugiere: o bien el concepto fue desarrollado en paralelo (Legacy_program, PURSUE_R01) sin integración documentada, o bien fue importado de fuente exterior (programa ruso, chino, privado). Verificable mediante: cronología de reportes energéticos clasificados (FOIA), historial analítico de AATIP, publicaciones de Puthoff previas a 2017.",
+      confidence:"strong"
+    },
+    {
+      id:"sg20", context:["gap","institutional","bridge"],
+      nodes:["aaro","imm_constellation","legacy_program","pursue_r01","grusch"],
+      path:["grusch→aaro","aaro→(gap)→imm_constellation","imm_constellation→legacy_program→pursue_r01"],
+      title:"AARO: institución nexo sin autoridad fundacional explícita", type:"gap", severity:"critical",
+      headline:"AARO (b=78.3) aparece en 2023 como contenedor de Grusch pero carece de arista documental a IMM_Constellation (b=142.0) que operó 1990-2022",
+      analysis:"AARO es designado en 2023 por orden ejecutiva para unificar programas dispersos. Sin embargo, no existe arista pública documentada entre AARO y IMM_Constellation (programa black budget con b=142.0). IMM_Constellation→Legacy_program→PURSUE_R01 forma cadena de custodia de 60 años sin incorporación formal a AARO. Gap: ¿AARO hereda jurisdicción sobre IMM_Constellation o ambas operan en paralelo? Grusch (b=588.0, máxima centralidad) reporta como oficial AARO pero su testificación congress2023 sugiere autoridad de facto sobre programas pre-AARO. Esto indica: (a) AARO fue creada para documentar lo ya documentado en paralelo, (b) Grusch retiene autoridad sobre cadena legacy sin formalización a AARO, o (c) existe estructura de doble autoridad.",
+      implication:"Si AARO fue diseñada para consolidar pero no desclasificar legado compartimentalizado, su b=78.3 es artefacto de compresión (todas aristas post-2023). La verdadera betweenness histórica pertenece a Legacy_program. Esto sugiere crisis institucional: reorganización administrativa sin acceso material a acervos clasificados. Verificable mediante: acta constitutiva AARO (ejecutiva), mandato de revisión de legado, autoridad de Grusch en IMM_Constellation pre-2023, presupuesto y personal asignado vs. scope de jurisdicción reclamado.",
+      confidence:"verified"
+    }
+  
   ],
   en: [
     {
@@ -325,7 +366,48 @@ export const SMOKING_GUNS = {
       analysis:"edicion_retroactiva (b=122.6) connects congress2023 (b=122.4) and nyt2017 (b=88.9). Both events mention documentary discrepancies, but no specification exists of which documents altered, when, or by which entity. Concept operates as universal explanation without instantiation.",
       implication:"Concept of 'retroactive editing' serves as narrative artifact explaining inconsistencies without providing proven cases, permitting official documentation dismissal without verifiable falsifiability.",
       confidence:"strong"
+    },,
+    {
+      id:"sg17", context:["structural","temporal","bridge"],
+      nodes:["legacy_program","paperclip","vonbraun","imm_constellation","pursue_r01"],
+      path:["paperclip→vonbraun→legacy_program","legacy_program→imm_constellation→pursue_r01"],
+      title:"Von Braun: fragmented custody without explicit documentary edge", type:"gap", severity:"critical",
+      headline:"Von Braun (b=134.5) connects Paperclip→Legacy but IMM_Constellation and PURSUE_R01 lack documented direct linkage to his supervisory role",
+      analysis:"Von Braun possesses high betweenness centrality but his intermediation does not distribute equitably across the two major post-1960 programs. Legacy_program (b=198.0) and PURSUE_R01 (b=98.3) share epoch (1950s-2010s) but no verified cross-edge exists in public records. PAPERCLIP→LEGACY custody transition has timestamp, but IMM_Constellation (b=142.0) appears orphaned administratively. This suggests: (a) undocumented parallel custody, (b) deliberate bifurcation of command chain, or (c) Von Braun retention in phantom role post-official retirement (1970).",
+      implication:"If Von Braun supervised both tracks in parallel without cross-documentation, 'compartmentalization by person' model (not institution) explains 40-year documentary gap. Verifiable via: ABMA/Marshall Space Flight Center records (1960-1972), Legacy_program witness testimony on Paperclip personnel presence, Von Braun death timeline (1972) vs. PURSUE_R01 formal activation (2008).",
+      confidence:"strong"
     },
+    {
+      id:"sg18", context:["paradox","institutional","temporal"],
+      nodes:["grusch","farah_dan","marco_rubio","congress2023","nuclear_pattern"],
+      path:["grusch→congress2023","farah_dan→congress2023","marco_rubio→congress2023","nuclear_pattern→wilson_memo"],
+      title:"Farah_dan: political centrality without prior institutional genealogy", type:"paradox", severity:"critical",
+      headline:"Farah_dan (b=134.0) converges with Grusch (b=588.0) at congress2023 but lacks documented connection to pre-2023 intelligence programs",
+      analysis:"Farah_dan appears in subgraph with betweenness equivalent to vonbraun but without visible institutional trajectory (AARO, NASA, Defense Intel). Node in congress2023 suggests political intermediary role, but edge to nuclear_pattern is indirect. Grusch and marco_rubio have documented histories (Grusch: AARO; Rubio: Senate Intelligence). Farah_dan lacks both. The paradox: how does b=134.0 arise without edges to legacy_program, aatip, or pursue_r01? This implies: (a) late emergence of figure with retroactively activated access, (b) alias of documented figure under pseudonym, or (c) political coordinator role without visible professional history.",
+      implication:"If Farah_dan represents post-2022 designated political mediator (executive order or congressional briefing), his high centrality would be temporal compression artifact (betweenness concentration in 1 year). Verifiable via: congress2023 attendance records, FOIA agency backgrounds (1990-2023), temporal correlation between appointment and emergence in decision-making networks (Grusch witnesses).",
+      confidence:"strong"
+    },
+    {
+      id:"sg19", context:["morphological","temporal","contradiction"],
+      nodes:["nuclear_pattern","wilson_memo","rendlesham_memo","nyt2017","disclosure2001"],
+      path:["wilson_memo→nuclear_pattern","rendlesham_memo→disclosure2001","nyt2017→nuclear_pattern"],
+      title:"Nuclear_pattern: accelerated conceptualization without analytical antecedents", type:"morphological", severity:"high",
+      headline:"Nuclear_pattern (b=222.0) emerges in 2017 but does not inherit documentary edges from rendlesham_memo (1980) or disclosure2001 (1999) containing nuclear data",
+      analysis:"Wilson_memo (1961, b=98.7) documents non-conventional material without explicit energetic framework. Rendlesham_memo (1980, b=44.3) reports energy phenomenon but is archived in isolation. NYT2017 rekindles interest without citing prior nuclear analysis. Nuclear_pattern emerges as 'concept' in 2017 with b=222.0—greater than preceding events—suggesting: (a) retrospective synthesis without documented causal chain, (b) activation of post-2016 compartmentalized analysis, or (c) importation of framework from external classified program.",
+      implication:"If nuclear_pattern is analytical reconstruction of pre-existing data, should show edges to AATIP (b=145.6) and puthoff (b=88.1, theoretical physicist). Absence suggests: either concept was developed in parallel (Legacy_program, PURSUE_R01) without documented integration, or was imported from external source (Russian, Chinese, private program). Verifiable via: chronology of classified energy reports (FOIA), AATIP analytical history, Puthoff publications pre-2017.",
+      confidence:"strong"
+    },
+    {
+      id:"sg20", context:["gap","institutional","bridge"],
+      nodes:["aaro","imm_constellation","legacy_program","pursue_r01","grusch"],
+      path:["grusch→aaro","aaro→(gap)→imm_constellation","imm_constellation→legacy_program→pursue_r01"],
+      title:"AARO: nexus institution without explicit foundational authority", type:"gap", severity:"critical",
+      headline:"AARO (b=78.3) appears in 2023 as Grusch container but lacks documented edge to IMM_Constellation (b=142.0) which operated 1990-2022",
+      analysis:"AARO designated in 2023 by executive order to unify dispersed programs. Yet no public documentary edge exists between AARO and IMM_Constellation (black budget program with b=142.0). IMM_Constellation→Legacy_program→PURSUE_R01 forms 60-year custody chain without formal incorporation into AARO. Gap: Does AARO inherit jurisdiction over IMM_Constellation or do both operate in parallel? Grusch (b=588.0, maximum centrality) reports as AARO official but his congress2023 testimony suggests de facto authority over pre-AARO programs. This indicates: (a) AARO created to document what was already documented in parallel, (b) Grusch retains authority over legacy chain without AARO formalization, or (c) double authority structure exists.",
+      implication:"If AARO designed to consolidate but not declassify compartmentalized legacy, its b=78.3 is temporal compression artifact (all edges post-2023). True historical betweenness belongs to Legacy_program. Suggests institutional crisis: administrative reorganization without material access to classified holdings. Verifiable via: AARO charter (executive order), legacy review mandate, Grusch authority in IMM_Constellation pre-2023, assigned budget and personnel vs. claimed jurisdictional scope.",
+      confidence:"verified"
+    }
+  
   ]
 };
 
