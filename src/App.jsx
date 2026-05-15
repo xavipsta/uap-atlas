@@ -809,6 +809,7 @@ g.selectAll("g.nd circle.badge, g.nd text.badge-txt").attr("transform", function
   if (!d) return "";
   const r = nodeR(d);
   return `translate(${r + 5}, ${-(r + 5)}) scale(${s})`;
+  });
 });
     svg.call(zoom);
 
@@ -1667,6 +1668,13 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
     </>
   );
 }
+
+
+
+
+
+
+
 
 
 
