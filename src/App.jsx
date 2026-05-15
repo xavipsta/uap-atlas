@@ -793,7 +793,7 @@ const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
   g.attr("transform", e.transform);
   const k = e.transform.k;
 
-  // Labels: visibilidad por umbral, tamaño natural con tope
+  // ── LABELS: reducción suave en zoom in, nunca desaparecen ──
   const labelSize = Math.min(params.labelSize, params.labelSize / k * 1.4);
   g.selectAll("g.nd text:not(.yr):not(.badge-txt)")
     .style("display", function(d) {
@@ -801,7 +801,7 @@ const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
     })
     .attr("font-size", `${labelSize}px`);
 
-  // Año: mismo principio
+  // ── AÑO: mismo principio, centrado real ──
   const yearSize = Math.min(params.yearSize, params.yearSize / k * 1.4);
   g.selectAll("g.nd text.yr")
     .style("display", function(d) {
@@ -810,23 +810,23 @@ const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
     .attr("font-size", `${yearSize}px`)
     .attr("dy", "0.35em");
 
-  // Badge: escala con el nodo pero acotado
-  const badgeR = Math.min(6, Math.max(3.5, 5.5));
-  const badgeFontPx = Math.min(8, Math.max(5, 7));
+  // ── BADGE: tamaño y posición constantes en pantalla ──
+  const badgeR = Math.max(3, 5.5 / k);
+  const gap = Math.max(1, 3 / k);
   g.selectAll("g.nd circle.badge")
     .attr("r", badgeR)
     .attr("transform", function(d) {
       if (!d) return "";
-      const r = nodeR(d);
-      return `translate(${r + badgeR + 2}, ${-(r + badgeR + 2)})`;
+      const r = nodeR(d) + 5;
+      return `translate(${r + gap + badgeR}, ${-(r + gap + badgeR)})`;
     });
   g.selectAll("g.nd text.badge-txt")
-    .attr("font-size", `${badgeFontPx}px`)
+    .attr("font-size", `${Math.max(4, 6 / k)}px`)
     .attr("y", badgeR * 0.4)
     .attr("transform", function(d) {
       if (!d) return "";
-      const r = nodeR(d);
-      return `translate(${r + badgeR + 2}, ${-(r + badgeR + 2)})`;
+      const r = nodeR(d) + 5;
+      return `translate(${r + gap + badgeR}, ${-(r + gap + badgeR)})`;
     });
 });
     svg.call(zoom);
