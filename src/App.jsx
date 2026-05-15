@@ -789,30 +789,30 @@ export default function UAPAtlas() {
     for (let y = 0; y < h; y += 60) grid.append("line").attr("x1",0).attr("y1",y).attr("x2",w).attr("y2",y).attr("stroke","#38bdf8");
 
     const g = svg.append("g");
-    const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
+const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
   g.attr("transform", e.transform);
   const k = e.transform.k;
 
-  // ── LABELS: font-size constante en pantalla (mín 8px, máx 13px) ──
-  const labelPx = Math.min(13, Math.max(8, params.labelSize));
+  // Labels: visibilidad por umbral, tamaño natural con tope
+  const labelSize = Math.min(params.labelSize, params.labelSize / k * 1.4);
   g.selectAll("g.nd text:not(.yr):not(.badge-txt)")
     .style("display", function(d) {
       return d && nodeR(d) * k > 6 ? null : "none";
     })
-    .attr("font-size", `${labelPx / k}px`);
+    .attr("font-size", `${labelSize}px`);
 
-  // ── AÑO: centrado, font-size constante (mín 6px, máx 9px) ──
-  const yearPx = Math.min(9, Math.max(6, params.yearSize));
+  // Año: mismo principio
+  const yearSize = Math.min(params.yearSize, params.yearSize / k * 1.4);
   g.selectAll("g.nd text.yr")
     .style("display", function(d) {
       return d && nodeR(d) * k > 10 ? null : "none";
     })
-    .attr("font-size", `${yearPx / k}px`)
+    .attr("font-size", `${yearSize}px`)
     .attr("dy", "0.35em");
 
-  // ── BADGE: escala proporcional con límites (mín 4px, máx 7px en pantalla) ──
-  const badgeR = Math.min(7, Math.max(4, 5.5 * k)) / k;
-  const badgeFontPx = Math.min(8, Math.max(5, 7 * k)) / k;
+  // Badge: escala con el nodo pero acotado
+  const badgeR = Math.min(6, Math.max(3.5, 5.5));
+  const badgeFontPx = Math.min(8, Math.max(5, 7));
   g.selectAll("g.nd circle.badge")
     .attr("r", badgeR)
     .attr("transform", function(d) {
