@@ -326,6 +326,9 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
     <button class="nav-tab" onclick="showTab('prompts')" id="tab-prompts">
       <span class="tab-dot"></span>Prompts
     </button>
+    <button class="nav-tab" onclick="showTab('guns')" id="tab-guns">
+      <span class="tab-dot"></span>Pistolas
+    </button>
   </nav>
 
   <div class="content">
@@ -360,6 +363,12 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
           <div class="tool-name">Prompts Rápidos</div>
           <div class="tool-desc">Biblioteca de prompts optimizados para abrir conversaciones nuevas con Claude con el contexto completo del atlas. Un click para copiar.</div>
           <span class="tool-status status-ready">Listo</span>
+        </div>
+        <div class="tool-card" onclick="showTab('guns')">
+          <div class="tool-icon">◎</div>
+          <div class="tool-name">Pistolas Humeantes</div>
+          <div class="tool-desc">Genera un nuevo set de pistolas humeantes con IA. Filtra por contexto (incidentes, programas, actores, solo oficial), revisa y aprueba cada patrón, exporta el smokingGuns.js listo para subir.</div>
+          <span class="tool-status status-ready">Listo · ~$0.25</span>
         </div>
       </div>
 
@@ -529,6 +538,81 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
       <div class="prompts-grid" id="promptsGrid"></div>
     </div>
 
+    <!-- ── PISTOLAS HUMEANTES ── -->
+    <div id="view-guns" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Generador de Pistolas Humeantes</div>
+        <div class="section-sub">Claude analiza el grafo completo y detecta patrones anómalos, gaps documentales y cadenas rotas. Revisa y aprueba cada pistola antes de exportar.</div>
+      </div>
+
+      <!-- Filtros de contexto -->
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px">Filtros de contexto</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-secondary)">
+            <input type="checkbox" id="ctx-all" checked onchange="gunsCtxChange('all',this.checked)" style="accent-color:var(--accent)"> Todos
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-secondary)">
+            <input type="checkbox" id="ctx-incidents" onchange="gunsCtxChange('incidents',this.checked)" style="accent-color:var(--accent)"> Incidentes
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-secondary)">
+            <input type="checkbox" id="ctx-programs" onchange="gunsCtxChange('programs',this.checked)" style="accent-color:var(--accent)"> Programas
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-secondary)">
+            <input type="checkbox" id="ctx-persons" onchange="gunsCtxChange('persons',this.checked)" style="accent-color:var(--accent)"> Actores
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-secondary)">
+            <input type="checkbox" id="ctx-concepts" onchange="gunsCtxChange('concepts',this.checked)" style="accent-color:var(--accent)"> Conceptos
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-secondary)">
+            <input type="checkbox" id="ctx-official" onchange="gunsCtxChange('official',this.checked)" style="accent-color:var(--accent)"> Solo oficial (credibility:high)
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">Cantidad objetivo:</div>
+          <select id="gunsCount" style="background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-secondary);font-family:var(--font-mono);font-size:11px;padding:3px 8px">
+            <option value="6">6 pistolas</option>
+            <option value="8" selected>8 pistolas</option>
+            <option value="10">10 pistolas</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">Énfasis analítico:</div>
+          <select id="gunsEmphasis" style="background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-secondary);font-family:var(--font-mono);font-size:11px;padding:3px 8px">
+            <option value="balanced">Equilibrado</option>
+            <option value="gaps">Gaps documentales</option>
+            <option value="paradox">Paradojas de red</option>
+            <option value="bridges">Nodos puente únicos</option>
+            <option value="temporal">Cadenas temporales</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Pistolas actuales -->
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Pistolas actuales en el atlas (referencia)</div>
+        <div id="gunsCurrentList" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      </div>
+
+      <!-- Botón generar -->
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="btn btn-primary" id="gunsBtn" onclick="runGuns()" style="flex:1">◎ Generar pistolas humeantes con IA</button>
+        <button class="btn btn-ghost" onclick="clearGuns()">Limpiar</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+        <span id="gunsStatus" style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">Listo · coste estimado ~$0.25</span>
+      </div>
+
+      <!-- Output -->
+      <div id="gunsOutput">
+        <div class="empty-state">
+          <div class="empty-icon">◎</div>
+          <div class="empty-title">Generador listo</div>
+          <div class="empty-desc">Configura los filtros y pulsa Generar. Claude analizará el grafo completo y detectará los patrones más relevantes.</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -575,11 +659,12 @@ window.addEventListener('load', () => {
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
 function showTab(name) {
-  ['home','editorial','monitor','stats','prompts'].forEach(t => {
+  ['home','editorial','monitor','stats','prompts','guns'].forEach(t => {
     document.getElementById('view-'+t).style.display = t===name ? 'block' : 'none';
     document.getElementById('tab-'+t).classList.toggle('active', t===name);
   });
   if (name==='editorial') document.getElementById('view-editorial').style.display = 'flex';
+  if (name==='guns') initGunsView();
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
@@ -859,6 +944,339 @@ function copyPrompt(i, btn) {
 function togglePrompt(i) {
   const el = document.getElementById(`prompt-full-${i}`);
   el.style.display = el.style.display==='none'?'block':'none';
+}
+// ── PISTOLAS HUMEANTES ────────────────────────────────────────────────────────
+
+const CURRENT_GUNS = [
+  { id:'sg1', title:'Kammler: el nodo fantasma', severity:'critical', type:'gap' },
+  { id:'sg2', title:'Rosin: puente de 46 años y betweenness cero', severity:'critical', type:'paradox' },
+  { id:'sg3', title:'Pío XII: la intersección imposible', severity:'critical', type:'bridge' },
+  { id:'sg4', title:'Enoc: 2.326 años de conexión directa', severity:'high', type:'temporal' },
+  { id:'sg5', title:'La cadena de campana rota', severity:'high', type:'morphological' },
+  { id:'sg6', title:'Salas→Nuclear→PURSUE: 59 años de hilo directo', severity:'high', type:'bridge' },
+  { id:'sg7', title:'Juan XXIII→Enoc→Soulwatchers', severity:'medium', type:'bridge' },
+  { id:'sg8', title:'Memo Wilson-Davis: material en manos privadas', severity:'critical', type:'gap' },
+];
+
+const NODES_SUMMARY = [
+  {id:'aurora1897',cat:'incident',credibility:'medium',betweenness:11.2},
+  {id:'magenta1933',cat:'incident',credibility:'high',betweenness:554},
+  {id:'la_battle',cat:'incident',credibility:'medium',betweenness:8.3},
+  {id:'foo_fighters',cat:'incident',credibility:'high',betweenness:45.1},
+  {id:'roswell1947',cat:'incident',credibility:'high',betweenness:351},
+  {id:'malmstrom1967',cat:'incident',credibility:'high',betweenness:78.4},
+  {id:'kecksburg1965',cat:'incident',credibility:'medium',betweenness:42.7},
+  {id:'nimitz2004',cat:'incident',credibility:'high',betweenness:188.3},
+  {id:'western_us_2025',cat:'incident',credibility:'high',betweenness:33.2},
+  {id:'rendlesham1980',cat:'incident',credibility:'high',betweenness:55.9},
+  {id:'varginha1996',cat:'incident',credibility:'medium',betweenness:22.1},
+  {id:'colares1977',cat:'incident',credibility:'medium',betweenness:18.6},
+  {id:'rs33',cat:'incident',credibility:'medium',betweenness:14.3},
+  {id:'die_glocke',cat:'program',credibility:'medium',betweenness:89.2},
+  {id:'paperclip',cat:'program',credibility:'high',betweenness:112.4},
+  {id:'blue_book',cat:'program',credibility:'high',betweenness:67.8},
+  {id:'aatip',cat:'program',credibility:'high',betweenness:145.6},
+  {id:'imm_constellation',cat:'program',credibility:'medium',betweenness:142},
+  {id:'pursue_r01',cat:'program',credibility:'high',betweenness:98.3},
+  {id:'legacy_program',cat:'program',credibility:'medium',betweenness:198},
+  {id:'grusch',cat:'person',credibility:'high',betweenness:588},
+  {id:'elizondo',cat:'person',credibility:'high',betweenness:312},
+  {id:'gallaudet',cat:'person',credibility:'high',betweenness:44.2},
+  {id:'kirkpatrick',cat:'person',credibility:'high',betweenness:55.7},
+  {id:'vonbraun',cat:'person',credibility:'high',betweenness:134.5},
+  {id:'kammler',cat:'person',credibility:'medium',betweenness:5.6},
+  {id:'nell',cat:'person',credibility:'medium',betweenness:12.1},
+  {id:'luna',cat:'person',credibility:'low',betweenness:8.4},
+  {id:'burchett',cat:'person',credibility:'high',betweenness:38.9},
+  {id:'nolan',cat:'person',credibility:'high',betweenness:67.3},
+  {id:'puthoff',cat:'person',credibility:'medium',betweenness:88.1},
+  {id:'davis',cat:'person',credibility:'medium',betweenness:72.4},
+  {id:'mellon',cat:'person',credibility:'high',betweenness:94.2},
+  {id:'stratton',cat:'person',credibility:'high',betweenness:122.8},
+  {id:'semivan',cat:'person',credibility:'medium',betweenness:44.6},
+  {id:'fravor',cat:'person',credibility:'high',betweenness:156.7},
+  {id:'salas',cat:'person',credibility:'high',betweenness:89.3},
+  {id:'burlison',cat:'person',credibility:'high',betweenness:33.1},
+  {id:'shellenberger',cat:'person',credibility:'high',betweenness:28.4},
+  {id:'halt',cat:'person',credibility:'high',betweenness:41.2},
+  {id:'greer',cat:'person',credibility:'low',betweenness:22.8},
+  {id:'vallee',cat:'person',credibility:'high',betweenness:78.9},
+  {id:'hynek',cat:'person',credibility:'high',betweenness:66.4},
+  {id:'pio12',cat:'person',credibility:'medium',betweenness:44.3},
+  {id:'juan23',cat:'person',credibility:'low',betweenness:11.2},
+  {id:'rosin',cat:'person',credibility:'medium',betweenness:8.7},
+  {id:'marco_rubio',cat:'person',credibility:'high',betweenness:88.4},
+  {id:'farah_dan',cat:'person',credibility:'medium',betweenness:134},
+  {id:'aaro',cat:'institution',credibility:'high',betweenness:78.3},
+  {id:'sol_foundation',cat:'institution',credibility:'medium',betweenness:44.2},
+  {id:'vaticano',cat:'institution',credibility:'medium',betweenness:67.8},
+  {id:'nasa',cat:'institution',credibility:'high',betweenness:55.1},
+  {id:'fbi',cat:'institution',credibility:'high',betweenness:33.4},
+  {id:'nyt2017',cat:'event',credibility:'high',betweenness:88.9},
+  {id:'congress2023',cat:'event',credibility:'high',betweenness:122.4},
+  {id:'wilson_memo',cat:'event',credibility:'medium',betweenness:98.7},
+  {id:'rendlesham_memo',cat:'event',credibility:'high',betweenness:44.3},
+  {id:'disclosure2001',cat:'event',credibility:'medium',betweenness:33.2},
+  {id:'nuclear_pattern',cat:'concept',credibility:'high',betweenness:222},
+  {id:'cat_disclosure',cat:'concept',credibility:'medium',betweenness:55.4},
+  {id:'y2027',cat:'concept',credibility:'medium',betweenness:78.3},
+  {id:'tsm',cat:'concept',credibility:'medium',betweenness:44.2},
+  {id:'enoc',cat:'concept',credibility:'medium',betweenness:41.8},
+  {id:'tompkins',cat:'person',credibility:'low',betweenness:18.4},
+  {id:'forrestal',cat:'person',credibility:'medium',betweenness:33.7},
+  {id:'ontological_shock',cat:'concept',credibility:'medium',betweenness:55.9},
+  {id:'capovilla',cat:'person',credibility:'medium',betweenness:22.1},
+  {id:'george_bush_sr',cat:'person',credibility:'medium',betweenness:28.4},
+  {id:'patron_muertes',cat:'concept',credibility:'medium',betweenness:44.6},
+  {id:'patron_encubrimiento',cat:'concept',credibility:'high',betweenness:178.3},
+  {id:'coulthart',cat:'person',credibility:'high',betweenness:67.2},
+  {id:'barber',cat:'person',credibility:'high',betweenness:33.4},
+  {id:'lacatski',cat:'person',credibility:'medium',betweenness:55.1},
+  {id:'villarroel',cat:'person',credibility:'high',betweenness:22.8},
+  {id:'tictac_arv',cat:'concept',credibility:'high',betweenness:89.4},
+  {id:'nhi_agreements',cat:'concept',credibility:'low',betweenness:33.2},
+  {id:'edicion_retroactiva',cat:'concept',credibility:'high',betweenness:122.6},
+  {id:'age_of_disclosure',cat:'concept',credibility:'medium',betweenness:118},
+  {id:'aurora_pilot',cat:'person',credibility:'medium',betweenness:14.2},
+  {id:'marconi',cat:'person',credibility:'medium',betweenness:11.8},
+];
+
+let _gunsCtx = new Set(['all']);
+let _gunsDecisions = [], _gunsApprovals = {};
+
+function gunsCtxChange(key, checked) {
+  if (key === 'all') {
+    if (checked) {
+      _gunsCtx = new Set(['all']);
+      ['incidents','programs','persons','concepts','official'].forEach(k => {
+        const el = document.getElementById('ctx-'+k);
+        if (el) el.checked = false;
+      });
+    } else {
+      _gunsCtx.delete('all');
+    }
+  } else {
+    document.getElementById('ctx-all').checked = false;
+    _gunsCtx.delete('all');
+    if (checked) _gunsCtx.add(key);
+    else _gunsCtx.delete(key);
+    if (_gunsCtx.size === 0) {
+      _gunsCtx.add('all');
+      document.getElementById('ctx-all').checked = true;
+    }
+  }
+}
+
+function initGunsView() {
+  const list = document.getElementById('gunsCurrentList');
+  if (!list || list.innerHTML) return;
+  const sevColor = {critical:'var(--danger)',high:'var(--warning)',medium:'var(--accent)'};
+  list.innerHTML = CURRENT_GUNS.map(g =>
+    `<span style="font-family:var(--font-mono);font-size:10px;padding:3px 8px;border-radius:3px;background:${sevColor[g.severity]}18;border:1px solid ${sevColor[g.severity]}33;color:${sevColor[g.severity]}">${g.id}: ${g.title.substring(0,40)}…</span>`
+  ).join('');
+}
+
+function clearGuns() {
+  _gunsDecisions = []; _gunsApprovals = {};
+  document.getElementById('gunsOutput').innerHTML = `<div class="empty-state"><div class="empty-icon">◎</div><div class="empty-title">Generador listo</div><div class="empty-desc">Configura los filtros y pulsa Generar.</div></div>`;
+  document.getElementById('gunsStatus').textContent = 'Listo · coste estimado ~$0.25';
+}
+
+async function runGuns() {
+  const ctx = [..._gunsCtx];
+  const count = document.getElementById('gunsCount').value;
+  const emphasis = document.getElementById('gunsEmphasis').value;
+
+  // Filtrar nodos según contexto
+  let filteredNodes = NODES_SUMMARY;
+  if (!ctx.includes('all')) {
+    const catMap = { incidents:'incident', programs:'program', persons:'person', concepts:'concept' };
+    filteredNodes = NODES_SUMMARY.filter(n => {
+      if (ctx.includes('official') && n.credibility !== 'high') return false;
+      const cats = ctx.filter(c => catMap[c]).map(c => catMap[c]);
+      if (cats.length && !cats.includes(n.cat)) return false;
+      return true;
+    });
+  } else if (ctx.includes('official')) {
+    filteredNodes = NODES_SUMMARY.filter(n => n.credibility === 'high');
+  }
+
+  const emphasisInstr = {
+    balanced: 'Equilibra los tipos: gaps documentales, paradojas de red, nodos puente únicos y cadenas temporales.',
+    gaps: 'Prioriza gaps documentales — nodos sin fuentes verificables, cadenas de custodia rotas, ausencias que requieren explicación.',
+    paradox: 'Prioriza paradojas de red — nodos con alta densidad local pero baja betweenness, o viceversa.',
+    bridges: 'Prioriza nodos puente únicos — nodos cuya eliminación desconecta clusters completos.',
+    temporal: 'Prioriza cadenas temporales — secuencias que atraviesan décadas con continuidad documental.',
+  }[emphasis];
+
+  const gunsPrompt = `Eres el analista senior del UAP Intelligence Atlas v4.5 (80 nodos, 366 conexiones).
+
+PISTOLAS ACTUALES (no repetir, busca patrones nuevos):
+${CURRENT_GUNS.map(g => `- ${g.id}: "${g.title}" (${g.severity}, ${g.type})`).join('\n')}
+
+SUBGRAFO FILTRADO (${filteredNodes.length} nodos con betweenness y credibilidad):
+${filteredNodes.map(n => `${n.id}[${n.cat},${n.credibility},b=${n.betweenness.toFixed(1)}]`).join(' · ')}
+
+ÉNFASIS ANALÍTICO: ${emphasisInstr}
+
+INSTRUCCIÓN: Genera exactamente ${count} pistolas humeantes NUEVAS que no estén ya en la lista actual. Cada pistola debe:
+1. Usar solo IDs del subgrafo filtrado
+2. Tener base documental o estructural verificable (no especulación pura)
+3. Conectar al menos 2 nodos con una tensión real entre ellos
+4. Ofrecer una implicación concreta y falsificable
+
+Responde SOLO JSON (sin markdown):
+{
+  "guns_es": [
+    {
+      "id": "sg9",
+      "context": ["all"],
+      "nodes": ["id1","id2","id3"],
+      "path": ["id1","id2","id3"],
+      "title": "Título en español",
+      "type": "gap|paradox|bridge|temporal|morphological|contradiction",
+      "severity": "critical|high|medium",
+      "headline": "Una frase que resume la anomalía",
+      "analysis": "2-4 frases densas con datos concretos de los nodos y su relación estructural",
+      "implication": "Consecuencia concreta y verificable",
+      "confidence": "verified|strong|speculative"
+    }
+  ],
+  "guns_en": [
+    { ...mismo schema en inglés con mismos IDs... }
+  ]
+}`;
+
+  document.getElementById('gunsBtn').disabled = true;
+  document.getElementById('gunsStatus').textContent = 'Analizando grafo…';
+  document.getElementById('gunsOutput').innerHTML = `<div class="loading"><div class="spinner"></div><div class="loading-text">Claude detectando patrones en ${filteredNodes.length} nodos…</div></div>`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:6000, messages:[{role:'user',content:gunsPrompt}] })
+    });
+    const data = await res.json();
+    const text = data.content?.find(b=>b.type==='text')?.text || '';
+    const clean = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    const result = JSON.parse(clean);
+    renderGuns(result);
+  } catch(err) {
+    document.getElementById('gunsOutput').innerHTML = `<div class="empty-state"><div class="empty-icon" style="color:var(--danger)">⚠</div><div class="empty-title" style="color:var(--danger)">Error</div><div class="empty-desc">${err.message}</div></div>`;
+    document.getElementById('gunsStatus').textContent = 'Error · revisa la API key en Vercel';
+  }
+  document.getElementById('gunsBtn').disabled = false;
+}
+
+function renderGuns(result) {
+  const gunsEs = result.guns_es || [];
+  const gunsEn = result.guns_en || [];
+  _gunsDecisions = gunsEs.map((g,i) => ({ es: g, en: gunsEn[i] || g }));
+  _gunsApprovals = {};
+  _gunsDecisions.forEach((_,i) => _gunsApprovals[i]='pending');
+
+  const sevColor = {critical:'var(--danger)',high:'var(--warning)',medium:'var(--accent)'};
+  const typeLabel = {gap:'Gap documental',paradox:'Paradoja de red',bridge:'Nodo puente',temporal:'Cadena temporal',morphological:'Morfológica',contradiction:'Contradicción'};
+  const confLabel = {verified:'Verificado',strong:'Sólido',speculative:'Especulativo'};
+
+  let h = `<div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px">${gunsEs.length} pistolas generadas · revisa y aprueba</div>`;
+
+  _gunsDecisions.forEach((d,i) => {
+    const g = d.es;
+    const sev = g.severity || 'medium';
+    h += `<div class="decision-card" id="gcard-${i}" style="margin-bottom:10px">
+      <div class="card-header" onclick="toggleGCard(${i})">
+        <span class="type-badge" style="background:${sevColor[sev]}18;border:1px solid ${sevColor[sev]}33;color:${sevColor[sev]}">${sev.toUpperCase()}</span>
+        <span class="card-title">${g.id}: ${g.title}</span>
+        <div class="card-actions" onclick="event.stopPropagation()">
+          <button class="action-btn approve-btn" onclick="setGunsApproval(${i},'approved')">✓</button>
+          <button class="action-btn reject-btn" onclick="setGunsApproval(${i},'rejected')">✕</button>
+        </div>
+      </div>
+      <div class="card-body" id="gbody-${i}">
+        <div class="reasoning-box">
+          <div class="reasoning-label">Tipo · Confianza</div>
+          <div class="reasoning-text">${typeLabel[g.type]||g.type} · ${confLabel[g.confidence]||g.confidence}</div>
+        </div>
+        <div class="field-group"><div class="field-label">Titular</div><div class="field-value" style="font-style:italic">${g.headline}</div></div>
+        <div class="field-group"><div class="field-label">Análisis</div><div class="field-value">${g.analysis}</div></div>
+        <div class="field-group"><div class="field-label">Implicación</div><div class="field-value" style="color:var(--warning)">${g.implication}</div></div>
+        <div class="field-group"><div class="field-label">Nodos</div><div class="links-list">${(g.nodes||[]).map(n=>`<span class="link-tag">${n}</span>`).join('')}</div></div>
+        <div class="field-group"><div class="field-label">Path narrativo</div><div class="field-value field-mono" style="font-size:10px">${(g.path||[]).join(' → ')}</div></div>
+        ${d.en?`<div class="field-group" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><div class="field-label">EN: ${d.en.title}</div><div class="field-value">${d.en.analysis}</div></div>`:''}
+      </div>
+    </div>`;
+  });
+
+  h += `<div style="display:flex;gap:8px;margin:16px 0"><button class="btn btn-primary" onclick="generateGunsCode()" style="flex:1">◎ Exportar aprobadas → smokingGuns.js</button></div>`;
+  h += `<div id="gunsCodeOutput"></div>`;
+
+  document.getElementById('gunsOutput').innerHTML = h;
+  document.getElementById('gunsStatus').textContent = `${gunsEs.length} generadas · 0 aprobadas`;
+}
+
+function toggleGCard(i) {
+  const b = document.getElementById(`gbody-${i}`);
+  b.style.display = b.style.display==='none'?'block':'none';
+}
+
+function setGunsApproval(i,state) {
+  _gunsApprovals[i]=state;
+  document.getElementById(`gcard-${i}`).className=`decision-card ${state}`;
+  const approved = Object.values(_gunsApprovals).filter(v=>v==='approved').length;
+  document.getElementById('gunsStatus').textContent = `${approved}/${Object.keys(_gunsApprovals).length} aprobadas`;
+}
+
+function generateGunsCode() {
+  const approvedIdxs = Object.entries(_gunsApprovals).filter(([,v])=>v==='approved').map(([k])=>parseInt(k));
+  if (!approvedIdxs.length) { alert('Aprueba al menos una pistola.'); return; }
+
+  const nextId = CURRENT_GUNS.length + 1;
+  const approvedDecisions = approvedIdxs.map((i,offset) => {
+    const d = _gunsDecisions[i];
+    const newId = 'sg'+(nextId+offset);
+    return { es: {...d.es, id:newId}, en: {...d.en, id:newId} };
+  });
+
+  const fmtGun = (g) => `    {
+      id:"${g.id}", context:${JSON.stringify(g.context||['all'])},
+      nodes:${JSON.stringify(g.nodes||[])},
+      path:${JSON.stringify(g.path||[])},
+      title:"${(g.title||'').replace(/"/g,'\\"')}", type:"${g.type}", severity:"${g.severity}",
+      headline:"${(g.headline||'').replace(/"/g,'\\"')}",
+      analysis:"${(g.analysis||'').replace(/"/g,'\\"')}",
+      implication:"${(g.implication||'').replace(/"/g,'\\"')}",
+      confidence:"${g.confidence}"
+    }`;
+
+  const esBlock = approvedDecisions.map(d => fmtGun(d.es)).join(',\n');
+  const enBlock = approvedDecisions.map(d => fmtGun(d.en)).join(',\n');
+
+  const code = `// ── Añadir al array SMOKING_GUNS.es[] ──
+${esBlock},
+
+// ── Añadir al array SMOKING_GUNS.en[] ──
+${enBlock},`;
+
+  const id = 'guns-export';
+  const codeHtml = `<div class="code-section">
+    <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">
+      Código exportado (${approvedDecisions.length} aprobadas) · src/data/smokingGuns.js
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">src/data/smokingGuns.js</span>
+        <button class="copy-btn" onclick="copyCode(this,'${id}')">Copiar</button>
+      </div>
+      <pre id="${id}">${escHtml(code)}</pre>
+    </div>
+    <div style="padding:8px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:var(--radius-sm);margin-top:8px">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--success)">✓ Copia → pega en smokingGuns.js → push a GitHub → deploy en ~60s</div>
+    </div>
+  </div>`;
+
+  document.getElementById('gunsCodeOutput').innerHTML = codeHtml;
+  document.getElementById('gunsCodeOutput').scrollIntoView({behavior:'smooth'});
 }
 </script>
 </body>
