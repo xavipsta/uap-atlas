@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import * as d3 from "d3";
 import { NODES, LINKS_DATA, CAT_COLORS, CRED_COLORS, BETWEENNESS, CLUSTERING } from "./data/nodes.js";
@@ -804,12 +806,11 @@ export default function UAPAtlas() {
   });
 
   // Badge: tamaño constante en pantalla independiente del zoom
-  const s = 1 / k;
-  g.selectAll("g.nd circle.badge, g.nd text.badge-txt").attr("transform", function(d) {
-    if (!d) return "";
-    const r = nodeR(d);
-    return `translate(${r + 5}, ${-(r + 5)}) scale(${s})`;
-  });
+  const s = Math.min(1, 1 / k);
+g.selectAll("g.nd circle.badge, g.nd text.badge-txt").attr("transform", function(d) {
+  if (!d) return "";
+  const r = nodeR(d);
+  return `translate(${r + 5}, ${-(r + 5)}) scale(${s})`;
 });
     svg.call(zoom);
 
@@ -942,7 +943,7 @@ ng.filter(d => srcCount(d) > 0).append("text")
     // Year — solo si el nodo tiene espacio suficiente
 ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
   .text(d => d.year < 0 ? `~${Math.abs(d.year)}${lang==="es"?"aC":"BC"}` : d.year)
-  .attr("text-anchor", "middle").attr("dy", "0.35em")
+  .attr("text-anchor", "middle").attr("dy", d => `${nodeR(d) * 0.45}`)
   .attr("fill", d => CAT_COLORS[d.cat] + "bb")
   .attr("font-size", `${params.yearSize}px`)
   .attr("font-family", "JetBrains Mono, monospace")
