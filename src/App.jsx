@@ -867,12 +867,6 @@ g.selectAll("g.nd circle.badge, g.nd text.badge-txt").attr("transform", function
       .style("filter", "url(#glow)")
       .attr("class", "ic");
 
-    // Core dot
-    ng.append("circle")
-      .attr("r", d => Math.min(4, nodeR(d) * 0.3))
-      .attr("fill", d => CAT_COLORS[d.cat])
-      .attr("class", "cd");
-
     // Source badge — FUERA del anillo exterior
 ng.filter(d => srcCount(d) > 0).append("circle")
   .attr("r", 5.5).attr("fill", "#0d1117")
@@ -941,7 +935,7 @@ ng.filter(d => srcCount(d) > 0).append("text")
     // Year — solo si el nodo tiene espacio suficiente
 ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
   .text(d => d.year < 0 ? `~${Math.abs(d.year)}${lang==="es"?"aC":"BC"}` : d.year)
-  .attr("text-anchor", "middle").attr("dy", d => `${nodeR(d) * 0.45}`)
+  .attr("text-anchor", "middle").attr("dy", d => `${nodeR(d) * 0.35}`)
   .attr("fill", d => CAT_COLORS[d.cat] + "bb")
   .attr("font-size", `${params.yearSize}px`)
   .attr("font-family", "JetBrains Mono, monospace")
