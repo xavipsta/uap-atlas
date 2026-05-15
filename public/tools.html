@@ -911,7 +911,13 @@ JSON PURO (sin markdown):
     const data=await res.json();
     const text=data.content?.find(b=>b.type==='text')?.text||'';
     const clean=text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-    const result=JSON.parse(clean);
+    // Limpiar caracteres de control que rompen JSON
+const sanitized = clean
+  .replace(/[\u0000-\u001F\u007F]/g, ' ')  // control chars
+  .replace(/\n/g, ' ')
+  .replace(/\r/g, ' ')
+  .replace(/\t/g, ' ');
+const result = JSON.parse(sanitized);
     _gunsGeneratedEs=result.guns_es||[];
     _gunsGeneratedEn=result.guns_en||[];
     renderGuns(result);
