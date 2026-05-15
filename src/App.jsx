@@ -793,40 +793,22 @@ const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
   g.attr("transform", e.transform);
   const k = e.transform.k;
 
-  // ── LABELS: reducción suave en zoom in, nunca desaparecen ──
-  const labelSize = Math.min(params.labelSize, params.labelSize / k * 1.4);
+  // Labels: ocultar si el nodo es demasiado pequeño en pantalla
   g.selectAll("g.nd text:not(.yr):not(.badge-txt)")
     .style("display", function(d) {
       return d && nodeR(d) * k > 6 ? null : "none";
-    })
-    .attr("font-size", `${labelSize}px`);
+    });
 
-  // ── AÑO: mismo principio, centrado real ──
-  const yearSize = Math.min(params.yearSize, params.yearSize / k * 1.4);
+  // Año: ocultar si no hay espacio
   g.selectAll("g.nd text.yr")
     .style("display", function(d) {
       return d && nodeR(d) * k > 10 ? null : "none";
-    })
-    .attr("font-size", `${yearSize}px`)
-    .attr("dy", "0.35em");
-
-  // ── BADGE: tamaño y posición constantes en pantalla ──
-  const badgeR = Math.max(3, 5.5 / k);
-  const gap = Math.max(1, 3 / k);
-  g.selectAll("g.nd circle.badge")
-    .attr("r", badgeR)
-    .attr("transform", function(d) {
-      if (!d) return "";
-      const r = nodeR(d) + 5;
-      return `translate(${r + gap + badgeR}, ${-(r + gap + badgeR)})`;
     });
-  g.selectAll("g.nd text.badge-txt")
-    .attr("font-size", `${Math.max(4, 6 / k)}px`)
-    .attr("y", badgeR * 0.4)
-    .attr("transform", function(d) {
-      if (!d) return "";
-      const r = nodeR(d) + 5;
-      return `translate(${r + gap + badgeR}, ${-(r + gap + badgeR)})`;
+
+  // Badge: solo visibilidad, posición fija relativa al nodo
+  g.selectAll("g.nd circle.badge, g.nd text.badge-txt")
+    .style("display", function(d) {
+      return d && nodeR(d) * k > 6 ? null : "none";
     });
 });
     svg.call(zoom);
@@ -897,22 +879,25 @@ ng.each(function(d) {
     .attr("class", "ic");
 });
 
-    // Source badge — FUERA del anillo exterior
+    // Source badge
 ng.filter(d => srcCount(d) > 0).append("circle")
-  .attr("r", 5.5).attr("fill", "#0d1117")
+  .attr("r", 5.5)
+  .attr("fill", "#0d1117")
   .attr("stroke", d => hasOfficial(d) ? "#34d399" : "#fb923c")
   .attr("stroke-width", 1.2)
-  .attr("cx", 0).attr("cy", 0)
   .attr("class", "badge")
-  .attr("transform", d => `translate(${nodeR(d) + 5}, ${-(nodeR(d) + 5)})`);
+  .attr("transform", d => `translate(${nodeR(d) + 8}, ${-(nodeR(d) + 8)})`);
+
 ng.filter(d => srcCount(d) > 0).append("text")
   .text(d => srcCount(d))
   .attr("text-anchor", "middle")
-  .attr("x", 0).attr("y", 3.5)
-  .attr("fill", "#e8edf3").attr("font-size", "7px")
-  .attr("font-family", "JetBrains Mono, monospace").attr("pointer-events", "none")
+  .attr("y", 3.5)
+  .attr("fill", "#e8edf3")
+  .attr("font-size", "7px")
+  .attr("font-family", "JetBrains Mono, monospace")
+  .attr("pointer-events", "none")
   .attr("class", "badge-txt")
-  .attr("transform", d => `translate(${nodeR(d) + 5}, ${-(nodeR(d) + 5)})`);
+  .attr("transform", d => `translate(${nodeR(d) + 8}, ${-(nodeR(d) + 8)})`);
     
     // Label — two lines when density is low enough
     if (params.nodeScale >= 1.35) {
