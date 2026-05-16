@@ -5,14 +5,11 @@ import { SOURCES } from "./data/sources.js";
 import { SMOKING_GUNS, NETWORK_INSIGHT } from "./data/smokingGuns.js";
 import { HELP } from "./data/help.js";
 import { PURSUE_RELEASES } from "./data/releases.js";
-
 // ─── CSS VARIABLES & GLOBAL STYLES ───────────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg: #080b0f;
       --bg-2: #0d1117;
@@ -38,7 +35,6 @@ const GlobalStyles = () => (
       --header-h: 52px;
       --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
     }
-
     html, body, #root { 
       height: 100vh !important; 
       width: 100vw !important;
@@ -57,12 +53,10 @@ const GlobalStyles = () => (
       max-width: 100vw !important;
       height: 100vh !important;
     }
-
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
       font-family: var(--font-ui); font-size: 14px; font-weight: 500;
@@ -77,21 +71,18 @@ const GlobalStyles = () => (
     .btn.danger:hover { background: rgba(244,63,94,0.1); }
     .btn-icon { padding: 0; width: 34px; }
     .btn-lg { height: 48px; padding: 0 24px; font-size: 15px; }
-
     .tag {
       display: inline-flex; align-items: center; gap: 4px;
       font-family: var(--font-mono); font-size: 10px; font-weight: 500;
       padding: 2px 8px; border-radius: 4px; letter-spacing: 0.04em;
       text-transform: uppercase;
     }
-
     .panel-section { padding: 16px; border-bottom: 1px solid var(--border); }
     .panel-label {
       font-family: var(--font-mono); font-size: 11px; font-weight: 600;
       color: var(--text-secondary); letter-spacing: 0.1em; text-transform: uppercase;
       margin-bottom: 12px;
     }
-
     .node-card {
       padding: 12px 14px; border-radius: var(--radius-sm);
       border: 1px solid var(--border); background: var(--bg-3);
@@ -99,21 +90,18 @@ const GlobalStyles = () => (
       display: flex; align-items: center; justify-content: space-between; gap: 8px;
     }
     .node-card:hover { border-color: var(--border-accent); background: var(--accent-dim); }
-
     .source-card {
       padding: 12px; border-radius: var(--radius-sm);
       border: 1px solid var(--border); background: var(--bg-3);
       transition: var(--transition); margin-bottom: 8px;
     }
     .source-card:hover { border-color: var(--border-accent); }
-
     .sg-card {
       padding: 14px; border-radius: var(--radius);
       border: 1px solid; cursor: pointer; transition: var(--transition);
       margin-bottom: 10px;
     }
     .sg-card:hover { filter: brightness(1.05); }
-
     input[type="text"] {
       width: 100%; height: 42px; padding: 0 14px;
       background: var(--bg-3); border: 1px solid var(--border);
@@ -123,13 +111,10 @@ const GlobalStyles = () => (
     }
     input[type="text"]::placeholder { color: var(--text-muted); }
     input[type="text"]:focus { border-color: var(--border-accent); background: var(--bg-2); }
-
     .fade-in { animation: fadeIn 0.25s ease forwards; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
-
     .slide-in { animation: slideIn 0.25s ease forwards; }
     @keyframes slideIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:translateX(0); } }
-
     @keyframes pulse-border {
       0%, 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); }
       50% { box-shadow: 0 0 0 3px rgba(244,63,94,0.2); }
@@ -138,17 +123,14 @@ const GlobalStyles = () => (
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.5; transform: scale(0.8); }
     }
-
     /* Mobile */
     @media (max-width: 768px) {
       :root { --sidebar-w: 100vw; }
     }
   `}</style>
 );
-
 // ─── LANGUAGE DETECTION ───────────────────────────────────────────────────────
 const detectLang = () => (navigator.language||"en").toLowerCase().startsWith("es") ? "es" : "en";
-
 // ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
 const T = {
   es: {
@@ -189,6 +171,13 @@ const T = {
     // ── Hint de primer uso ──
     hintText: "Haz clic en cualquier nodo para explorar",
     hintLang: "Cambia idioma arriba a la derecha · ES / EN",
+    // ── Modal expandido (Fase 2) ──
+    expandBtn: "Ampliar ↗",
+    expandTitle: "Análisis extendido",
+    expandClose: "Cerrar",
+    expandSources: "Fuentes documentales",
+    expandLinks: "Conexiones directas",
+    expandNoExpanded: "Análisis extendido no disponible aún para este nodo.",
   },
   en: {
     title: "UAP Atlas", subtitle: "Relational Intelligence Atlas",
@@ -228,9 +217,15 @@ const T = {
     // ── Hint de primer uso ──
     hintText: "Click any node to explore",
     hintLang: "Switch language top right · ES / EN",
+    // ── Modal expandido (Fase 2) ──
+    expandBtn: "Expand ↗",
+    expandTitle: "Extended analysis",
+    expandClose: "Close",
+    expandSources: "Documentary sources",
+    expandLinks: "Direct connections",
+    expandNoExpanded: "Extended analysis not yet available for this node.",
   }
 };
-
 const SEVERITY_CFG = {
   critical: { color: "#f43f5e", bg: "rgba(244,63,94,0.08)", border: "rgba(244,63,94,0.3)" },
   high:     { color: "#fb923c", bg: "rgba(251,146,60,0.08)", border: "rgba(251,146,60,0.3)" },
@@ -241,16 +236,11 @@ const CONF_CFG = {
   strong:      { color: "#38bdf8" },
   speculative: { color: "#fb923c" },
 };
-
 // ─── GRAPH HINT ───────────────────────────────────────────────────────────────
-// Tooltip de primer uso. Aparece al entrar desde el IntroScreen.
-// Se muestra en los DOS idiomas simultáneamente — idioma activo arriba, contrario abajo.
-// Auto-desaparece a los 5.5s. Click en cualquier parte lo cierra antes.
 function GraphHint({ lang, onDismiss }) {
   const t = T[lang];
   const tOther = T[lang === "es" ? "en" : "es"];
   const [visible, setVisible] = useState(false);
-
   useEffect(() => {
     const tin = setTimeout(() => setVisible(true), 100);
     const tout = setTimeout(() => {
@@ -259,12 +249,10 @@ function GraphHint({ lang, onDismiss }) {
     }, 5500);
     return () => { clearTimeout(tin); clearTimeout(tout); };
   }, [onDismiss]);
-
   const handleClick = () => {
     setVisible(false);
     setTimeout(onDismiss, 400);
   };
-
   return (
     <div
       onClick={handleClick}
@@ -282,7 +270,6 @@ function GraphHint({ lang, onDismiss }) {
         display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
         pointerEvents: "none",
       }}>
-        {/* Línea principal — idioma activo */}
         <div style={{
           fontFamily: "var(--font-mono)", fontSize: 13, fontWeight: 500,
           color: "var(--text-primary)",
@@ -297,7 +284,6 @@ function GraphHint({ lang, onDismiss }) {
           <span style={{ color: "var(--accent)", marginRight: 8 }}>◈</span>
           {t.hintText}
         </div>
-        {/* Línea secundaria — idioma contrario, más tenue */}
         <div style={{
           fontFamily: "var(--font-mono)", fontSize: 11,
           color: "var(--text-muted)",
@@ -310,7 +296,6 @@ function GraphHint({ lang, onDismiss }) {
         }}>
           {tOther.hintText}
         </div>
-        {/* Indicación de toggle de idioma */}
         <div style={{
           fontFamily: "var(--font-mono)", fontSize: 10,
           color: "var(--text-muted)", letterSpacing: "0.06em",
@@ -318,7 +303,6 @@ function GraphHint({ lang, onDismiss }) {
         }}>
           {t.hintLang}
         </div>
-        {/* Barra de progreso temporal */}
         <div style={{
           width: 120, height: 2, borderRadius: 1,
           background: "var(--border)", overflow: "hidden", marginTop: 4,
@@ -334,20 +318,15 @@ function GraphHint({ lang, onDismiss }) {
     </div>
   );
 }
-
 // ─── INTRO SCREEN ─────────────────────────────────────────────────────────────
-// Onboarding de primera visita. Se guarda en localStorage para no repetirse.
-// 100% bilingüe via objeto T. Toggle ES/EN visible en la pantalla.
 function IntroScreen({ lang, onEnter, onLangChange, nodeCount, linkCount }) {
   const t = T[lang];
   const [visible, setVisible] = useState(false);
   const [scanLine, setScanLine] = useState(0);
-
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 60);
     return () => clearTimeout(timer);
   }, []);
-
   useEffect(() => {
     let raf;
     let start = null;
@@ -361,16 +340,13 @@ function IntroScreen({ lang, onEnter, onLangChange, nodeCount, linkCount }) {
     raf = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(raf);
   }, []);
-
   const handleEnter = () => {
     try { localStorage.setItem("uap_atlas_visited", "1"); } catch {}
     onEnter();
   };
-
   const updated = new Date().toLocaleDateString(lang === "es" ? "es-ES" : "en-GB", {
     day: "2-digit", month: "short", year: "numeric"
   });
-
   return (
     <div style={{
       position: "fixed", inset: 0, zIndex: 2000,
@@ -406,7 +382,7 @@ function IntroScreen({ lang, onEnter, onLangChange, nodeCount, linkCount }) {
       ].map((s, i) => (
         <div key={i} style={{ position:"absolute", width:32, height:32, borderColor:"rgba(56,189,248,0.2)", ...s }}/>
       ))}
-      {/* Toggle ES/EN — esquina superior derecha */}
+      {/* Toggle ES/EN */}
       <div style={{
         position: "absolute", top: 20, right: 20,
         display: "flex", border: "1px solid var(--border)", borderRadius: 6, overflow: "hidden",
@@ -511,26 +487,22 @@ function IntroScreen({ lang, onEnter, onLangChange, nodeCount, linkCount }) {
     </div>
   );
 }
-
+// ─── HELP MODAL ───────────────────────────────────────────────────────────────
 function HelpModal({ lang, onClose, onLangChange }) {
   const [internalLang, setInternalLang] = useState(lang);
   const [activeIdx, setActiveIdx] = useState(0);
   const [search, setSearch] = useState("");
   const h = HELP[internalLang];
-
   const changeLang = l => { setInternalLang(l); setSearch(""); onLangChange?.(l); };
-
   useEffect(() => {
     const fn = e => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", fn);
     return () => window.removeEventListener("keydown", fn);
   }, [onClose]);
-
   const filtered = h.sections.filter(s =>
     !search || s.title.toLowerCase().includes(search.toLowerCase()) ||
     s.content.toLowerCase().includes(search.toLowerCase())
   );
-
   return (
     <div onClick={e => e.target === e.currentTarget && onClose()} style={{
       position:"fixed", inset:0, zIndex:1000,
@@ -612,14 +584,13 @@ function HelpModal({ lang, onClose, onLangChange }) {
         </div>
         {/* Footer */}
         <div style={{ padding:"10px 20px", borderTop:"1px solid var(--border)", background:"var(--bg-3)", display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
-          <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>UAP Intelligence Atlas · v4.1 · CC0</span>
+          <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>UAP Intelligence Atlas · v4.5 · CC0</span>
           <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{internalLang==="es"?"Pulsa ESC para cerrar":"Press ESC to close"}</span>
         </div>
       </div>
     </div>
   );
 }
-
 // ─── SOURCES PANEL ────────────────────────────────────────────────────────────
 function SourcesPanel({ nodeId, lang }) {
   const t = T[lang];
@@ -634,10 +605,8 @@ function SourcesPanel({ nodeId, lang }) {
       </a>
     </div>
   );
-
   const typeColor = { official:"var(--success)", congress:"var(--accent)", foia:"#34d399", leaked:"var(--warning)", media:"var(--purple)", explorer:"var(--text-secondary)", pending:"var(--text-muted)" };
   const confColor = { high:"var(--success)", medium:"var(--warning)", low:"var(--danger)", pending:"var(--text-muted)" };
-
   return (
     <div style={{ padding:16 }}>
       <div className="panel-label">{sources.length} {t.sourceCount}</div>
@@ -674,20 +643,248 @@ function SourcesPanel({ nodeId, lang }) {
   );
 }
 
+// ─── EXPANDED MODAL — Fase 2 ──────────────────────────────────────────────────
+// Modal analítico de nodo. Muestra node.expanded?.[lang] si existe,
+// fallback a node.desc + aviso. Incluye fuentes y conexiones directas.
+function ExpandedModal({ node, lang, onClose, allNodes, filteredIds, onSelectNode }) {
+  const t = T[lang];
+  const sources = SOURCES[node.id] || [];
+  const typeColor = { official:"var(--success)", congress:"var(--accent)", foia:"#34d399", leaked:"var(--warning)", media:"var(--purple)", explorer:"var(--text-secondary)", pending:"var(--text-muted)" };
+  const confColor = { high:"var(--success)", medium:"var(--warning)", low:"var(--danger)", pending:"var(--text-muted)" };
+  const credColor = { high:"#34d399", medium:"#fb923c", low:"#f43f5e" };
+
+  useEffect(() => {
+    const fn = e => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, [onClose]);
+
+  const hasExpanded = node.expanded?.[lang];
+  const connectedNodes = (node.links || [])
+    .filter(id => filteredIds.has(id))
+    .map(id => allNodes.find(n => n.id === id))
+    .filter(Boolean);
+
+  return (
+    <div
+      onClick={e => e.target === e.currentTarget && onClose()}
+      style={{
+        position: "fixed", inset: 0, zIndex: 1200,
+        background: "rgba(8,11,15,0.88)", backdropFilter: "blur(16px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 20,
+      }}
+    >
+      <div className="fade-in" style={{
+        width: "100%", maxWidth: 720,
+        maxHeight: "88vh",
+        background: "var(--bg-2)",
+        border: "1px solid var(--border-accent)",
+        borderRadius: 14,
+        display: "flex", flexDirection: "column",
+        overflow: "hidden",
+        boxShadow: "0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(56,189,248,0.12)",
+      }}>
+        {/* ── Header ── */}
+        <div style={{
+          padding: "0 20px", height: 58, flexShrink: 0,
+          background: "var(--bg-3)",
+          borderBottom: "1px solid var(--border)",
+          display: "flex", alignItems: "center", gap: 12,
+        }}>
+          {/* Icono categoría */}
+          <div style={{
+            width: 36, height: 36, borderRadius: 8, flexShrink: 0,
+            background: CAT_COLORS[node.cat] + "18",
+            border: `1px solid ${CAT_COLORS[node.cat]}33`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <span style={{ width: 10, height: 10, borderRadius: "50%", background: CAT_COLORS[node.cat], display: "block" }}/>
+          </div>
+          {/* Título + meta */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{
+              fontFamily: "var(--font-ui)", fontSize: 16, fontWeight: 700,
+              color: "var(--text-primary)", lineHeight: 1.2,
+              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            }}>
+              {node.label[lang]}
+            </div>
+            <div style={{ display: "flex", gap: 8, marginTop: 4, alignItems: "center" }}>
+              <span className="tag" style={{ background: CAT_COLORS[node.cat]+"18", color: CAT_COLORS[node.cat], border: `1px solid ${CAT_COLORS[node.cat]}33` }}>
+                {t.catLabels[node.cat]}
+              </span>
+              <span className="tag" style={{ background: credColor[node.credibility]+"18", color: credColor[node.credibility], border: `1px solid ${credColor[node.credibility]}33` }}>
+                {node.credibility}
+              </span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--text-muted)" }}>
+                {node.year < 0 ? `~${Math.abs(node.year)} ${lang === "es" ? "a.C." : "BC"}` : node.year}
+              </span>
+            </div>
+          </div>
+          {/* Botón cerrar */}
+          <button onClick={onClose} className="btn btn-icon" style={{ fontSize: 16, flexShrink: 0 }}>✕</button>
+        </div>
+
+        {/* ── Body scrollable ── */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "24px 24px 0" }}>
+
+          {/* Título sección análisis */}
+          <div style={{
+            fontFamily: "var(--font-mono)", fontSize: 10, fontWeight: 600,
+            color: "var(--accent)", letterSpacing: "0.14em", textTransform: "uppercase",
+            marginBottom: 14,
+            display: "flex", alignItems: "center", gap: 8,
+          }}>
+            <span style={{ width: 16, height: 1, background: "var(--accent)", display: "inline-block" }}/>
+            {t.expandTitle}
+            <span style={{ width: 16, height: 1, background: "var(--accent)", display: "inline-block" }}/>
+          </div>
+
+          {/* Contenido expandido o fallback */}
+          {hasExpanded ? (
+            <div style={{
+              fontFamily: "var(--font-ui)", fontSize: 14, lineHeight: 1.95,
+              color: "var(--text-secondary)",
+              marginBottom: 28,
+            }}>
+              {hasExpanded.split("\n\n").map((para, i) => (
+                <p key={i} style={{ marginBottom: 16 }}>{para}</p>
+              ))}
+            </div>
+          ) : (
+            <div style={{ marginBottom: 28 }}>
+              {/* desc como fallback, con aviso */}
+              <div style={{
+                fontFamily: "var(--font-ui)", fontSize: 14, lineHeight: 1.9,
+                color: "var(--text-secondary)", marginBottom: 16,
+              }}>
+                {node.desc[lang]}
+              </div>
+              <div style={{
+                padding: "10px 14px", borderRadius: "var(--radius-sm)",
+                background: "rgba(251,146,60,0.06)", border: "1px solid rgba(251,146,60,0.2)",
+                fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--warning)",
+                display: "flex", alignItems: "center", gap: 8,
+              }}>
+                <span>⚠</span>
+                {t.expandNoExpanded}
+              </div>
+            </div>
+          )}
+
+          {/* Separador */}
+          <div style={{ height: 1, background: "linear-gradient(90deg, var(--border-accent), transparent)", marginBottom: 24 }}/>
+
+          {/* ── Fuentes documentales ── */}
+          {sources.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              <div className="panel-label" style={{ marginBottom: 14 }}>
+                {t.expandSources} ({sources.length})
+              </div>
+              {sources.map((s, i) => (
+                <div key={i} className="source-card" style={{ marginBottom: 8 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 6 }}>
+                    <div style={{ fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.4, flex: 1 }}>
+                      {s.title?.[lang] || s.title}
+                    </div>
+                    <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                      <span className="tag" style={{ background: `${typeColor[s.type]||"#666"}18`, color: typeColor[s.type]||"#666", border: `1px solid ${typeColor[s.type]||"#666"}33` }}>
+                        {t.srcType[s.type] || s.type}
+                      </span>
+                    </div>
+                  </div>
+                  {s.date && (
+                    <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-muted)", marginBottom: 4 }}>{s.date}</div>
+                  )}
+                  {(s.quote?.[lang] || s.quote) && (
+                    <div style={{ borderLeft: "2px solid var(--accent)", paddingLeft: 10, marginBottom: 6, fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--accent)", fontStyle: "italic", lineHeight: 1.6 }}>
+                      {s.quote?.[lang] || s.quote}
+                    </div>
+                  )}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span className="tag" style={{ background: `${confColor[s.confidence]}18`, color: confColor[s.confidence], border: `1px solid ${confColor[s.confidence]}33` }}>
+                      {t.conf?.[s.confidence] || s.confidence}
+                    </span>
+                    <a href={s.url} target="_blank" rel="noreferrer" style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--accent)", textDecoration: "none" }}>
+                      {t.openSource}
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── Conexiones directas ── */}
+          {connectedNodes.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              <div className="panel-label" style={{ marginBottom: 14 }}>
+                {t.expandLinks} ({connectedNodes.length})
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {connectedNodes.map(n => (
+                  <div
+                    key={n.id}
+                    onClick={() => { onSelectNode(n); onClose(); }}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 6,
+                      padding: "6px 12px", borderRadius: "var(--radius-sm)",
+                      background: CAT_COLORS[n.cat] + "10",
+                      border: `1px solid ${CAT_COLORS[n.cat]}28`,
+                      cursor: "pointer", transition: "var(--transition)",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = CAT_COLORS[n.cat] + "22"; e.currentTarget.style.borderColor = CAT_COLORS[n.cat] + "55"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = CAT_COLORS[n.cat] + "10"; e.currentTarget.style.borderColor = CAT_COLORS[n.cat] + "28"; }}
+                  >
+                    <span style={{ width: 7, height: 7, borderRadius: "50%", background: CAT_COLORS[n.cat], flexShrink: 0 }}/>
+                    <span style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 500, color: "var(--text-primary)" }}>
+                      {n.label[lang]}
+                    </span>
+                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--text-muted)" }}>
+                      {n.year < 0 ? `${Math.abs(n.year)}${lang==="es"?"aC":"BC"}` : n.year}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Padding final */}
+          <div style={{ height: 8 }}/>
+        </div>
+
+        {/* ── Footer ── */}
+        <div style={{
+          padding: "12px 20px", flexShrink: 0,
+          borderTop: "1px solid var(--border)",
+          background: "var(--bg-3)",
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+        }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--text-muted)" }}>
+            {node.id} · B:{Math.round(BETWEENNESS[node.id]||0)} · CC:{(CLUSTERING[node.id]||0).toFixed(2)}
+          </span>
+          <button onClick={onClose} className="btn" style={{ height: 34, fontSize: 12 }}>
+            {t.expandClose}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function UAPAtlas() {
   const svgRef = useRef(null);
   const [lang, setLang] = useState(detectLang);
   const t = T[lang];
   const sgs = SMOKING_GUNS[lang];
-
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
   const [activeCat, setActiveCat] = useState("all");
   const [officialOnly, setOfficialOnly] = useState(false);
   const [patternMode, setPatternMode] = useState(false);
-  const [activeSG, setActiveSG] = useState(null);        // pistola activa en modo patrón
-  const [patternStep, setPatternStep] = useState(-1);    // paso del trazo narrativo (-1 = todos)
+  const [activeSG, setActiveSG] = useState(null);
+  const [patternStep, setPatternStep] = useState(-1);
   const [panel, setPanel] = useState("node");
   const [selectedSG, setSelectedSG] = useState(null);
   const [highlightNodes, setHighlightNodes] = useState(null);
@@ -695,26 +892,32 @@ export default function UAPAtlas() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [dimensions, setDimensions] = useState({ w: 800, h: 600 });
-
-  // Intro screen — solo en primera visita
+  // Intro screen
   const [showIntro, setShowIntro] = useState(() => {
     try { return !localStorage.getItem("uap_atlas_visited"); }
     catch { return true; }
   });
-
-  // Hint de primer uso — aparece al entrar al grafo, desaparece solo
+  // Hint primer uso
   const [showHint, setShowHint] = useState(false);
+  // ── FASE 2: Modal analítico expandido ──
+  const [showExpanded, setShowExpanded] = useState(false);
 
   // Keyboard shortcuts
   useEffect(() => {
     const fn = e => {
       if (e.target.matches("input")) return;
       if (e.key === "?") setShowHelp(v => !v);
-      if (e.key === "Escape") { setSelected(null); setHighlightNodes(null); setSelectedSG(null); }
+      if (e.key === "Escape") {
+        setSelected(null); setHighlightNodes(null); setSelectedSG(null);
+        setShowExpanded(false);
+      }
     };
     window.addEventListener("keydown", fn);
     return () => window.removeEventListener("keydown", fn);
   }, []);
+
+  // Cerrar expanded cuando cambia el nodo seleccionado
+  useEffect(() => { setShowExpanded(false); }, [selected]);
 
   const filteredNodes = NODES.filter(n => {
     const matchCat = activeCat === "all" || n.cat === activeCat;
@@ -726,7 +929,7 @@ export default function UAPAtlas() {
   const filteredIds = new Set(filteredNodes.map(n => n.id));
   const filteredLinks = LINKS_DATA.filter(l => filteredIds.has(l.source) && filteredIds.has(l.target));
 
-  // Resize observer — window-based for reliable full-screen rendering
+  // Resize observer
   useEffect(() => {
     const updateDims = () => {
       const sideW = sidebarOpen ? 300 : 0;
@@ -736,14 +939,13 @@ export default function UAPAtlas() {
         h: Math.max(200, window.innerHeight - headerH)
       });
     };
-    // Small delay to ensure DOM layout is complete
     const t = setTimeout(updateDims, 50);
     updateDims();
     window.addEventListener('resize', updateDims);
     return () => { clearTimeout(t); window.removeEventListener('resize', updateDims); };
   }, [sidebarOpen]);
 
-  // Adaptive graph parameters — scales with node count
+  // Adaptive graph parameters
   const getGraphParams = useCallback((count) => {
     if (count <= 8)  return { linkDist: 240, charge: -900, collision: 70, labelSize: 15, truncate: 32, nodeScale: 1.6, yearSize: 11 };
     if (count <= 15) return { linkDist: 190, charge: -650, collision: 58, labelSize: 14, truncate: 26, nodeScale: 1.35, yearSize: 10 };
@@ -760,7 +962,6 @@ export default function UAPAtlas() {
     if (w < 10 || h < 10) return;
     const params = getGraphParams(filteredNodes.length);
     const maxB = Math.max(1, ...filteredNodes.map(n => BETWEENNESS[n.id] || 0));
-
     const hasOfficial = n => SOURCES[n.id]?.some(s => ["official","congress","foia"].includes(s.type));
     const hasSrc = n => SOURCES[n.id]?.length > 0;
     const srcCount = n => (SOURCES[n.id] || []).length;
@@ -768,54 +969,33 @@ export default function UAPAtlas() {
       const base = n.cat === "concept" ? 14 : n.cat === "institution" ? 12 : 10;
       return (base + Math.sqrt((BETWEENNESS[n.id] || 0) / maxB) * 10) * params.nodeScale;
     };
-
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
     svg.attr("width", w).attr("height", h);
-
-    // Subtle noise background
     const defs = svg.append("defs");
     const filter = defs.append("filter").attr("id", "glow");
     filter.append("feGaussianBlur").attr("stdDeviation", "3").attr("result", "coloredBlur");
     const merge = filter.append("feMerge");
     merge.append("feMergeNode").attr("in", "coloredBlur");
     merge.append("feMergeNode").attr("in", "SourceGraphic");
-
     svg.append("rect").attr("width", w).attr("height", h).attr("fill", "#080b0f");
-
-    // Subtle grid
     const grid = svg.append("g").attr("opacity", 0.025);
     for (let x = 0; x < w; x += 60) grid.append("line").attr("x1",x).attr("y1",0).attr("x2",x).attr("y2",h).attr("stroke","#38bdf8");
     for (let y = 0; y < h; y += 60) grid.append("line").attr("x1",0).attr("y1",y).attr("x2",w).attr("y2",y).attr("stroke","#38bdf8");
-
     const g = svg.append("g");
-const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
-  g.attr("transform", e.transform);
-  const k = e.transform.k;
-
-  // Labels: ocultar si el nodo es demasiado pequeño en pantalla
-  g.selectAll("g.nd text:not(.yr):not(.badge-txt)")
-    .style("display", function(d) {
-      return d && nodeR(d) * k > 6 ? null : "none";
+    const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
+      g.attr("transform", e.transform);
+      const k = e.transform.k;
+      g.selectAll("g.nd text:not(.yr):not(.badge-txt)")
+        .style("display", function(d) { return d && nodeR(d) * k > 6 ? null : "none"; });
+      g.selectAll("g.nd text.yr")
+        .style("display", function(d) { return d && nodeR(d) * k > 10 ? null : "none"; });
+      g.selectAll("g.nd circle.badge, g.nd text.badge-txt")
+        .style("display", function(d) { return d && nodeR(d) * k > 6 ? null : "none"; });
     });
-
-  // Año: ocultar si no hay espacio
-  g.selectAll("g.nd text.yr")
-    .style("display", function(d) {
-      return d && nodeR(d) * k > 10 ? null : "none";
-    });
-
-  // Badge: solo visibilidad, posición fija relativa al nodo
-  g.selectAll("g.nd circle.badge, g.nd text.badge-txt")
-    .style("display", function(d) {
-      return d && nodeR(d) * k > 6 ? null : "none";
-    });
-});
     svg.call(zoom);
-
     const nc = filteredNodes.map(n => ({ ...n, x: w/2 + (Math.random()-.5)*w*.5, y: h/2 + (Math.random()-.5)*h*.5 }));
     const lc = filteredLinks.map(l => ({ ...l }));
-
     const sim = d3.forceSimulation(nc)
       .force("link", d3.forceLink(lc).id(d => d.id)
         .distance(d => {
@@ -826,14 +1006,8 @@ const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
       .force("charge", d3.forceManyBody().strength(params.charge))
       .force("center", d3.forceCenter(w/2, h/2))
       .force("collision", d3.forceCollide(d => nodeR(d) + params.collision * 0.4));
-
-    // Links
     const link = g.append("g").selectAll("line").data(lc).enter().append("line")
-      .attr("class", "ll")
-      .attr("stroke", "rgba(56,189,248,0.12)")
-      .attr("stroke-width", 1);
-
-    // Node groups
+      .attr("class", "ll").attr("stroke", "rgba(56,189,248,0.12)").attr("stroke-width", 1);
     const ng = g.append("g").selectAll("g.nd").data(nc).enter().append("g")
       .attr("class", "nd").attr("cursor", "pointer")
       .call(d3.drag()
@@ -849,59 +1023,29 @@ const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
         setHighlightNodes(null);
         if (!sidebarOpen) setSidebarOpen(true);
       });
-
-    // Evidence ring — source quality indicator
     ng.append("circle")
-      .attr("r", d => nodeR(d) + 5)
-      .attr("fill", "none")
+      .attr("r", d => nodeR(d) + 5).attr("fill", "none")
       .attr("stroke", d => hasOfficial(d) ? CAT_COLORS[d.cat] : hasSrc(d) ? "rgba(56,189,248,0.2)" : "rgba(255,255,255,0.05)")
       .attr("stroke-width", d => hasOfficial(d) ? 1.5 : 0.8)
       .attr("stroke-dasharray", d => hasOfficial(d) ? "none" : hasSrc(d) ? "none" : "3,3")
       .attr("class", "ev-ring");
-
-    // Gradiente radial por categoría — uno por nodo
-ng.each(function(d) {
-  const gradId = `rg-${d.id}`;
-  const grad = defs.append("radialGradient")
-    .attr("id", gradId)
-    .attr("cx", "35%").attr("cy", "35%")
-    .attr("r", "65%");
-  grad.append("stop").attr("offset", "0%")
-    .attr("stop-color", CAT_COLORS[d.cat]).attr("stop-opacity", 0.18);
-  grad.append("stop").attr("offset", "100%")
-    .attr("stop-color", CAT_COLORS[d.cat]).attr("stop-opacity", 0.04);
-  d3.select(this).append("circle")
-    .attr("r", nodeR(d))
-    .attr("fill", `url(#${gradId})`)
-    .attr("stroke", CAT_COLORS[d.cat])
-    .attr("stroke-width", 1.5)
-    .style("filter", "url(#glow)")
-    .attr("class", "ic");
-});
-
-    // Source badge
-ng.filter(d => srcCount(d) > 0).append("circle")
-  .attr("r", 5.5)
-  .attr("fill", "#0d1117")
-  .attr("stroke", d => hasOfficial(d) ? "#34d399" : "#fb923c")
-  .attr("stroke-width", 1.2)
-  .attr("class", "badge")
-  .attr("transform", d => `translate(${nodeR(d) + 8}, ${-(nodeR(d) + 8)})`);
-
-ng.filter(d => srcCount(d) > 0).append("text")
-  .text(d => srcCount(d))
-  .attr("text-anchor", "middle")
-  .attr("y", 3.5)
-  .attr("fill", "#e8edf3")
-  .attr("font-size", "7px")
-  .attr("font-family", "JetBrains Mono, monospace")
-  .attr("pointer-events", "none")
-  .attr("class", "badge-txt")
-  .attr("transform", d => `translate(${nodeR(d) + 8}, ${-(nodeR(d) + 8)})`);
-    
-    // Label — two lines when density is low enough
+    ng.each(function(d) {
+      const gradId = `rg-${d.id}`;
+      const grad = defs.append("radialGradient").attr("id", gradId).attr("cx", "35%").attr("cy", "35%").attr("r", "65%");
+      grad.append("stop").attr("offset", "0%").attr("stop-color", CAT_COLORS[d.cat]).attr("stop-opacity", 0.18);
+      grad.append("stop").attr("offset", "100%").attr("stop-color", CAT_COLORS[d.cat]).attr("stop-opacity", 0.04);
+      d3.select(this).append("circle").attr("r", nodeR(d)).attr("fill", `url(#${gradId})`)
+        .attr("stroke", CAT_COLORS[d.cat]).attr("stroke-width", 1.5).style("filter", "url(#glow)").attr("class", "ic");
+    });
+    ng.filter(d => srcCount(d) > 0).append("circle").attr("r", 5.5).attr("fill", "#0d1117")
+      .attr("stroke", d => hasOfficial(d) ? "#34d399" : "#fb923c").attr("stroke-width", 1.2).attr("class", "badge")
+      .attr("transform", d => `translate(${nodeR(d) + 8}, ${-(nodeR(d) + 8)})`);
+    ng.filter(d => srcCount(d) > 0).append("text").text(d => srcCount(d))
+      .attr("text-anchor", "middle").attr("y", 3.5).attr("fill", "#e8edf3")
+      .attr("font-size", "7px").attr("font-family", "JetBrains Mono, monospace")
+      .attr("pointer-events", "none").attr("class", "badge-txt")
+      .attr("transform", d => `translate(${nodeR(d) + 8}, ${-(nodeR(d) + 8)})`);
     if (params.nodeScale >= 1.35) {
-      // Low density: try to show full label, wrap if needed
       ng.each(function(d) {
         const lbl = d.label[lang];
         const el = d3.select(this);
@@ -911,68 +1055,41 @@ ng.filter(d => srcCount(d) > 0).append("text")
           const mid = Math.ceil(words.length / 2);
           const line1 = words.slice(0, mid).join(' ');
           const line2 = words.slice(mid).join(' ');
-          el.append("text").text(line1).attr("text-anchor","middle")
-            .attr("dy", r + params.labelSize + 2)
-            .attr("fill","rgba(232,237,243,0.9)")
-            .attr("font-size",`${params.labelSize}px`)
-            .attr("font-family","Syne, sans-serif")
-            .attr("font-weight","600").attr("pointer-events","none");
-          el.append("text").text(line2).attr("text-anchor","middle")
-            .attr("dy", r + params.labelSize * 2 + 4)
-            .attr("fill","rgba(232,237,243,0.75)")
-            .attr("font-size",`${params.labelSize - 1}px`)
-            .attr("font-family","Syne, sans-serif")
-            .attr("font-weight","500").attr("pointer-events","none");
+          el.append("text").text(line1).attr("text-anchor","middle").attr("dy", r + params.labelSize + 2)
+            .attr("fill","rgba(232,237,243,0.9)").attr("font-size",`${params.labelSize}px`)
+            .attr("font-family","Syne, sans-serif").attr("font-weight","600").attr("pointer-events","none");
+          el.append("text").text(line2).attr("text-anchor","middle").attr("dy", r + params.labelSize * 2 + 4)
+            .attr("fill","rgba(232,237,243,0.75)").attr("font-size",`${params.labelSize - 1}px`)
+            .attr("font-family","Syne, sans-serif").attr("font-weight","500").attr("pointer-events","none");
         } else {
-          el.append("text").text(lbl).attr("text-anchor","middle")
-            .attr("dy", r + params.labelSize + 4)
-            .attr("fill","rgba(232,237,243,0.9)")
-            .attr("font-size",`${params.labelSize}px`)
-            .attr("font-family","Syne, sans-serif")
-            .attr("font-weight","600").attr("pointer-events","none");
+          el.append("text").text(lbl).attr("text-anchor","middle").attr("dy", r + params.labelSize + 4)
+            .attr("fill","rgba(232,237,243,0.9)").attr("font-size",`${params.labelSize}px`)
+            .attr("font-family","Syne, sans-serif").attr("font-weight","600").attr("pointer-events","none");
         }
       });
     } else {
       ng.append("text")
-        .text(d => {
-          const lbl = d.label[lang];
-          return lbl.length > params.truncate ? lbl.slice(0, params.truncate - 1) + "…" : lbl;
-        })
-        .attr("text-anchor", "middle")
-        .attr("dy", d => nodeR(d) + params.labelSize + 4)
-        .attr("fill", "rgba(232,237,243,0.8)")
-        .attr("font-size", `${params.labelSize}px`)
-        .attr("font-family", "Syne, sans-serif")
-        .attr("font-weight", "500")
-        .attr("pointer-events", "none");
+        .text(d => { const lbl = d.label[lang]; return lbl.length > params.truncate ? lbl.slice(0, params.truncate - 1) + "…" : lbl; })
+        .attr("text-anchor", "middle").attr("dy", d => nodeR(d) + params.labelSize + 4)
+        .attr("fill", "rgba(232,237,243,0.8)").attr("font-size", `${params.labelSize}px`)
+        .attr("font-family", "Syne, sans-serif").attr("font-weight", "500").attr("pointer-events", "none");
     }
-
-    // Year — solo si el nodo tiene espacio suficiente
-ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
-  .text(d => d.year < 0 ? `~${Math.abs(d.year)}${lang==="es"?"aC":"BC"}` : d.year)
-  .attr("text-anchor", "middle").attr("dy", d => `${nodeR(d) * 0.35}`)
-  .attr("fill", d => CAT_COLORS[d.cat] + "bb")
-  .attr("font-size", `${params.yearSize}px`)
-  .attr("font-family", "JetBrains Mono, monospace")
-  .attr("pointer-events", "none");
-
-    // Tooltip
+    ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
+      .text(d => d.year < 0 ? `~${Math.abs(d.year)}${lang==="es"?"aC":"BC"}` : d.year)
+      .attr("text-anchor", "middle").attr("dy", d => `${nodeR(d) * 0.35}`)
+      .attr("fill", d => CAT_COLORS[d.cat] + "bb").attr("font-size", `${params.yearSize}px`)
+      .attr("font-family", "JetBrains Mono, monospace").attr("pointer-events", "none");
     ng.append("title").text(d => {
-      const sc = srcCount(d);
-      const off = hasOfficial(d);
+      const sc = srcCount(d); const off = hasOfficial(d);
       return `${d.label[lang]} (${d.year < 0 ? Math.abs(d.year)+"aC" : d.year})\n${sc} ${lang==="es"?"fuentes":"sources"} · ${off ? (lang==="es"?"fuente oficial":"official source") : (lang==="es"?"sin oficial":"no official")}`;
     });
-
     sim.on("tick", () => {
       link.attr("x1", d=>d.source.x).attr("y1", d=>d.source.y).attr("x2", d=>d.target.x).attr("y2", d=>d.target.y);
       ng.attr("transform", d => `translate(${d.x},${d.y})`);
     });
-
-    // Auto zoom-to-fit after simulation stabilizes (UX-03)
     sim.on("end", () => {
       if (filteredNodes.length < 60) {
-        const xs = nc.map(n => n.x);
-        const ys = nc.map(n => n.y);
+        const xs = nc.map(n => n.x); const ys = nc.map(n => n.y);
         const xMin = Math.min(...xs), xMax = Math.max(...xs);
         const yMin = Math.min(...ys), yMax = Math.max(...ys);
         const padding = 60;
@@ -981,19 +1098,14 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
         const scale = Math.min(scaleX, scaleY, 2.5);
         const tx = w/2 - scale * (xMin + xMax) / 2;
         const ty = h/2 - scale * (yMin + yMax) / 2;
-        svg.transition().duration(600).call(
-          zoom.transform,
-          d3.zoomIdentity.translate(tx, ty).scale(scale)
-        );
+        svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
       }
     });
-
     svg.on("click", () => { setSelected(null); setHighlightNodes(null); setSelectedSG(null); });
     return () => sim.stop();
   }, [filteredNodes.length, activeCat, dimensions, lang, officialOnly]);
 
-  // ── PATTERN MODE: color nodos por severidad de todas las pistolas activas ──
-  // Mapeo nodo → severidad máxima entre todas las pistolas que lo contienen
+  // Pattern mode
   const patternNodeSeverity = useMemo(() => {
     if (!patternMode) return null;
     const SEV_ORDER = { critical: 3, high: 2, medium: 1 };
@@ -1006,29 +1118,20 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
     });
     return map;
   }, [patternMode, sgs]);
-
   const SEV_COLORS = { critical: "#f43f5e", high: "#fb923c", medium: "#facc15" };
 
-  // Highlight effect — normal highlight OR pattern mode highlight
+  // Highlight effect
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
-
     if (patternMode && patternNodeSeverity) {
       const pathSet = activeSG ? new Set(activeSG.path || activeSG.nodes) : null;
       const activeNodes = activeSG ? new Set(activeSG.nodes) : null;
-
-      // Opacity: nodos en patrón → 1; resto → 0.07
-      svg.selectAll(".nd")
-        .transition().duration(400)
-        .attr("opacity", d => {
-          if (activeSG) return activeNodes.has(d.id) ? 1 : 0.05;
-          return patternNodeSeverity[d.id] ? 1 : 0.15;
-        });
-
-      // Stroke de nodos: color por severidad
-      svg.selectAll(".ic")
-        .transition().duration(400)
+      svg.selectAll(".nd").transition().duration(400).attr("opacity", d => {
+        if (activeSG) return activeNodes.has(d.id) ? 1 : 0.05;
+        return patternNodeSeverity[d.id] ? 1 : 0.15;
+      });
+      svg.selectAll(".ic").transition().duration(400)
         .attr("stroke", d => {
           if (activeSG) {
             if (pathSet && pathSet.has(d.id)) return SEV_COLORS[activeSG.severity] || "#f43f5e";
@@ -1041,10 +1144,7 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
           if (activeSG && activeNodes && activeNodes.has(d.id)) return 2;
           return patternNodeSeverity[d.id] ? 2 : 1;
         });
-
-      // Links: resaltar conexiones de la pistola activa; o todas las pistolas
-      svg.selectAll(".ll")
-        .transition().duration(400)
+      svg.selectAll(".ll").transition().duration(400)
         .attr("stroke", l => {
           const s = typeof l.source==="object" ? l.source.id : l.source;
           const t = typeof l.target==="object" ? l.target.id : l.target;
@@ -1068,15 +1168,7 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
           }
           return 0.5;
         })
-        .attr("stroke-dasharray", l => {
-          if (!activeSG) return "none";
-          const s = typeof l.source==="object" ? l.source.id : l.source;
-          const t = typeof l.target==="object" ? l.target.id : l.target;
-          const p = activeSG.path || activeSG.nodes;
-          const si = p.indexOf(s), ti = p.indexOf(t);
-          return (si !== -1 && ti !== -1 && Math.abs(si - ti) === 1) ? "none" : "none";
-        });
-
+        .attr("stroke-dasharray", "none");
     } else if (!highlightNodes) {
       svg.selectAll(".nd").transition().duration(400).attr("opacity", 1);
       svg.selectAll(".ic").transition().duration(400).attr("stroke", d => CAT_COLORS[d.cat]).attr("stroke-width", 1.5);
@@ -1084,15 +1176,17 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
     } else {
       svg.selectAll(".nd").attr("opacity", d => highlightNodes.has(d.id) ? 1 : 0.06);
       svg.selectAll(".ic").attr("stroke-width", d => highlightNodes.has(d.id) ? 2.5 : 1);
-      svg.selectAll(".ll").attr("stroke", l => {
-        const s = typeof l.source==="object" ? l.source.id : l.source;
-        const t = typeof l.target==="object" ? l.target.id : l.target;
-        return highlightNodes.has(s) && highlightNodes.has(t) ? "rgba(244,63,94,0.5)" : "rgba(56,189,248,0.04)";
-      }).attr("stroke-width", l => {
-        const s = typeof l.source==="object" ? l.source.id : l.source;
-        const t = typeof l.target==="object" ? l.target.id : l.target;
-        return highlightNodes.has(s) && highlightNodes.has(t) ? 2 : 0.5;
-      });
+      svg.selectAll(".ll")
+        .attr("stroke", l => {
+          const s = typeof l.source==="object" ? l.source.id : l.source;
+          const t = typeof l.target==="object" ? l.target.id : l.target;
+          return highlightNodes.has(s) && highlightNodes.has(t) ? "rgba(244,63,94,0.5)" : "rgba(56,189,248,0.04)";
+        })
+        .attr("stroke-width", l => {
+          const s = typeof l.source==="object" ? l.source.id : l.source;
+          const t = typeof l.target==="object" ? l.target.id : l.target;
+          return highlightNodes.has(s) && highlightNodes.has(t) ? 2 : 0.5;
+        });
     }
   }, [highlightNodes, patternMode, patternNodeSeverity, activeSG]);
 
@@ -1109,34 +1203,25 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
   return (
     <>
       <GlobalStyles />
-
-      {/* ── INTRO SCREEN — primera visita ────────────────────────────────── */}
+      {/* ── INTRO SCREEN ── */}
       {showIntro && (
         <IntroScreen
-          lang={lang}
-          nodeCount={NODES.length}
-          linkCount={LINKS_DATA.length}
+          lang={lang} nodeCount={NODES.length} linkCount={LINKS_DATA.length}
           onEnter={() => { setShowIntro(false); setShowHint(true); }}
           onLangChange={setLang}
         />
       )}
-
       <div style={{ display:"flex", flexDirection:"column", height:"100vh", width:"100vw", overflow:"hidden", fontFamily:"var(--font-ui)" }}>
-
-        {/* ── HEADER ──────────────────────────────────────────────────────── */}
+        {/* ── HEADER ── */}
         <header style={{
           height:"var(--header-h)", flexShrink:0,
           background:"var(--bg-glass)", backdropFilter:"blur(20px)",
           borderBottom:"1px solid var(--border)",
-          display:"flex", alignItems:"center", padding:"0 16px", gap:12,
-          zIndex:100,
+          display:"flex", alignItems:"center", padding:"0 16px", gap:12, zIndex:100,
         }}>
-          {/* Sidebar toggle */}
           <button className="btn btn-icon" onClick={() => setSidebarOpen(v => !v)} title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}>
             {sidebarOpen ? "◁" : "▷"}
           </button>
-
-          {/* Logo */}
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ fontSize:18, color:"var(--accent)" }}>◈</span>
             <div>
@@ -1144,8 +1229,6 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
               <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--text-secondary)", lineHeight:1 }}>{t.subtitle}</div>
             </div>
           </div>
-
-          {/* PURSUE badge */}
           {latestRelease && (
             <a href={latestRelease.url} target="_blank" rel="noreferrer" style={{
               display:"flex", alignItems:"center", gap:6, padding:"4px 10px",
@@ -1153,35 +1236,27 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
               borderRadius:6, textDecoration:"none", cursor:"pointer",
             }}>
               <span style={{ width:6, height:6, borderRadius:"50%", background:"#34d399", flexShrink:0 }}/>
-              <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"#34d399" }}>
-                PURSUE {latestRelease.label}
-              </span>
+              <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"#34d399" }}>PURSUE {latestRelease.label}</span>
               <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{latestRelease.date}</span>
             </a>
           )}
-
-          {/* Stats — contador vivo */}
           <div style={{ display:"flex", gap:12, marginLeft:4, alignItems:"center" }}>
             <span style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--text-secondary)" }}>
-              <span style={{ color: isFiltered ? "var(--warning)" : "var(--accent)", fontWeight:600 }}>
-                {filteredNodes.length}
-              </span>
+              <span style={{ color: isFiltered ? "var(--warning)" : "var(--accent)", fontWeight:600 }}>{filteredNodes.length}</span>
               {isFiltered && <span style={{ color:"var(--text-muted)" }}> / {NODES.length}</span>}
               <span style={{ color:"var(--text-muted)" }}> {t.nodes}</span>
             </span>
             <span style={{ color:"var(--border)", fontSize:10 }}>·</span>
             <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)" }}>
-              <span style={{ color:"var(--text-secondary)" }}>{filteredLinks.length}</span>
-              {" "}{lang==="es" ? "links" : "links"}
+              <span style={{ color:"var(--text-secondary)" }}>{filteredLinks.length}</span>{" "}links
             </span>
-            <span style={{ color:"var(--border)", fontSize:10, display:"none" }} className="density-sep">·</span>
+            <span style={{ color:"var(--border)", fontSize:10 }}>·</span>
             <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)", display:"flex", gap:4 }}>
               <span style={{ color:"var(--text-secondary)" }}>{t.density}:</span>
               <span style={{ color:"var(--text-primary)" }}>{density}%</span>
             </span>
           </div>
-
-          {/* ── BOTÓN PATRONES ── */}
+          {/* Botón patrones */}
           <button
             onClick={() => {
               const next = !patternMode;
@@ -1196,24 +1271,19 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
               border: patternMode ? "1px solid rgba(244,63,94,0.5)" : "1px solid var(--border)",
               color: patternMode ? "#f43f5e" : "var(--text-secondary)",
               fontFamily:"var(--font-mono)", fontSize:11, cursor:"pointer",
-              fontWeight: patternMode ? 700 : 400,
-              transition:"all 0.25s",
+              fontWeight: patternMode ? 700 : 400, transition:"all 0.25s",
               animation: patternMode ? "pulse-border 2s infinite" : "none",
             }}
           >
             <span style={{ fontSize:13 }}>◈</span>
             <span>{patternMode ? `${sgs.length} ${t.patternActive}` : t.patternBtn.replace("◈ ","")}</span>
           </button>
-
           <div style={{ flex:1 }}/>
-
-          {/* Lang toggle */}
           <div style={{ display:"flex", border:"1px solid var(--border)", borderRadius:6, overflow:"hidden" }}>
             {["es","en"].map(l => (
               <button key={l} onClick={() => setLang(l)} style={{
                 background: lang===l ? "var(--accent-dim)" : "transparent",
-                border:"none",
-                borderRight: l==="es" ? "1px solid var(--border)" : "none",
+                border:"none", borderRight: l==="es" ? "1px solid var(--border)" : "none",
                 padding:"0 12px", height:32,
                 color: lang===l ? "var(--accent)" : "var(--text-muted)",
                 fontFamily:"var(--font-mono)", fontSize:11, cursor:"pointer",
@@ -1221,31 +1291,25 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
               }}>{l.toUpperCase()}</button>
             ))}
           </div>
-
-          {/* Help */}
           <button className="btn btn-icon" onClick={() => setShowHelp(true)} title="Manual (?)">
             <span style={{ fontSize:15, fontWeight:600 }}>?</span>
           </button>
         </header>
 
-        {/* ── BODY ────────────────────────────────────────────────────────── */}
+        {/* ── BODY ── */}
         <div style={{ flex:1, display:"flex", overflow:"hidden", position:"relative", minWidth:0, minHeight:0 }}>
-
-          {/* ── SIDEBAR ─────────────────────────────────────────────────── */}
+          {/* ── SIDEBAR ── */}
           <aside style={{
-            width: sidebarOpen ? "var(--sidebar-w)" : 0,
-            flexShrink:0, overflow:"hidden",
+            width: sidebarOpen ? "var(--sidebar-w)" : 0, flexShrink:0, overflow:"hidden",
             background:"var(--bg-2)", borderRight:"1px solid var(--border)",
             display:"flex", flexDirection:"column",
             transition:"width 0.25s cubic-bezier(0.4,0,0.2,1)",
           }}>
             <div style={{ width:"var(--sidebar-w)", display:"flex", flexDirection:"column", height:"100%", overflow:"hidden" }}>
-
               {/* Search */}
               <div style={{ padding:"14px", borderBottom:"1px solid var(--border)", flexShrink:0 }}>
                 <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder={t.search} />
               </div>
-
               {/* Filters */}
               <div style={{ borderBottom:"1px solid var(--border)", flexShrink:0 }}>
                 <div style={{
@@ -1259,16 +1323,12 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                 </div>
                 {filtersOpen && (
                   <div style={{ padding:"0 12px 12px", display:"flex", flexDirection:"column", gap:4 }} className="slide-in">
-                    {/* All */}
-                    <button
-                      onClick={() => setActiveCat("all")}
-                      className={`btn ${activeCat==="all" ? "active" : ""}`}
+                    <button onClick={() => setActiveCat("all")} className={`btn ${activeCat==="all" ? "active" : ""}`}
                       style={{ justifyContent:"flex-start", height:42, fontSize:14 }}>
                       <span style={{ width:8, height:8, borderRadius:"50%", background:"var(--text-muted)", flexShrink:0 }}/>
                       {t.allCats}
                       <span style={{ marginLeft:"auto", fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{NODES.length}</span>
                     </button>
-                    {/* Categories */}
                     {cats.map(cat => {
                       const count = NODES.filter(n => n.cat === cat).length;
                       return (
@@ -1282,10 +1342,7 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                         </button>
                       );
                     })}
-                    {/* Official only toggle */}
-                    <button
-                      onClick={() => setOfficialOnly(v => !v)}
-                      className={`btn ${officialOnly ? "active" : ""}`}
+                    <button onClick={() => setOfficialOnly(v => !v)} className={`btn ${officialOnly ? "active" : ""}`}
                       style={{ justifyContent:"flex-start", height:36, fontSize:12, marginTop:4 }}>
                       <span style={{ width:8, height:8, borderRadius:"50%", background: officialOnly ? "#34d399" : "var(--text-muted)", flexShrink:0, transition:"var(--transition)" }}/>
                       {t.officialOnly}
@@ -1293,7 +1350,6 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                   </div>
                 )}
               </div>
-
               {/* Panel tabs */}
               <div style={{ display:"flex", borderBottom:"1px solid var(--border)", flexShrink:0 }}>
                 {["node","sources","guns"].map(tab => {
@@ -1309,10 +1365,8 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                   );
                 })}
               </div>
-
               {/* Panel content */}
               <div style={{ flex:1, overflowY:"auto" }}>
-
                 {/* ── NODE PANEL ── */}
                 {panel === "node" && (
                   selected ? (
@@ -1343,9 +1397,28 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                       </div>
                       {/* Description */}
                       <div style={{ padding:"14px 16px", borderBottom:"1px solid var(--border)" }}>
-                        <div style={{ fontSize:14, lineHeight:1.85, color:"var(--text-secondary)" }}>
+                        <div style={{ fontSize:14, lineHeight:1.85, color:"var(--text-secondary)", marginBottom:12 }}>
                           {selected.desc[lang]}
                         </div>
+                        {/* ── BOTÓN AMPLIAR — Fase 2 ── */}
+                        <button
+                          onClick={() => setShowExpanded(true)}
+                          style={{
+                            display: "flex", alignItems: "center", gap: 6,
+                            width: "100%", justifyContent: "center",
+                            height: 36, borderRadius: "var(--radius-sm)",
+                            background: "var(--accent-dim)",
+                            border: "1px solid var(--border-accent)",
+                            color: "var(--accent)",
+                            fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 600,
+                            cursor: "pointer", transition: "var(--transition)",
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.background="rgba(56,189,248,0.22)"; e.currentTarget.style.boxShadow="0 0 12px rgba(56,189,248,0.15)"; }}
+                          onMouseLeave={e => { e.currentTarget.style.background="var(--accent-dim)"; e.currentTarget.style.boxShadow="none"; }}
+                        >
+                          <span style={{ fontSize:14 }}>◈</span>
+                          {t.expandBtn}
+                        </button>
                       </div>
                       {/* Connections */}
                       {(selected.links||[]).filter(id => filteredIds.has(id)).length > 0 && (
@@ -1380,22 +1453,19 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                       <div style={{
                         padding:"12px 16px", background:"var(--bg-3)", borderRadius:8,
                         border:"1px solid var(--border)", marginBottom:12,
-                        fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)", lineHeight:1.9,
-                        textAlign:"left",
+                        fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)", lineHeight:1.9, textAlign:"left",
                       }}>
                         {t.welcomeStats.replace("{n}",NODES.length).replace("{l}",LINKS_DATA.length).replace("{s}",sgs.length)}
                       </div>
                       <button className="btn btn-lg" onClick={() => setShowHelp(true)} style={{ width:"100%", justifyContent:"center", marginBottom:8 }}>
                         <span>?</span> {t.openHelp}
                       </button>
-                      {/* Reset intro — para demos y tests */}
                       <button
                         onClick={() => { try { localStorage.removeItem("uap_atlas_visited"); } catch {} setShowIntro(true); }}
                         style={{
                           background:"transparent", border:"none", cursor:"pointer",
                           fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)",
-                          padding:"6px 0", width:"100%", textAlign:"center",
-                          transition:"color 0.15s",
+                          padding:"6px 0", width:"100%", textAlign:"center", transition:"color 0.15s",
                         }}
                         onMouseEnter={e => e.currentTarget.style.color = "var(--text-secondary)"}
                         onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}
@@ -1405,7 +1475,6 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                     </div>
                   )
                 )}
-
                 {/* ── SOURCES PANEL ── */}
                 {panel === "sources" && (
                   selected ? <SourcesPanel nodeId={selected.id} lang={lang}/> : (
@@ -1414,11 +1483,9 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                     </div>
                   )
                 )}
-
                 {/* ── SMOKING GUNS PANEL ── */}
                 {panel === "guns" && (
                   <div style={{ padding:"14px" }} className="fade-in">
-                    {/* Network insight */}
                     <div style={{
                       padding:"12px", borderRadius:8,
                       background:"rgba(56,189,248,0.06)", border:"1px solid rgba(56,189,248,0.15)",
@@ -1432,9 +1499,7 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                         </div>
                       )}
                     </div>
-
                     <div className="panel-label">{t.guns} ({sgs.length})</div>
-
                     {sgs.map((sg,i) => {
                       const sev = SEVERITY_CFG[sg.severity];
                       const conf = CONF_CFG[sg.confidence];
@@ -1445,12 +1510,8 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                           style={{ background: isActive ? sev.bg : "var(--bg-3)", borderColor: isActive ? sev.color : sev.border }}>
                           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
                             <div style={{ display:"flex", gap:6 }}>
-                              <span className="tag" style={{ background:sev.bg, color:sev.color, border:`1px solid ${sev.border}` }}>
-                                {t.sev[sg.severity]}
-                              </span>
-                              <span className="tag" style={{ background:`${conf.color}18`, color:conf.color, border:`1px solid ${conf.color}33` }}>
-                                {t.conf[sg.confidence]}
-                              </span>
+                              <span className="tag" style={{ background:sev.bg, color:sev.color, border:`1px solid ${sev.border}` }}>{t.sev[sg.severity]}</span>
+                              <span className="tag" style={{ background:`${conf.color}18`, color:conf.color, border:`1px solid ${conf.color}33` }}>{t.conf[sg.confidence]}</span>
                             </div>
                             <span style={{ fontFamily:"var(--font-mono)", fontSize:9, color:"var(--text-muted)", textTransform:"uppercase" }}>{sg.type}</span>
                           </div>
@@ -1478,8 +1539,7 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                   </div>
                 )}
               </div>
-
-              {/* Sidebar footer stats */}
+              {/* Sidebar footer */}
               <div style={{
                 padding:"10px 12px", borderTop:"1px solid var(--border)",
                 background:"var(--bg-3)", flexShrink:0,
@@ -1494,27 +1554,23 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                     <div style={{ fontFamily:"var(--font-mono)", fontSize:15, color:"var(--text-primary)", fontWeight:700 }}>{val}</div>
                   </div>
                 ))}
-                <div style={{ marginLeft:"auto", fontFamily:"var(--font-mono)", fontSize:9, color:"var(--text-muted)", alignSelf:"flex-end" }}>v4.1 · CC0</div>
+                <div style={{ marginLeft:"auto", fontFamily:"var(--font-mono)", fontSize:9, color:"var(--text-muted)", alignSelf:"flex-end" }}>v4.5 · CC0</div>
               </div>
             </div>
           </aside>
 
-          {/* ── GRAPH AREA ──────────────────────────────────────────────── */}
+          {/* ── GRAPH AREA ── */}
           <div style={{ flex:1, position:"relative", overflow:"hidden", minWidth:0, minHeight:0, width:"100%", height:"100%" }}>
             <svg ref={svgRef} style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%", display:"block" }}/>
-
-            {/* Clear highlight button */}
             {highlightNodes && !patternMode && (
               <button className="btn" onClick={() => { setHighlightNodes(null); setSelectedSG(null); }}
                 style={{ position:"absolute", top:12, left:12, background:"var(--bg-glass)", backdropFilter:"blur(8px)" }}>
                 ✕ {t.clearHL}
               </button>
             )}
-
-            {/* ── PATTERN MODE OVERLAY ── */}
+            {/* Pattern mode overlay */}
             {patternMode && (
               <>
-                {/* Contador de patrones activos */}
                 <div style={{
                   position:"absolute", top:12, left:12,
                   background:"rgba(244,63,94,0.12)", backdropFilter:"blur(8px)",
@@ -1532,8 +1588,6 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                     </button>
                   )}
                 </div>
-
-                {/* Leyenda de severidad en modo patrón */}
                 {!activeSG && (
                   <div style={{
                     position:"absolute", top:12, right:16,
@@ -1544,9 +1598,7 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                     {[["critical","#f43f5e"], ["high","#fb923c"], ["medium","#facc15"]].map(([sev, col]) => (
                       <div key={sev} style={{ display:"flex", alignItems:"center", gap:8 }}>
                         <span style={{ width:8, height:8, borderRadius:"50%", background:col, flexShrink:0 }}/>
-                        <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:col, fontWeight:600 }}>
-                          {t.sev[sev]}
-                        </span>
+                        <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:col, fontWeight:600 }}>{t.sev[sev]}</span>
                       </div>
                     ))}
                     <div style={{ borderTop:"1px solid var(--border)", marginTop:2, paddingTop:6 }}>
@@ -1557,17 +1609,13 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                     </div>
                   </div>
                 )}
-
-                {/* Panel de pistola activa — lateral sobre el grafo */}
                 {activeSG && (
                   <div className="fade-in" style={{
                     position:"absolute", top:52, right:16, width:320,
                     background:"rgba(8,11,15,0.92)", backdropFilter:"blur(16px)",
                     border:`1px solid ${SEV_COLORS[activeSG.severity]}44`,
-                    borderRadius:10, padding:16, maxHeight:"calc(100vh - 140px)", overflowY:"auto",
-                    zIndex:10,
+                    borderRadius:10, padding:16, maxHeight:"calc(100vh - 140px)", overflowY:"auto", zIndex:10,
                   }}>
-                    {/* Header pistola */}
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
                       <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                         <span className="tag" style={{ background:SEVERITY_CFG[activeSG.severity]?.bg, color:SEVERITY_CFG[activeSG.severity]?.color, border:`1px solid ${SEVERITY_CFG[activeSG.severity]?.border}` }}>
@@ -1583,21 +1631,12 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                         ✕
                       </button>
                     </div>
-
-                    <div style={{ fontSize:15, fontWeight:700, color:SEV_COLORS[activeSG.severity], marginBottom:6, lineHeight:1.3 }}>
-                      {activeSG.title}
-                    </div>
-                    <div style={{ fontSize:13, color:"var(--text-secondary)", lineHeight:1.75, marginBottom:10 }}>
-                      {activeSG.headline}
-                    </div>
-                    <div style={{ fontSize:12, color:"var(--text-muted)", lineHeight:1.8, marginBottom:10 }}>
-                      {activeSG.analysis}
-                    </div>
+                    <div style={{ fontSize:15, fontWeight:700, color:SEV_COLORS[activeSG.severity], marginBottom:6, lineHeight:1.3 }}>{activeSG.title}</div>
+                    <div style={{ fontSize:13, color:"var(--text-secondary)", lineHeight:1.75, marginBottom:10 }}>{activeSG.headline}</div>
+                    <div style={{ fontSize:12, color:"var(--text-muted)", lineHeight:1.8, marginBottom:10 }}>{activeSG.analysis}</div>
                     <div style={{ borderTop:`1px solid ${SEV_COLORS[activeSG.severity]}22`, paddingTop:8, fontSize:11.5, color:SEV_COLORS[activeSG.severity], fontStyle:"italic", lineHeight:1.6, marginBottom:12 }}>
                       → {activeSG.implication}
                     </div>
-
-                    {/* Trazo narrativo */}
                     {activeSG.path?.length > 0 && (
                       <div style={{ marginBottom:12 }}>
                         <div className="panel-label" style={{ marginBottom:8 }}>{t.patternNarrPath}</div>
@@ -1611,19 +1650,19 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                                   <div style={{ width:8, height:8, borderRadius:"50%", background:SEV_COLORS[activeSG.severity], flexShrink:0 }}/>
                                   {idx < activeSG.path.length - 1 && <div style={{ width:1, height:16, background:`${SEV_COLORS[activeSG.severity]}44`, marginTop:2 }}/>}
                                 </div>
-                                <span
-                                  style={{ fontSize:12, color:"var(--text-primary)", cursor:"pointer", fontWeight:500 }}
-                                  onClick={() => { setSelected(n); setPanel("node"); if (!sidebarOpen) setSidebarOpen(true); }}
-                                >{n.label[lang]}</span>
-                                <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", marginLeft:"auto", flexShrink:0 }}>{n.year < 0 ? `${Math.abs(n.year)}BC` : n.year}</span>
+                                <span style={{ fontSize:12, color:"var(--text-primary)", cursor:"pointer", fontWeight:500 }}
+                                  onClick={() => { setSelected(n); setPanel("node"); if (!sidebarOpen) setSidebarOpen(true); }}>
+                                  {n.label[lang]}
+                                </span>
+                                <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", marginLeft:"auto", flexShrink:0 }}>
+                                  {n.year < 0 ? `${Math.abs(n.year)}BC` : n.year}
+                                </span>
                               </div>
                             );
                           })}
                         </div>
                       </div>
                     )}
-
-                    {/* Nodos involucrados */}
                     <div style={{ display:"flex", gap:4, flexWrap:"wrap", marginBottom:12 }}>
                       {activeSG.nodes?.map(nid => {
                         const n = NODES.find(x => x.id === nid);
@@ -1636,7 +1675,6 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                         ) : null;
                       })}
                     </div>
-
                     <button className="btn" onClick={() => { setActiveSG(null); setPatternStep(-1); setSelected(null); }}
                       style={{ width:"100%", justifyContent:"center", fontSize:12 }}>
                       {t.patternViewNode}
@@ -1645,8 +1683,7 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
                 )}
               </>
             )}
-
-            {/* Category legend — bottom right (hidden in pattern mode when activeSG is open) */}
+            {/* Category legend */}
             {!(patternMode && activeSG) && (
               <div style={{
                 position:"absolute", bottom:16, right:16,
@@ -1672,19 +1709,20 @@ ng.filter(d => nodeR(d) >= 9).append("text").attr("class", "yr")
       {/* ── HELP MODAL ── */}
       {showHelp && <HelpModal lang={lang} onClose={() => setShowHelp(false)} onLangChange={setLang}/>}
 
-      {/* ── HINT DE PRIMER USO ─────────────────────────────────────────── */}
-      {showHint && (
-        <GraphHint
+      {/* ── HINT PRIMER USO ── */}
+      {showHint && <GraphHint lang={lang} onDismiss={() => setShowHint(false)}/>}
+
+      {/* ── EXPANDED MODAL — Fase 2 ── */}
+      {showExpanded && selected && (
+        <ExpandedModal
+          node={selected}
           lang={lang}
-          onDismiss={() => setShowHint(false)}
+          onClose={() => setShowExpanded(false)}
+          allNodes={NODES}
+          filteredIds={filteredIds}
+          onSelectNode={n => { setSelected(n); setPanel("node"); }}
         />
       )}
     </>
   );
 }
-
-
-
-
-
-
