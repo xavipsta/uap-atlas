@@ -602,8 +602,25 @@ export const SOURCES = {
       sha256: null,
       accessed:"2026-05-08", confidence:"high", status:"verified",
     },
-  ],
-
+  ],,
+  nsa_umbra: [
+    {
+        "id": "src_nsa_umbra_foia_2026",
+        "node_id": "nsa_umbra",
+        "type": "foia_release",
+        "title": "NSA TOP SECRET UMBRA UAP FOIA Release — Disclosure Foundation",
+        "date": "2026-05-18",
+        "author": "Hunt Willis, Chief Legal Officer — Disclosure Foundation",
+        "url_primary": "https://disclosure.org/news/nsa-top-secret-umbra-uap-foia-release",
+        "url_archive": "https://web.archive.org/web/2026*/https://disclosure.org/news/nsa-top-secret-umbra-uap-foia-release",
+        "url_hf": null,
+        "url_search": null,
+        "sha256": null,
+        "accessed": "2026-05-20",
+        "status": "verified",
+        "notes": "334 paginas. FOIA appeal ganada tras denegacion inicial. Precedente legal: caso 1980 NSA vs. ciudadanos. Abogado firmante identificado. Documento embedded en la pagina. Redacciones restantes bajo 50 U.S.C. 3605."
+    }
+  ]
 };
 
 // ─── UTILIDADES DE CONSULTA ───────────────────────────────────────────────────
