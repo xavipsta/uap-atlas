@@ -1383,14 +1383,22 @@ async function injectorPublish() {
       const beforeClose = currentContent.substring(0, lastBracketIdx).replace(/\s+$/, '');
       const afterClose  = currentContent.substring(lastBracketIdx);
       newContent = beforeClose + ',\n' + newEntry + '\n' + afterClose;
-    } else {
-      // Insertar antes del cierre del array principal en sources.js
-      // Busca el último ]; del archivo
-      const lastBracketIdx = currentContent.lastIndexOf('];');
-      if (lastBracketIdx === -1) throw new Error('No se encontró cierre ]; en sources.js');
-      const beforeClose = currentContent.substring(0, lastBracketIdx).replace(/\s+$/, '');
-      const afterClose  = currentContent.substring(lastBracketIdx);
-      newContent = beforeClose + ',\n' + newEntry + '\n' + afterClose;
+   } else {
+      // sources.js es un objeto SOURCES{} no un array
+      // Buscar "// ─── UTILIDADES" que marca el fin del objeto
+      const utilsIdx = currentContent.indexOf('// ─── UTILIDADES');
+      if (utilsIdx === -1) throw new Error('No se encontró el marcador de utilidades en sources.js');
+      const beforeUtils = currentContent.substring(0, utilsIdx);
+      const afterUtils  = currentContent.substring(utilsIdx);
+      // El cierre del objeto es el último }; antes de las utilidades
+      const lastBraceIdx = beforeUtils.lastIndexOf('};');
+      if (lastBraceIdx === -1) throw new Error('No se encontró cierre }; de SOURCES en sources.js');
+      const beforeClose = currentContent.substring(0, lastBraceIdx).replace(/\s+$/, '');
+      const afterClose  = currentContent.substring(lastBraceIdx);
+      // La entrada va como nsa_umbra: [{...}] dentro del objeto
+      const nodeId = _injectorParsed.node_id || _injectorParsed.id;
+      const sourceEntry = `  ${nodeId}: [\n    ${JSON.stringify(_injectorParsed, null, 4).replace(/\n/g, '\n    ')}\n  ]`;
+      newContent = beforeClose + ',\n' + sourceEntry + '\n' + afterClose;
     }
 
     btn.textContent = '⏳ Publicando en GitHub...';
