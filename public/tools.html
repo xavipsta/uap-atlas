@@ -245,6 +245,7 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
     <button class="nav-tab" onclick="showTab('stats')" id="tab-stats"><span class="tab-dot"></span>Estado del Atlas</button>
     <button class="nav-tab" onclick="showTab('prompts')" id="tab-prompts"><span class="tab-dot"></span>Prompts</button>
     <button class="nav-tab" onclick="showTab('guns')" id="tab-guns"><span class="tab-dot"></span>Pistolas</button>
+	<button class="nav-tab" onclick="showTab('injector')" id="tab-injector"><span class="tab-dot"></span>Node Injector</button>
   </nav>
 
   <div class="content">
@@ -286,6 +287,12 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
           <div class="tool-desc">Genera pistolas con IA, revisa y aprueba cada patrón, y publica smokingGuns.js directamente en GitHub con un click.</div>
           <span class="tool-status status-ready">Listo · GitHub directo · ~$0.05</span>
         </div>
+		<div class="tool-card" onclick="showTab('injector')">
+		 <div class="tool-icon">⊕</div>
+		 <div class="tool-name">Node Injector</div>
+		 <div class="tool-desc">Pega el JSON de un nodo o fuente ya redactado, valida el schema, previsualiza y publica directamente en nodes.js o sources.js vía GitHub.</div>
+		 <span class="tool-status status-ready">Listo · Sin API · Solo GitHub</span>
+</div>
       </div>
       <div class="section-divider" style="margin-top:32px"></div>
       <div style="padding:16px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius)">
@@ -466,6 +473,67 @@ pre{padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-se
       </div>
     </div>
 
+    <!-- ── NODE INJECTOR ── -->
+    <div id="view-injector" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Node Injector</div>
+        <div class="section-sub">Pega el JSON ya redactado de un nodo o fuente. Valida el schema, previsualiza y publica en GitHub sin pasar por Claude.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+
+        <!-- Selector de destino -->
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px">
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px">Destino</div>
+          <div style="display:flex;gap:8px">
+            <label style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;background:var(--bg-3);border:2px solid var(--accent);border-radius:var(--radius-sm);cursor:pointer" id="dest-nodes-label">
+              <input type="radio" name="injector-dest" value="nodes" checked onchange="injectorDestChange(this.value)" style="display:none">
+              <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent);font-weight:600">nodes.js</span>
+              <span style="font-size:10px;color:var(--text-muted);text-align:center">Array NODES[]</span>
+            </label>
+            <label style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;background:var(--bg-3);border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer" id="dest-sources-label">
+              <input type="radio" name="injector-dest" value="sources" onchange="injectorDestChange(this.value)" style="display:none">
+              <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);font-weight:600">sources.js</span>
+              <span style="font-size:10px;color:var(--text-muted);text-align:center">Array SOURCES[]</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Schema reference -->
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px">
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px">Schema requerido</div>
+          <div id="injector-schema-hint" style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);line-height:1.8">
+            id · label{es,en} · year · cat · sub{es,en}<br>
+            credibility (high|medium|low)<br>
+            desc{es,en} · links[]
+          </div>
+        </div>
+      </div>
+
+      <!-- Input JSON -->
+      <div class="edit-panel" style="margin-bottom:16px;height:260px">
+        <div class="edit-panel-header">
+          <div class="panel-label">JSON del nodo / fuente</div>
+          <div class="panel-desc">Pega el objeto JavaScript directamente — con o sin llaves externas</div>
+        </div>
+        <textarea id="injectorInput" placeholder='{&#10;  id: "nsa_umbra",&#10;  label: { es: "NSA TOP SECRET UMBRA", en: "NSA TOP SECRET UMBRA" },&#10;  year: 1960,&#10;  cat: "institution",&#10;  ...&#10;}' oninput="injectorOnInput()"></textarea>
+        <div class="edit-footer">
+          <button class="btn btn-ghost btn-sm" onclick="injectorClear()">Limpiar</button>
+          <span id="injector-char-count" style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-left:auto">0 caracteres</span>
+          <button class="btn btn-primary btn-sm" id="injector-validate-btn" onclick="injectorValidate()" disabled>◈ Validar</button>
+        </div>
+      </div>
+
+      <!-- Output: validación + preview + publish -->
+      <div id="injector-output">
+        <div class="empty-state">
+          <div class="empty-icon">⊕</div>
+          <div class="empty-title">Injector listo</div>
+          <div class="empty-desc">Pega un bloque JSON y pulsa Validar para comprobar el schema y previsualizar antes de publicar.</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -554,7 +622,7 @@ async function publishToGitHub(filepath, content, commitMsg) {
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
 function showTab(name) {
-  ['home','editorial','monitor','stats','prompts','guns'].forEach(t => {
+  ['home','editorial','monitor','stats','prompts','guns','injector'].forEach(t => {
     document.getElementById('view-'+t).style.display = 'none';
     document.getElementById('tab-'+t).classList.toggle('active', t===name);
   });
@@ -562,6 +630,7 @@ function showTab(name) {
   view.style.display = name==='editorial' ? 'flex' : 'block';
   if (name==='guns') initGunsView();
   if (name==='editorial') view.style.display = 'flex';
+  if (name==='injector') initInjectorView();
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
@@ -1101,6 +1170,256 @@ function copyCode(btn,id){
     btn.textContent='✓ Copiado';btn.classList.add('copied');
     setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('copied');},2000);
   });
+}
+
+// ── NODE INJECTOR ─────────────────────────────────────────────────────────────
+const INJECTOR_SCHEMAS = {
+  nodes: {
+    required: ['id','label','year','cat','sub','credibility','desc','links'],
+    catValues: ['incident','program','person','institution','concept','event'],
+    credValues: ['high','medium','low'],
+  },
+  sources: {
+    required: ['id','node_id','type','title','date','url_primary','accessed','status'],
+  }
+};
+const INJECTOR_SCHEMA_HINTS = {
+  nodes: 'id · label{es,en} · year · cat · sub{es,en}<br>credibility (high|medium|low)<br>desc{es,en} · links[]',
+  sources: 'id · node_id · type · title · date<br>url_primary · url_archive · accessed · status',
+};
+
+let _injectorDest = 'nodes';
+let _injectorParsed = null;
+
+function injectorDestChange(val) {
+  _injectorDest = val;
+  _injectorParsed = null;
+  document.getElementById('injector-schema-hint').innerHTML = INJECTOR_SCHEMA_HINTS[val];
+  document.getElementById('dest-nodes-label').style.borderColor  = val==='nodes'  ? 'var(--accent)' : 'var(--border)';
+  document.getElementById('dest-sources-label').style.borderColor = val==='sources' ? 'var(--accent)' : 'var(--border)';
+  document.getElementById('dest-nodes-label').querySelector('span').style.color  = val==='nodes'  ? 'var(--accent)' : 'var(--text-muted)';
+  document.getElementById('dest-sources-label').querySelector('span').style.color = val==='sources' ? 'var(--accent)' : 'var(--text-muted)';
+  injectorClearOutput();
+}
+
+function injectorOnInput() {
+  const len = document.getElementById('injectorInput').value.length;
+  document.getElementById('injector-char-count').textContent = len + ' caracteres';
+  document.getElementById('injector-validate-btn').disabled = len < 20;
+  _injectorParsed = null;
+}
+
+function injectorClear() {
+  document.getElementById('injectorInput').value = '';
+  document.getElementById('injector-char-count').textContent = '0 caracteres';
+  document.getElementById('injector-validate-btn').disabled = true;
+  _injectorParsed = null;
+  injectorClearOutput();
+}
+
+function injectorClearOutput() {
+  document.getElementById('injector-output').innerHTML = `<div class="empty-state"><div class="empty-icon">⊕</div><div class="empty-title">Injector listo</div><div class="empty-desc">Pega un bloque JSON y pulsa Validar.</div></div>`;
+}
+
+function injectorValidate() {
+  const raw = document.getElementById('injectorInput').value.trim();
+  let parsed;
+
+  // Intentar parsear — soporta JS object literal (con claves sin comillas) usando Function()
+  try {
+    parsed = Function('"use strict"; return (' + raw + ')')();
+  } catch(e1) {
+    try {
+      parsed = JSON.parse(raw);
+    } catch(e2) {
+      injectorShowError('JSON no válido: ' + e1.message);
+      return;
+    }
+  }
+
+  const schema = INJECTOR_SCHEMAS[_injectorDest];
+  const errors = [];
+  const warnings = [];
+
+  // Validar campos requeridos
+  schema.required.forEach(f => {
+    if (parsed[f] === undefined || parsed[f] === null || parsed[f] === '') {
+      errors.push(`Campo requerido ausente: <strong>${f}</strong>`);
+    }
+  });
+
+  if (_injectorDest === 'nodes') {
+    // Validar cat
+    if (parsed.cat && !schema.catValues.includes(parsed.cat)) {
+      errors.push(`cat inválido: "${parsed.cat}" — debe ser: ${schema.catValues.join(' | ')}`);
+    }
+    // Validar credibility
+    if (parsed.credibility && !schema.credValues.includes(parsed.credibility)) {
+      errors.push(`credibility inválido: "${parsed.credibility}"`);
+    }
+    // Validar bilingüismo
+    ['label','sub','desc'].forEach(f => {
+      if (parsed[f] && (!parsed[f].es || !parsed[f].en)) {
+        errors.push(`"${f}" debe tener ambas claves: es + en`);
+      }
+    });
+    // Validar links contra IDs existentes
+    if (Array.isArray(parsed.links)) {
+      parsed.links.forEach(link => {
+        if (!ATLAS_CONTEXT.existingNodeIds.includes(link)) {
+          warnings.push(`Link "${link}" no existe en nodes.js — broken link potencial`);
+        }
+      });
+    }
+    // Advertir si id ya existe
+    if (ATLAS_CONTEXT.existingNodeIds.includes(parsed.id)) {
+      errors.push(`El ID "${parsed.id}" ya existe en el atlas`);
+    }
+  }
+
+  if (errors.length > 0) {
+    injectorShowValidation('error', errors, warnings, parsed);
+    return;
+  }
+
+  _injectorParsed = parsed;
+  injectorShowValidation('ok', [], warnings, parsed);
+}
+
+function injectorShowError(msg) {
+  document.getElementById('injector-output').innerHTML = `
+    <div class="publish-error" style="margin-bottom:12px">✕ ${msg}</div>`;
+}
+
+function injectorShowValidation(status, errors, warnings, parsed) {
+  let h = '';
+
+  if (status === 'error') {
+    h += `<div style="padding:12px 14px;background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:var(--radius);margin-bottom:12px">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--danger);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">✕ Schema inválido (${errors.length} error${errors.length>1?'es':''})</div>
+      ${errors.map(e=>`<div style="font-size:11px;color:var(--text-secondary);line-height:1.8;padding-left:8px">• ${e}</div>`).join('')}
+    </div>`;
+  } else {
+    h += `<div class="publish-notice" style="margin-bottom:12px">✓ Schema válido — listo para publicar</div>`;
+  }
+
+  if (warnings.length > 0) {
+    h += `<div style="padding:10px 14px;background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.15);border-radius:var(--radius);margin-bottom:12px">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--warning);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">⚠ Advertencias (${warnings.length})</div>
+      ${warnings.map(w=>`<div style="font-size:11px;color:var(--text-muted);line-height:1.8;padding-left:8px">• ${w}</div>`).join('')}
+    </div>`;
+  }
+
+  // Preview card
+  if (parsed && _injectorDest === 'nodes') {
+    const credColor = {high:'var(--success)',medium:'var(--warning)',low:'var(--danger)'}[parsed.credibility] || 'var(--text-muted)';
+    const catColor  = {incident:'#ff6b35',program:'#4ecdc4',person:'#a8e6cf',institution:'#ffd93d',concept:'#c77dff',event:'#74b9ff'}[parsed.cat] || 'var(--text-muted)';
+    h += `<div style="background:var(--bg-2);border:1px solid var(--border-accent);border-radius:var(--radius);padding:16px;margin-bottom:16px">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px">Preview del nodo</div>
+      <div style="display:grid;grid-template-columns:repeat(4,auto) 1fr;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+        <span style="font-family:var(--font-mono);font-size:13px;color:var(--accent);font-weight:600">${parsed.id}</span>
+        <span style="font-family:var(--font-mono);font-size:9px;padding:2px 8px;border-radius:3px;background:${catColor}18;border:1px solid ${catColor}33;color:${catColor}">${parsed.cat}</span>
+        <span style="font-family:var(--font-mono);font-size:9px;padding:2px 8px;border-radius:3px;background:${credColor}18;border:1px solid ${credColor}33;color:${credColor}">${parsed.credibility}</span>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">${parsed.year}</span>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:4px">${parsed.label?.es || ''}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">${parsed.sub?.es || ''}</div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;margin-bottom:10px">${parsed.desc?.es || ''}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">${(parsed.links||[]).map(l=>`<span class="link-tag">${l}</span>`).join('')}</div>
+    </div>`;
+  }
+
+  // Código generado
+  const codeStr = JSON.stringify(parsed, null, 2);
+  h += `<div class="code-block" style="margin-bottom:12px">
+    <div class="code-header">
+      <span class="code-filename">${_injectorDest === 'nodes' ? 'src/data/nodes.js' : 'src/data/sources.js'}</span>
+      <div class="code-actions">
+        <button class="copy-btn" onclick="copyCode(this,'injector-code-pre')">Copiar</button>
+        ${status === 'ok' ? `<button class="publish-btn" id="injector-pub-btn" onclick="injectorPublish()">↑ Publicar en GitHub</button>` : ''}
+      </div>
+    </div>
+    <pre id="injector-code-pre">${escHtml(codeStr)}</pre>
+  </div>`;
+
+  h += `<div id="injector-publish-result"></div>`;
+
+  document.getElementById('injector-output').innerHTML = h;
+  document.getElementById('injector-output').scrollIntoView({behavior:'smooth'});
+}
+
+async function injectorPublish() {
+  if (!_injectorParsed) { alert('Valida el JSON primero.'); return; }
+  if (!getGhKey()) { alert('Pega el token GitHub (GH) en el header antes de publicar.'); return; }
+
+  const btn = document.getElementById('injector-pub-btn');
+  btn.classList.add('publishing');
+  btn.textContent = '⏳ Leyendo archivo...';
+  const resultDiv = document.getElementById('injector-publish-result');
+
+  try {
+    const isNodes = _injectorDest === 'nodes';
+    const filepath = isNodes ? 'src/data/nodes.js' : 'src/data/sources.js';
+    const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${filepath}`;
+
+    const getRes = await fetch(apiUrl, { headers: ghHeaders() });
+    if (!getRes.ok) throw new Error(`Error leyendo ${filepath}: ${getRes.status}`);
+    const current = await getRes.json();
+    const currentContent = decodeURIComponent(escape(atob(current.content.replace(/\n/g,''))));
+
+    btn.textContent = '⏳ Insertando...';
+
+    // Serializar el objeto como JS literal (no JSON) para mantener consistencia con el archivo
+    const newEntry = '  ' + JSON.stringify(_injectorParsed, null, 2).replace(/\n/g, '\n  ');
+
+    let newContent;
+    if (isNodes) {
+      // Insertar antes del cierre de NODES[], mismo patrón que publishNodeCode()
+      const linksIdx = currentContent.indexOf('export const LINKS_DATA');
+      if (linksIdx === -1) throw new Error('No se encontró "export const LINKS_DATA" en nodes.js');
+      const beforeLinks = currentContent.substring(0, linksIdx);
+      const lastBracketIdx = beforeLinks.lastIndexOf('];');
+      if (lastBracketIdx === -1) throw new Error('No se encontró cierre ]; de NODES[]');
+      const beforeClose = currentContent.substring(0, lastBracketIdx).replace(/\s+$/, '');
+      const afterClose  = currentContent.substring(lastBracketIdx);
+      newContent = beforeClose + ',\n' + newEntry + '\n' + afterClose;
+    } else {
+      // Insertar antes del cierre del array principal en sources.js
+      // Busca el último ]; del archivo
+      const lastBracketIdx = currentContent.lastIndexOf('];');
+      if (lastBracketIdx === -1) throw new Error('No se encontró cierre ]; en sources.js');
+      const beforeClose = currentContent.substring(0, lastBracketIdx).replace(/\s+$/, '');
+      const afterClose  = currentContent.substring(lastBracketIdx);
+      newContent = beforeClose + ',\n' + newEntry + '\n' + afterClose;
+    }
+
+    btn.textContent = '⏳ Publicando en GitHub...';
+    const encoded = btoa(unescape(encodeURIComponent(newContent)));
+    const commitMsg = isNodes
+      ? `feat: añadir nodo — ${_injectorParsed.id}`
+      : `feat: añadir fuente — ${_injectorParsed.id}`;
+
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT', headers: ghHeaders(),
+      body: JSON.stringify({ message: commitMsg, content: encoded, sha: current.sha, branch: GH_BRANCH })
+    });
+    if (!putRes.ok) { const err = await putRes.json(); throw new Error(err.message || `Error ${putRes.status}`); }
+
+    btn.textContent = '✓ Publicado';
+    btn.classList.remove('publishing');
+    btn.classList.add('published');
+    btn.disabled = true;
+    resultDiv.innerHTML = `<div class="publish-notice">✓ ${_injectorParsed.id} publicado en ${filepath} · Deploy Vercel iniciado · Listo en ~60s · <a href="https://atlas-uap.vercel.app" target="_blank" style="color:var(--accent)">Ver atlas →</a></div>`;
+
+  } catch(err) {
+    btn.textContent = '✕ Error';
+    btn.classList.remove('publishing');
+    resultDiv.innerHTML = `<div class="publish-error">✕ ${err.message}</div>`;
+  }
+}
+
+function initInjectorView() {
+  // No init necesario por ahora
 }
 </script>
 </body>
