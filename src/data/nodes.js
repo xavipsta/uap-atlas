@@ -106,7 +106,31 @@ export const NODES = [
 
   { id:"mccasland_neil", label:{es:"Gral. Neil McCasland",en:"Gen. Neil McCasland"}, year:2026, cat:"person", sub:{es:"Patrón · Desaparición",en:"Pattern · Disappearance"}, credibility:"medium", desc:{es:"Mayor General retirado de la Fuerza Aérea de EE.UU. con vínculos documentados a investigación aeroespacial clasificada en Wright-Patterson AFB — base históricamente asociada a la cadena de custodia post-Roswell. Desapareció en febrero de 2026 después de un paseo cerca de su casa en Nuevo México. Corbell lo había contactado dos veces intentando obtener testimonio sobre programas UAP; no hubo respuesta antes de la desaparición. Su perfil (base Wright-Patterson, programas clasificados aeroespaciales, contacto de Corbell) lo sitúa dentro del patrón de insiders con conocimiento de programas NHI que desaparecen o mueren en circunstancias ambiguas antes de testificar.",en:"Retired U.S. Air Force Major General with documented ties to classified aerospace research at Wright-Patterson AFB — base historically associated with the post-Roswell custody chain. Disappeared in February 2026 after a walk near his home in New Mexico. Corbell had contacted him twice attempting to obtain UAP program testimony; no response before the disappearance. His profile (Wright-Patterson, classified aerospace programs, Corbell contact) places him within the pattern of NHI program insiders who disappear or die in ambiguous circumstances before testifying."}, links:["patron_muertes","patron_encubrimiento","roswell1947","legacy_program","pursue_r01"] },
 
-  { id:"large_disc_uap", label:{es:"Large Disc UAP (USAF 2020)",en:"Large Disc UAP (USAF 2020)"}, year:2020, cat:"incident", sub:{es:"PURSUE · Filtrado",en:"PURSUE · Leaked"}, credibility:"high", desc:{es:"23 noviembre 2020, 11:13 UTC. Objeto en forma de disco grande detectado y filmado por la Fuerza Aérea de EE.UU. navegando a través de nubes. Filtrado por Jeremy Corbell el 18 mayo 2026 desde un archivo oculto de videos UAP de la USAF, catalogado y reportado al Congreso. Metadata visible: 'LARGE DISC UAP · UAP DETECTION: AIR FORCE · ACTIVITY: UAP NAVIGATES THROUGH CLOUDS'. Fuente primaria institucional con fecha y hora exactas — uno de los pocos casos filtrados con metadata de clasificación completa visible.",en:"November 23 2020, 11:13 UTC. Large disc-shaped object detected and filmed by the U.S. Air Force navigating through clouds. Leaked by Jeremy Corbell on May 18 2026 from a hidden USAF UAP video archive, catalogued and reported to Congress. Visible metadata: 'LARGE DISC UAP · UAP DETECTION: AIR FORCE · ACTIVITY: UAP NAVIGATES THROUGH CLOUDS'. Institutional primary source with exact date and time — one of the few leaked cases with full visible classification metadata."}, links:["pursue_r01","patron_encubrimiento","edicion_retroactiva","fbi"] },
+  { id:"large_disc_uap", label:{es:"Large Disc UAP (USAF 2020)",en:"Large Disc UAP (USAF 2020)"}, year:2020, cat:"incident", sub:{es:"PURSUE · Filtrado",en:"PURSUE · Leaked"}, credibility:"high", desc:{es:"23 noviembre 2020, 11:13 UTC. Objeto en forma de disco grande detectado y filmado por la Fuerza Aérea de EE.UU. navegando a través de nubes. Filtrado por Jeremy Corbell el 18 mayo 2026 desde un archivo oculto de videos UAP de la USAF, catalogado y reportado al Congreso. Metadata visible: 'LARGE DISC UAP · UAP DETECTION: AIR FORCE · ACTIVITY: UAP NAVIGATES THROUGH CLOUDS'. Fuente primaria institucional con fecha y hora exactas — uno de los pocos casos filtrados con metadata de clasificación completa visible.",en:"November 23 2020, 11:13 UTC. Large disc-shaped object detected and filmed by the U.S. Air Force navigating through clouds. Leaked by Jeremy Corbell on May 18 2026 from a hidden USAF UAP video archive, catalogued and reported to Congress. Visible metadata: 'LARGE DISC UAP · UAP DETECTION: AIR FORCE · ACTIVITY: UAP NAVIGATES THROUGH CLOUDS'. Institutional primary source with exact date and time — one of the few leaked cases with full visible classification metadata."}, links:["pursue_r01","patron_encubrimiento","edicion_retroactiva","fbi"] },,
+  {
+    "id": "nsa_umbra",
+    "label": {
+      "es": "NSA TOP SECRET UMBRA",
+      "en": "NSA TOP SECRET UMBRA"
+    },
+    "year": 1960,
+    "cat": "institution",
+    "sub": {
+      "es": "Registros SIGINT clasificados TS//UMBRA sobre UAP (1960s–1980s)",
+      "en": "SIGINT records classified TS//UMBRA on UAP (1960s–1980s)"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "La NSA retuvo durante décadas cientos de páginas de informes SIGINT sobre UAP clasificados como TOP SECRET UMBRA, la denominación de compartimentación más sensible de inteligencia de señales. Publicadas en mayo de 2026 tras apelación FOIA de la Disclosure Foundation, los documentos incluyen rastreos radar, intercepciones militares, scrambles de cazas (hasta 13 MiG en un caso), y objetos con comportamiento anómalo (cambios de rumbo silenciosos, movimiento vertical, división en múltiples objetos). La clasificación TS//UMBRA —cuya filtración se consideraba causa de daño excepcionalmente grave a la seguridad nacional— confirma que el fenómeno UAP fue tratado como inteligencia de máxima sensibilidad, no como curiosidad marginal. Múltiples páginas siguen redactadas bajo 50 U.S.C. 3605.",
+      "en": "The NSA retained for decades hundreds of pages of UAP-related SIGINT reports classified TOP SECRET UMBRA, signals intelligence's most sensitive compartment. Released in May 2026 following a Disclosure Foundation FOIA appeal, documents include radar tracking, military interceptions, fighter scrambles (up to 13 MiGs in one case), and objects with anomalous behavior (silent heading changes, vertical movement, splitting into multiple objects). The TS//UMBRA classification—whose unauthorized disclosure was considered capable of exceptionally grave damage to national security—confirms UAP was treated as maximum-sensitivity intelligence, not a fringe curiosity. Multiple pages remain redacted under 50 U.S.C. 3605."
+    },
+    "links": [
+      "legacy_program",
+      "grusch",
+      "nuclear_pattern",
+      "elizondo"
+    ]
+  }
 ];
 
 export const LINKS_DATA = NODES.flatMap(n =>
