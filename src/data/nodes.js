@@ -130,6 +130,29 @@ export const NODES = [
       "nuclear_pattern",
       "elizondo"
     ]
+  },
+  {
+    "id": "mit_lincoln_labs",
+    "label": {
+      "es": "MIT Lincoln Laboratory",
+      "en": "MIT Lincoln Laboratory"
+    },
+    "year": 1951,
+    "cat": "institution",
+    "sub": {
+      "es": "Centro de I+D federal (FFRDC) bajo USAF/DoD con documentación clasificada UAP",
+      "en": "Federally Funded R&D Center under USAF/DoD with classified UAP documentation"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "MIT Lincoln Laboratory es un centro de investigación y desarrollo financiado federalmente (FFRDC) operado por el MIT bajo contrato con el Departamento de Defensa. En mayo de 2026, el congresista Eric Burlison (R-MO) envió una carta oficial solicitando sus materiales sobre UAP, catalogados internamente como 'charlas sobre platillos voladores'. Su existencia como custodio de documentación clasificada UAP fue declarada públicamente por un miembro del Congreso.",
+      "en": "MIT Lincoln Laboratory is a federally funded R&D center operated by MIT under DoD contract. In May 2026, Rep. Eric Burlison (R-MO) sent an official letter requesting their UAP materials, internally catalogued as 'flying saucer talks'. Its role as custodian of classified UAP documentation was publicly stated by a sitting member of Congress."
+    },
+    "links": [
+      "burlison",
+      "patron_encubrimiento",
+      "legacy_program"
+    ]
   }
 ];
 
