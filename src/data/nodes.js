@@ -372,6 +372,28 @@ export const NODES = [
       "ezekiel_vision",
       "enoc"
     ]
+  },
+  {
+    "id": "basilea_1566",
+    "label": {
+      "es": "Batalla de Basilea 1566",
+      "en": "Basel Battle 1566"
+    },
+    "year": 1566,
+    "cat": "incident",
+    "sub": {
+      "es": "Fenómeno aéreo masivo documentado",
+      "en": "Documented mass aerial phenomenon"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "En julio de 1566 testigos de Basilea describieron esferas negras en combate aéreo sobre la ciudad, con objetos cayendo y desapareciendo. Documentado en broadsheet de Samuel Apiarius y Samuel Coccius. Evento estructuralmente paralelo a Núremberg 1561: misma morfología, mismo método de documentación, mismo contexto geocultural, separado por 5 años y 300 km. La recurrencia del patrón documenta consistencia morfológica y de comportamiento.",
+      "en": "In July 1566 Basel witnesses described black spheres in aerial combat over the city, with objects falling and disappearing. Documented in broadsheet by Samuel Apiarius and Samuel Coccius. Structurally parallel to Nuremberg 1561: same morphology, same documentation method, same geocultural context, separated by 5 years and 300 km. Pattern recurrence documents morphological and behavioral consistency."
+    },
+    "links": [
+      "nuremberg_1561",
+      "enoc"
+    ]
   }
 ];
 
