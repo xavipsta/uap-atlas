@@ -262,6 +262,29 @@ export const NODES = [
       "nuclear_pattern",
       "age_of_disclosure"
     ]
+  },
+  {
+    "id": "ornl_doe",
+    "label": {
+      "es": "Oak Ridge National Laboratory",
+      "en": "Oak Ridge National Laboratory"
+    },
+    "year": 1943,
+    "cat": "institution",
+    "sub": {
+      "es": "Laboratorio nacional DoE/NNSA",
+      "en": "DoE/NNSA national laboratory"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "Laboratorio nacional del Departamento de Energía operado bajo NNSA. Bajo la Ley de Energía Atómica de 1954 cualquier dato relativo a energía avanzada queda clasificado en el momento de su creación, Born Secret, sin requerir orden ejecutiva. Impenetrable para el sistema de revisión DoD sin autorización interna DoE explícita. Sean Kirkpatrick se incorporó como CTO para Programas de Defensa e Inteligencia tras dejar AARO.",
+      "en": "Department of Energy national laboratory operated under NNSA. Under the Atomic Energy Act of 1954 any data relating to advanced energy creation is classified at moment of creation, Born Secret, requiring no executive order. Impenetrable to DoD review system without explicit internal DoE authorization. Sean Kirkpatrick joined as CTO for Defense and Intelligence Programs after leaving AARO."
+    },
+    "links": [
+      "kirkpatrick_sean",
+      "mitre_nsec",
+      "legacy_program"
+    ]
   }
 ];
 
