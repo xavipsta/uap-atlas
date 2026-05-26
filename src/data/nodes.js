@@ -239,7 +239,30 @@ export const NODES = [
   { id:"weinstein_eric", label:{es:"Eric Weinstein",en:"Eric Weinstein"}, year:2022, cat:"person", sub:{es:"Matemático Harvard — contacto gobierno documentado",en:"Harvard mathematician — documented government contact"}, credibility:"medium",
     desc:{es:"PhD en matemáticas Harvard, director de Thiel Capital. Documentó públicamente haber sido contactado junto a Sam Harris y Lex Fridman por personas vinculadas al gobierno para mediar el disclosure ante audiencias de confianza. Describe un patrón sistemático de mañaneo — promesas de acceso a evidencia indefinidamente pospuestas. En marzo 2026 confrontó durante 4 horas al Dr. Eric Davis sobre el programa de recuperación, identificando defecto estructural: si el programa existe, la ausencia de físicos en el equipo es inexplicable.",
           en:"Harvard mathematics PhD, Thiel Capital director. Publicly documented being contacted alongside Sam Harris and Lex Fridman by government-linked individuals to mediate disclosure to trusted audiences. Describes systematic manana pattern — evidence access promises indefinitely postponed. In March 2026 confronted Dr. Eric Davis for 4 hours on the recovery program, identifying structural defect: if the program exists, absence of physicists on the team is unexplainable."},
-    links:["age_of_disclosure","eric_davis","legacy_program","sol_foundation"] },
+    links:["age_of_disclosure","eric_davis","legacy_program","sol_foundation"] },,
+  {
+    "id": "odni_uap_d001",
+    "label": {
+      "es": "Documento ODNI-UAP-D001",
+      "en": "ODNI-UAP-D001 Document"
+    },
+    "year": 2026,
+    "cat": "incident",
+    "sub": {
+      "es": "Desclasificación oficial war.gov",
+      "en": "Official war.gov declassification"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "Testimonio en primera persona de oficial senior USIC, desclasificado en war.gov el 22 mayo 2026. Describe múltiples encuentros en rango de pruebas militar: objeto que se divide, orbes naranjas en enjambre, formaciones geométricas en T y triángulo siguiendo cazas a 23.000 pies. Corroboración múltiple: pilotos, equipos en tierra, FLIR y visión directa.",
+      "en": "First-person testimony from senior USIC intelligence official, declassified on war.gov May 22 2026. Describes multiple encounters at military test range: dividing object, swarming orange orbs, T and triangle geometric formations tracking jets at 23,000 feet. Multiple corroboration: pilots, ground teams, FLIR, direct visual."
+    },
+    "links": [
+      "legacy_program",
+      "nuclear_pattern",
+      "age_of_disclosure"
+    ]
+  }
 ];
 
 export const LINKS_DATA = NODES.flatMap(n =>
