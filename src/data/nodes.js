@@ -165,6 +165,29 @@ export const NODES = [
       "patron_encubrimiento",
       "legacy_program"
     ]
+  },
+  {
+    "id": "eric_davis",
+    "label": {
+      "es": "Dr. Eric W. Davis",
+      "en": "Dr. Eric W. Davis"
+    },
+    "year": 2020,
+    "cat": "person",
+    "sub": {
+      "es": "Astrofísico — programa recuperación material",
+      "en": "Astrophysicist — material recovery program"
+    },
+    "credibility": "medium",
+    "desc": {
+      "es": "Astrofísico y especialista en propulsión avanzada. Afirma tener conocimiento directo de un programa americano de recuperación de material no humano. Sus declaraciones son directamente contradictorias con las conclusiones oficiales de AARO 2024. Su respuesta a las inconsistencias señaladas por Weinstein — que los programas están en estructuras clasificadas invisibles a AARO — es una afirmación infalsificable. Vinculado al programa de visión remota y a investigadores del fenómeno como Hal Puthoff.",
+      "en": "Astrophysicist and advanced propulsion specialist. Claims direct knowledge of an American non-human material recovery program. His statements directly contradict official AARO 2024 conclusions. His response to inconsistencies raised by Weinstein — that programs are in classification structures invisible to AARO — is an unfalsifiable claim. Linked to remote viewing program and phenomenon researchers such as Hal Puthoff."
+    },
+    "links": [
+      "weinstein_eric",
+      "legacy_program",
+      "puthoff"
+    ]
   }
 ];
 
