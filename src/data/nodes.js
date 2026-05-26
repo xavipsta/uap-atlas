@@ -438,6 +438,28 @@ export const NODES = [
       "ezekiel_vision",
       "enoc"
     ]
+  },
+  {
+    "id": "weinstein_eric",
+    "label": {
+      "es": "Eric Weinstein",
+      "en": "Eric Weinstein"
+    },
+    "year": 2022,
+    "cat": "person",
+    "sub": {
+      "es": "Matemático Harvard — contacto gobierno documentado",
+      "en": "Harvard mathematician — documented government contact"
+    },
+    "credibility": "medium",
+    "desc": {
+      "es": "PhD en matemáticas por Harvard y director de Thiel Capital. Documentó públicamente haber sido contactado junto a Sam Harris y Lex Fridman por personas vinculadas al gobierno para mediar el disclosure ante audiencias de confianza. Describe un patrón sistemático de promesas de acceso a evidencia que se posponen indefinidamente. En marzo 2026 confrontó durante 4 horas al Dr. Eric Davis sobre el programa de recuperación de material, identificando un defecto estructural: si el programa existe, la ausencia de físicos es inexplicable.",
+      "en": "Harvard mathematics PhD and Thiel Capital director. Publicly documented being contacted alongside Sam Harris and Lex Fridman by government-linked individuals to mediate disclosure to trusted audiences. Describes systematic pattern of evidence access promises indefinitely postponed. In March 2026 confronted Dr. Eric Davis for 4 hours on the material recovery program, identifying a structural defect: if the program exists, the absence of physicists is unexplainable."
+    },
+    "links": [
+      "age_of_disclosure",
+      "legacy_program"
+    ]
   }
 ];
 
