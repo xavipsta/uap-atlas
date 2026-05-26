@@ -394,6 +394,28 @@ export const NODES = [
       "nuremberg_1561",
       "enoc"
     ]
+  },
+  {
+    "id": "vimanas",
+    "label": {
+      "es": "Vimanas — Textos Védicos",
+      "en": "Vimanas — Vedic Texts"
+    },
+    "year": -1500,
+    "cat": "incident",
+    "sub": {
+      "es": "Aeronaves en textos sánscritos antiguos",
+      "en": "Aircraft in ancient Sanskrit texts"
+    },
+    "credibility": "medium",
+    "desc": {
+      "es": "El Mahabharata, el Ramayana y el Vaimanika Shastra describen vehículos aéreos llamados Vimanas con distintas morfologías, capacidades de vuelo, maniobras evasivas y materiales de construcción específicos. La taxonomía técnica detallada sugiere descripción de objetos observados más que creación mitológica pura. Paralelo directo con el carro de Ezequiel: testigo pre-moderno describiendo tecnología avanzada con el vocabulario disponible.",
+      "en": "The Mahabharata, Ramayana and Vaimanika Shastra describe aerial vehicles called Vimanas with distinct morphologies, flight capabilities, evasive maneuvers and specific construction materials. Detailed technical taxonomy suggests description of observed objects rather than pure mythological creation. Direct parallel with Ezekiel vision: pre-modern witness describing advanced technology with available vocabulary."
+    },
+    "links": [
+      "ezekiel_vision",
+      "enoc"
+    ]
   }
 ];
 
