@@ -329,6 +329,27 @@ export const NODES = [
       "age_of_disclosure",
       "legacy_program"
     ]
+  },
+  {
+    "id": "nuremberg_1561",
+    "label": {
+      "es": "Batalla de Núremberg 1561",
+      "en": "Nuremberg Battle 1561"
+    },
+    "year": 1561,
+    "cat": "incident",
+    "sub": {
+      "es": "Fenómeno aéreo masivo documentado",
+      "en": "Documented mass aerial phenomenon"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "El 14 de abril de 1561 testigos de Núremberg describieron una batalla aérea al amanecer con objetos cilíndricos, esféricos y en forma de cruz moviéndose erráticament, algunos en combate aparente, otros estrellándose y produciendo humo. Documentado en broadsheet xilografiado de Hans Glaser, archivado en la Zentralbibliothek Zürich. Morfología consistente con observaciones modernas: esferas, cilindros, formaciones. Carl Jung lo citó en Flying Saucers de 1958.",
+      "en": "On April 14 1561 Nuremberg witnesses described an aerial battle at dawn with cylindrical, spherical and cross-shaped objects moving erratically, some in apparent combat, others crashing and producing smoke. Documented in woodcut broadsheet by Hans Glaser, archived at Zentralbibliothek Zürich. Morphology consistent with modern observations: spheres, cylinders, formations. Carl Jung cited it in Flying Saucers 1958."
+    },
+    "links": [
+      "enoc"
+    ]
   }
 ];
 
