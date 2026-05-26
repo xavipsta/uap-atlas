@@ -1417,7 +1417,20 @@ async function injectorPublish() {
     btn.classList.remove('publishing');
     btn.classList.add('published');
     btn.disabled = true;
-    resultDiv.innerHTML = `<div class="publish-notice">✓ ${_injectorParsed.id} publicado en ${filepath} · Deploy Vercel iniciado · Listo en ~60s · <a href="https://atlas-uap.vercel.app" target="_blank" style="color:var(--accent)">Ver atlas →</a></div>`;
+    const publishedId = _injectorParsed.id;
+    _injectorParsed = null;
+    // Countdown 3s para asegurar que GitHub procesa el commit antes del siguiente
+    let secs = 3;
+    resultDiv.innerHTML = `<div class="publish-notice">✓ ${publishedId} publicado en ${filepath} · Esperando confirmación GitHub <span id="gh-countdown">${secs}s</span> · <a href="https://atlas-uap.vercel.app" target="_blank" style="color:var(--accent)">Ver atlas →</a></div>`;
+    const countInterval = setInterval(() => {
+      secs--;
+      const el = document.getElementById('gh-countdown');
+      if (el) el.textContent = secs > 0 ? secs + 's' : '✓ listo';
+      if (secs <= 0) {
+        clearInterval(countInterval);
+        resultDiv.innerHTML = `<div class="publish-notice">✓ ${publishedId} publicado · GitHub confirmado · Puedes publicar el siguiente nodo.</div>`;
+      }
+    }, 1000);
 
   } catch(err) {
     btn.textContent = '✕ Error';
