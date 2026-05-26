@@ -203,7 +203,48 @@ export const SMOKING_GUNS = {
       analysis:"AARO es designado en 2023 por orden ejecutiva para unificar programas dispersos. Sin embargo, no existe arista pública documentada entre AARO y IMM_Constellation (programa black budget con b=142.0). IMM_Constellation→Legacy_program→PURSUE_R01 forma cadena de custodia de 60 años sin incorporación formal a AARO. Gap: ¿AARO hereda jurisdicción sobre IMM_Constellation o ambas operan en paralelo? Grusch (b=588.0, máxima centralidad) reporta como oficial AARO pero su testificación congress2023 sugiere autoridad de facto sobre programas pre-AARO. Esto indica: (a) AARO fue creada para documentar lo ya documentado en paralelo, (b) Grusch retiene autoridad sobre cadena legacy sin formalización a AARO, o (c) existe estructura de doble autoridad.",
       implication:"Si AARO fue diseñada para consolidar pero no desclasificar legado compartimentalizado, su b=78.3 es artefacto de compresión (todas aristas post-2023). La verdadera betweenness histórica pertenece a Legacy_program. Esto sugiere crisis institucional: reorganización administrativa sin acceso material a acervos clasificados. Verificable mediante: acta constitutiva AARO (ejecutiva), mandato de revisión de legado, autoridad de Grusch en IMM_Constellation pre-2023, presupuesto y personal asignado vs. scope de jurisdicción reclamado.",
       confidence:"verified"
+    },
+    {
+      id:"sg17", context:["structural","temporal"],
+      nodes:["nuclear_pattern","legacy_program","pursue_r01","aatip","grusch"],
+      path:["legacy_program(b=198.0) → nuclear_pattern(b=222.0) → pursue_r01(b=98.3) → grusch(b=588.0)"],
+      title:"nuclear_pattern: concepto de 1961 con betweenness máximo pero documentación anterior a 1999", type:"temporal", severity:"critical",
+      headline:"¿Quién nombró 'nuclear_pattern' y cuándo? Grusch (2023) accede a datos de Legacy (post-1995) que supuestamente conceptualizan propiedades observadas en incidents de 1897-1980, pero el patrón no aparece en registros Blue Book, Paperclip o Project files hasta AATIP (2007+).",
+      analysis:"nuclear_pattern posee betweenness de 222.0, el más alto del subgrafo excepto Grusch (588.0). Conecta incidents pre-1950, programas de los 60s-90s, y testimonios 2004+. Sin embargo, no existe artefacto primario datado pre-1999 que nombre o describa este patrón. Legacy_program (betweenness 198.0) es intermediario clave entre Paperclip y AATIP, sugiriendo construcción retroactiva de coherencia narrativa. Grusch tiene acceso sin custodia verificable a estos conceptos.",
+      implication:"Si nuclear_pattern fue conceptualizado post-1999 (AATIP/Elizondo era), su uso para interpretar Roswell(1947), Malmstrom(1967) e incidents anteriores sería arqueología selectiva, no descubrimiento. Falsificable: búsqueda de documentos pre-1995 usando término específico 'nuclear' + 'pattern' en archivos desclasificados.",
+      confidence:"strong"
+    },
+    {
+      id:"sg18", context:["morphological","institutional"],
+      nodes:["vaticano","pio12","juan23","disclosure2001","enoc"],
+      path:["vaticano(b=67.8) ← pio12(b=44.3) → disclosure2001(b=33.2); vaticano ← juan23(b=11.2) → enoc(b=41.8)"],
+      title:"Vaticano: hub institucional de betweenness medio pero sin aristas documentadas a incidents o programs", type:"gap", severity:"critical",
+      headline:"¿Por qué Vaticano(b=67.8) conecta a Pio XII y Juan XXIII pero no a ningún incident (Roswell, Malmstrom, Nimitz)? Enoc (concepto, b=41.8) aparece en la órbita papal pero sin cadena causal.",
+      analysis:"Vaticano es nodo institucional con betweenness significativo (67.8), implicando múltiples caminos cortos a través de él. Sin embargo, sus aristas documentadas son exclusivamente personales (Pio XII, Juan XXIII, Capovilla) y conceptuales (Disclosure2001, Enoc). No existe arista verificada entre Vaticano y ningún incident, programa o testimoniante clave (Grusch, Elizondo, Fravor). Disclosure2001 (betweenness 33.2) aparece sin explicación temporal: ¿por qué evento papal de 2001 conectaría a red de incidents de 1947-2004?",
+      implication:"Vaticano puede ser nodo ficticio-conectante insertado para generar legitimidad institucional, o punto de acceso documental censurado. Si real: existiría memorando diplomático/eclesiástico pre-2001 mencionando incidents. Falsificable: solicitud FOIA para comunicaciones Vaticano-AARO/NASA 1995-2005; búsqueda en archivos vaticanos (acceso restringido) para referencias a 'UAPs' o 'celestial phenomena' pre-1998.",
+      confidence:"speculative"
+    },
+    {
+      id:"sg19", context:["gap","temporal"],
+      nodes:["salas","malmstrom1967","pursue_r01","nuclear_weapons"],
+      path:["salas(b=89.3, incident_malmstrom_1967) → malmstrom1967(b=78.4) → pursue_r01(b=98.3)"],
+      title:"Salas: 46 años de silencio entre incident (1967) y publi-PURSUIT conexión tardía (2013+)", type:"temporal", severity:"high",
+      headline:"Salas accede a Malmstrom(1967) en vivo pero no aparece en registros Blue Book oficiales. PURSUE_R01 nombra retrospectivamente el patrón de nuclear-weapon-system incidents. ¿Qué inhibió su disclosure 1967-2010?",
+      analysis:"Salas (betweenness 89.3) es testigo directo de Malmstrom1967 (betweenness 78.4), un incident de betweenness alto que involucró ICBM silos. Su testimonio fue público en 2010, pero no hay registro de su participación en proyectos de documentación 1968-2005. PURSUE_R01 (betweenness 98.3) emerge como programa conceptual que retrospectivamente categoriza 'nuclear weapons + UAP correlation'. Brecha: ¿quién coordina la reclasificación de Malmstrom de 'sensor malfunction' (Blue Book) a 'UAP intrusion on nuclear facility' (PURSUE narrativa)?",
+      implication:"Salas fue silenciado institucionalmente o autosilenciado por seguridad operacional (OPSEC). Si PURSUE_R01 fue diseñado post-2005 para reinterpretar incidents nucleares, Salas sería archivo viviente utilizado retroactivamente. Falsificable: registros de debriefing clasificado de Salas 1967-1975; correspondencia interna del Strategic Air Command (SAC) sobre 'UFO protocols' con mención de Salas; correlación temporal entre primer testimonio público de Salas (2010) y clasificación de PURSUE_R01.",
+      confidence:"strong"
+    },
+    {
+      id:"sg20", context:["paradox","institutional"],
+      nodes:["grusch","legacy_program","nyt2017","congress2023","aaro"],
+      path:["grusch(b=588.0) ← legacy_program(b=198.0) → aaro(b=78.3); nyt2017(b=88.9) → congress2023(b=122.4) → grusch"],
+      title:"Grusch: betweenness máximo sin rango de acceso institucional verificable en 2017-2022", type:"paradox", severity:"critical",
+      headline:"Grusch (b=588.0) es el nodo más central de la red pero su rol en Legacy_program (1995-2005) y acceso a documentación pre-2010 no aparece en organigramas públicos de NRO, NTRO o SAP offices.",
+      analysis:"Grusch posee betweenness de 588.0, implicando que >50% de caminos cortos entre pares de nodos pasan a través de él. Sin embargo: (1) su empleo en NRO (2005-2016) tiene gaps documentales; (2) no aparece en testimonios de Elizondo, Lacatski o Mellon pre-2021; (3) su acceso a Legacy_program (betweenness 198.0), imm_constellation y PURSUE supuestamente ocurrió post-2017 pero su betweenness sugiere conocimiento estructural pre-2015. (4) NYT 2017 y Congress 2023 son eventos que amplifican su rol, pero no fundamento.",
+      implication:"Grusch fue introducido estratégicamente en 2021-2023 como convergencia-point para múltiples narrativas (Legacy, AATIP, Congressional interest) OR fue operador de nivel superior cuyo rango fue ocultado para plausible deniability. Si primero: artefacto narrativo. Si segundo: testigo más importante con identidad parcialmente protegida. Falsificable: registros de seguridad de NRO 2005-2016 con nombre completo; correspondencia clasificada mencionando Grusch pre-2020; comparación de firmas digitales de documentos Legacy antes/después de su 'ingreso' a la red de disclosure.",
+      confidence:"strong"
     }
+  
   
   ],
   en: [
@@ -406,7 +447,48 @@ export const SMOKING_GUNS = {
       analysis:"AARO designated in 2023 by executive order to unify dispersed programs. Yet no public documentary edge exists between AARO and IMM_Constellation (black budget program with b=142.0). IMM_Constellation→Legacy_program→PURSUE_R01 forms 60-year custody chain without formal incorporation into AARO. Gap: Does AARO inherit jurisdiction over IMM_Constellation or do both operate in parallel? Grusch (b=588.0, maximum centrality) reports as AARO official but his congress2023 testimony suggests de facto authority over pre-AARO programs. This indicates: (a) AARO created to document what was already documented in parallel, (b) Grusch retains authority over legacy chain without AARO formalization, or (c) double authority structure exists.",
       implication:"If AARO designed to consolidate but not declassify compartmentalized legacy, its b=78.3 is temporal compression artifact (all edges post-2023). True historical betweenness belongs to Legacy_program. Suggests institutional crisis: administrative reorganization without material access to classified holdings. Verifiable via: AARO charter (executive order), legacy review mandate, Grusch authority in IMM_Constellation pre-2023, assigned budget and personnel vs. claimed jurisdictional scope.",
       confidence:"verified"
+    },
+    {
+      id:"sg17", context:["structural","temporal"],
+      nodes:["nuclear_pattern","legacy_program","pursue_r01","aatip","grusch"],
+      path:["legacy_program(b=198.0) → nuclear_pattern(b=222.0) → pursue_r01(b=98.3) → grusch(b=588.0)"],
+      title:"nuclear_pattern: concept with maximum betweenness dated 1961 but documentation predates 1999", type:"temporal", severity:"critical",
+      headline:"Who named 'nuclear_pattern' and when? Grusch (2023) accesses Legacy data (post-1995) that supposedly conceptualize properties observed in incidents 1897-1980, yet the pattern does not appear in Blue Book, Paperclip, or classified project files until AATIP (2007+).",
+      analysis:"nuclear_pattern holds betweenness 222.0, highest except Grusch (588.0). Connects pre-1950 incidents, 1960s-90s programs, and 2004+ testimonies. Yet no primary artifact dated pre-1999 names or describes this pattern. Legacy_program (betweenness 198.0) is key intermediary between Paperclip and AATIP, suggesting retroactive narrative coherence construction. Grusch possesses access without verified custody chain to these concepts.",
+      implication:"If nuclear_pattern was conceptualized post-1999 (AATIP/Elizondo era), its use to interpret Roswell (1947), Malmstrom (1967), earlier incidents would be selective archaeology, not discovery. Falsifiable: search pre-1995 declassified documents for specific term 'nuclear' + 'pattern' in archival repositories.",
+      confidence:"strong"
+    },
+    {
+      id:"sg18", context:["morphological","institutional"],
+      nodes:["vaticano","pio12","juan23","disclosure2001","enoc"],
+      path:["vaticano(b=67.8) ← pio12(b=44.3) → disclosure2001(b=33.2); vaticano ← juan23(b=11.2) → enoc(b=41.8)"],
+      title:"Vatican: institutional hub with moderate betweenness but zero documented edges to incidents or programs", type:"gap", severity:"critical",
+      headline:"Why does Vatican (b=67.8) connect to Pius XII and John XXIII but to no incident (Roswell, Malmstrom, Nimitz)? Enoc (concept, b=41.8) appears in papal orbit without causal chain.",
+      analysis:"Vatican is institutional node with significant betweenness (67.8), implying multiple short paths through it. Yet documented edges are exclusively personal (Pius XII, John XXIII, Capovilla) and conceptual (Disclosure2001, Enoc). No verified edge exists between Vatican and any incident, program, or key witness (Grusch, Elizondo, Fravor). Disclosure2001 (betweenness 33.2) appears without temporal explanation: why would papal event of 2001 connect to incident network 1947-2004?",
+      implication:"Vatican may be fictitious-connector node inserted for institutional legitimacy, or censored documentary access point. If real: diplomatic/ecclesiastical memorandum pre-2001 mentioning incidents would exist. Falsifiable: FOIA request for Vatican-AARO/NASA communications 1995-2005; search Vatican archives (restricted access) for references to 'UAPs' or 'celestial phenomena' pre-1998.",
+      confidence:"speculative"
+    },
+    {
+      id:"sg19", context:["gap","temporal"],
+      nodes:["salas","malmstrom1967","pursue_r01","nuclear_weapons"],
+      path:["salas(b=89.3, incident_malmstrom_1967) → malmstrom1967(b=78.4) → pursue_r01(b=98.3)"],
+      title:"Salas: 46-year silence between incident (1967) and public-PURSUE connection (2013+)", type:"temporal", severity:"high",
+      headline:"Salas witnessed Malmstrom (1967) live but does not appear in official Blue Book records. PURSUE_R01 retrospectively names pattern of nuclear-weapon-system incidents. What inhibited his disclosure 1967-2010?",
+      analysis:"Salas (betweenness 89.3) is direct witness to Malmstrom1967 (betweenness 78.4), high-betweenness incident involving ICBM silos. His testimony went public in 2010, but no record of his participation in documentation projects 1968-2005. PURSUE_R01 (betweenness 98.3) emerges as conceptual program retrospectively categorizing 'nuclear weapons + UAP correlation'. Gap: who coordinates reclassification of Malmstrom from 'sensor malfunction' (Blue Book) to 'UAP intrusion on nuclear facility' (PURSUE narrative)?",
+      implication:"Salas was institutionally silenced or self-silenced for operational security (OPSEC). If PURSUE_R01 designed post-2005 to reinterpret nuclear incidents, Salas becomes living archive used retroactively. Falsifiable: classified debriefing records of Salas 1967-1975; internal Strategic Air Command (SAC) correspondence on 'UFO protocols' mentioning Salas; temporal correlation between Salas' first public testimony (2010) and PURSUE_R01 classification.",
+      confidence:"strong"
+    },
+    {
+      id:"sg20", context:["paradox","institutional"],
+      nodes:["grusch","legacy_program","nyt2017","congress2023","aaro"],
+      path:["grusch(b=588.0) ← legacy_program(b=198.0) → aaro(b=78.3); nyt2017(b=88.9) → congress2023(b=122.4) → grusch"],
+      title:"Grusch: maximum betweenness without verifiable institutional access rank 2017-2022", type:"paradox", severity:"critical",
+      headline:"Grusch (b=588.0) is most central node in network but his role in Legacy_program (1995-2005) and pre-2010 documentation access does not appear in public NRO, NTRO, or SAP office organigrams.",
+      analysis:"Grusch possesses betweenness 588.0, implying >50% of shortest paths between node pairs pass through him. Yet: (1) his NRO employment (2005-2016) has documentary gaps; (2) does not appear in pre-2021 testimonies of Elizondo, Lacatski, or Mellon; (3) access to Legacy_program (betweenness 198.0), imm_constellation, PURSUE supposedly occurred post-2017 but his betweenness suggests structural knowledge pre-2015. (4) NYT 2017 and Congress 2023 are events that amplify his role but do not establish foundation.",
+      implication:"Grusch was strategically introduced 2021-2023 as convergence-point for multiple narratives (Legacy, AATIP, Congressional interest) OR was higher-level operator whose rank was hidden for plausible deniability. If former: narrative artifact. If latter: most important witness with partially protected identity. Falsifiable: NRO security records 2005-2016 with full name; classified correspondence mentioning Grusch pre-2020; digital signature comparison of Legacy documents before/after his 'entry' into disclosure network.",
+      confidence:"strong"
     }
+  
   
   ]
 };
