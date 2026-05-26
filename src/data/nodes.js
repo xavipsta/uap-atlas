@@ -188,7 +188,7 @@ export const NODES = [
       "legacy_program",
       "puthoff"
     ]
-  }
+  },
 
   // ── SESIÓN 26 MAYO 2026 — Nodos históricos + arquitectura encubrimiento ──
   { id:"odni_uap_d001", label:{es:"Documento ODNI-UAP-D001",en:"ODNI-UAP-D001 Document"}, year:2026, cat:"incident", sub:{es:"Desclasificación oficial war.gov",en:"Official war.gov declassification"}, credibility:"high",
