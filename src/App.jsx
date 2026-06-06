@@ -147,6 +147,7 @@ const T = {
     clearHL: "Limpiar selección", helpTitle: "Manual",
     filterLabel: "Filtros", collapseFilters: "Ocultar", expandFilters: "Filtros",
     sev: { critical:"Crítico", high:"Alto", medium:"Medio" },
+    credLabel: { high:"Credibilidad alta", medium:"Credibilidad media", low:"Credibilidad baja", pending:"Sin verificar" },
     conf: { verified:"Verificado", strong:"Sólido", speculative:"Especulativo" },
     srcType: { official:"Oficial", congress:"Congreso", foia:"FOIA", leaked:"Filtrado", media:"Medios", explorer:"Explorador", pending:"Pendiente" },
     welcomeStats: "{n} nodos · {l} conexiones · {s} pistolas humeantes",
@@ -193,6 +194,7 @@ const T = {
     clearHL: "Clear selection", helpTitle: "Manual",
     filterLabel: "Filters", collapseFilters: "Hide", expandFilters: "Filters",
     sev: { critical:"Critical", high:"High", medium:"Medium" },
+    credLabel: { high:"High credibility", medium:"Medium credibility", low:"Low credibility", pending:"Unverified" },
     conf: { verified:"Verified", strong:"Strong", speculative:"Speculative" },
     srcType: { official:"Official", congress:"Congress", foia:"FOIA", leaked:"Leaked", media:"Media", explorer:"Explorer", pending:"Pending" },
     welcomeStats: "{n} nodes · {l} connections · {s} smoking guns",
@@ -860,8 +862,10 @@ function ExpandedModal({ node, lang, onClose, allNodes, filteredIds, onSelectNod
           background: "var(--bg-3)",
           display: "flex", justifyContent: "space-between", alignItems: "center",
         }}>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--text-muted)" }}>
-            {node.id} · B:{Math.round(BETWEENNESS[node.id]||0)} · CC:{(CLUSTERING[node.id]||0).toFixed(2)}
+          <span style={{ display:"flex", alignItems:"center", gap:7, fontFamily:"var(--font-ui)", fontSize:12, color:"var(--text-secondary)" }}>
+            <span style={{ width:8, height:8, borderRadius:"50%", flexShrink:0,
+              background: credColor[node.credibility]||"var(--text-muted)" }} />
+            {t.credLabel[node.credibility]||t.credLabel.pending}
           </span>
           <button onClick={onClose} className="btn" style={{ height: 34, fontSize: 12 }}>
             {t.expandClose}
@@ -1389,10 +1393,13 @@ export default function UAPAtlas() {
                         <div style={{ fontSize:19, fontWeight:700, color:"var(--text-primary)", marginBottom:6, lineHeight:1.3 }}>
                           {selected.label[lang]}
                         </div>
-                        <div style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)", display:"flex", gap:12 }}>
-                          <span>{t.avgDeg.split(" ")[0]}: {(selected.links||[]).filter(id=>filteredIds.has(id)).length}</span>
-                          <span>CC: {(CLUSTERING[selected.id]||0).toFixed(2)}</span>
-                          <span>B: {Math.round(BETWEENNESS[selected.id]||0)}</span>
+                        <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                          <span style={{ width:9, height:9, borderRadius:"50%", flexShrink:0,
+                            background: CRED_COLORS[selected.credibility]||CRED_COLORS.pending,
+                            boxShadow: `0 0 6px ${(CRED_COLORS[selected.credibility]||CRED_COLORS.pending)}66` }} />
+                          <span style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--text-secondary)" }}>
+                            {t.credLabel[selected.credibility]||t.credLabel.pending}
+                          </span>
                         </div>
                       </div>
                       {/* Description */}
