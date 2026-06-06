@@ -42,6 +42,25 @@ const pursueSearch = (query) => `${GPT2077_SEARCH}${encodeURIComponent(query)}`;
 
 export const SOURCES = {
 
+  pursue_r02: [
+    {
+      id:"s1",
+      title:{es:"PURSUE Release 02 — war.gov/UFO · Fuente oficial",en:"PURSUE Release 02 — war.gov/UFO · Official source"},
+      type:"official",
+      url:"https://www.war.gov/News/Releases/Release/Article/4499305/department-of-war-publishes-second-release-of-unidentified-anomalous-phenomena/",
+      url_primary:"https://www.war.gov/UFO/",
+      url_archive:"https://web.archive.org/web/2026*/https://www.war.gov/UFO/",
+      url_hf: HF_DATASET,
+      url_search: GPT2077_BASE,
+      sha256: null,
+      accessed:"2026-06-06", confidence:"high", status:"verified",
+      note:{
+        es:"22 may 2026. Primera entrega multiagencia (CIA, ODNI, NASA, DoE + DoW). Comunicado atribuido a Sean Parnell. +1.000M visitas a war.gov/UFO desde el 8 may. Bundle docs 70 MB · vídeos 5,6 GB. SHA256 pendiente. CC0",
+        en:"May 22 2026. First multi-agency tranche (CIA, ODNI, NASA, DoE + DoW). Statement attributed to Sean Parnell. 1B+ hits to war.gov/UFO since May 8. Docs bundle 70 MB · videos 5.6 GB. SHA256 pending. CC0"
+      }
+    }
+  ],
+
   // ── GRUSCH ────────────────────────────────────────────────────────────────
   grusch: [
     {
