@@ -159,59 +159,76 @@ export const CAT_COLORS = {
 
 export const CRED_COLORS = { high:"#4ecdc4", medium:"#ffd93d", low:"#ff6b35", pending:"#666" };
 
-export const BETWEENNESS = {
-  grusch:588, magenta1933:554.5, roswell1947:351.5, nuclear_pattern:222.9,
-  elizondo:312.8, y2027:193.7, vaticano:183.7, sol_foundation:170.7,
-  pursue_r01:164.1, aaro:163, die_glocke:101.8, imm_constellation:148.4,
-  paperclip:74.4, enoc:41.8, congress2023:58.2, rosin:50.6, pio12:16.7,
-  puthoff:98.4, davis:112.3, mellon:87.6, wilson_memo:76.9, nyt2017:55.3,
-  rendlesham1980:88.2, halt:42.1, varginha1996:61.3, colares1977:44.7,
-  vallee:77.8, hynek:55.3, nasa:91.2, disclosure2001:68.4, greer:49.1,
-  legacy_program:198.4, patron_encubrimiento:152.7, ontological_shock:122.6,
-  coulthart:108.3, tompkins:87.9, lacatski:74.2, nhi_agreements:91.5,
-  tictac_arv:66.8, barber:52.4, villarroel:44.1, george_bush_sr:48.7,
-  patron_muertes:44.8, capovilla:22.1, forrestal:31.4, juan23:28.6,
-  edicion_retroactiva:112.4,
-  farah_dan:134.2, age_of_disclosure:118.7, stratton:156.3,
-  fravor:142.8, marco_rubio:138.4, nimitz2004:168.9,
-  kihara_minoru:89.3, japan_disclosure:76.8, john_erdman:94.2,
-  mccasland_neil:58.3, large_disc_uap:38.1, nsa_umbra:72.4,
-  mit_lincoln_labs:54.6, burlison:88.4, odni_uap_d001:44.3,
-  mitre_nsec:102.8, kirkpatrick_sean:92.1, battelle_institute:58.4,
-  ornl_doe:54.2, nuremberg_1561:38.7, basilea_1566:28.4,
-  ezekiel_vision:32.1, vimanas:24.8, weinstein_eric:56.3, eric_davis:48.9,
-  // v4.8
-  beacon_hill_study:48.2,
-  controlled_release_pattern:68.4,
-  corbell:82.6,
-  witness_attrition:58.7,
-  blitch_john:44.1,
-};
+// ════════════════════════════════════════════════════════════════════
+// MÉTRICAS DE GRAFO — COMPUTADAS, NO ALMACENADAS
+// ════════════════════════════════════════════════════════════════════
+// Antes estas métricas se escribían a mano y se desincronizaban: ~25% de
+// los nodos quedaban sin valor y los valores tecleados distorsionaban la
+// estructura real (p.ej. 'enoc' figuraba con B:41 cuando su betweenness
+// real es ~369). Ahora se derivan del grafo en cada carga: siempre
+// completas, siempre exactas, cero mantenimiento al añadir nodos.
+//
+// DEGREE      — nº de conexiones únicas (grado).
+// CLUSTERING  — coeficiente de clustering local (0-1).
+// BETWEENNESS — centralidad de intermediación (Brandes, no dirigido).
+// La escala absoluta de BETWEENNESS es irrelevante para el render: el
+// tamaño de nodo usa B/max(B), que se autonormaliza.
 
-export const CLUSTERING = {
-  grusch:0.218, magenta1933:0.222, roswell1947:0.143, nuclear_pattern:0.2,
-  elizondo:0.19, aaro:0.311, kammler:0.6, vonbraun:0.3, die_glocke:0.24,
-  enoc:0.167, rosin:0, pio12:0.5, vaticano:0.2, sol_foundation:0.25,
-  puthoff:0.4, davis:0.333, mellon:0.467, wilson_memo:0.167,
-  rendlesham1980:0.333, halt:0.5, vallee:0.3, hynek:0.333, nasa:0.25,
-  legacy_program:0.286, patron_encubrimiento:0.2, ontological_shock:0.25,
-  coulthart:0.381, tompkins:0.267, lacatski:0.4, nhi_agreements:0.2,
-  tictac_arv:0.333, barber:0.4, villarroel:0.167, george_bush_sr:0.25,
-  patron_muertes:0.25, capovilla:0.333, forrestal:0.0, juan23:0.333,
-  edicion_retroactiva:0.267, farah_dan:0.318, age_of_disclosure:0.286,
-  stratton:0.357, fravor:0.4, marco_rubio:0.321, nimitz2004:0.286,
-  kihara_minoru:0.25, japan_disclosure:0.333, john_erdman:0.222,
-  mccasland_neil:0.286, large_disc_uap:0.25, nsa_umbra:0.2,
-  mit_lincoln_labs:0.333, burlison:0.4, odni_uap_d001:0.2,
-  mitre_nsec:0.333, kirkpatrick_sean:0.3, battelle_institute:0.25,
-  ornl_doe:0.25, nuremberg_1561:0.333, basilea_1566:0.5,
-  ezekiel_vision:0.333, vimanas:0.5, weinstein_eric:0.25, eric_davis:0.333,
-  // v4.8
-  beacon_hill_study:0.4,
-  controlled_release_pattern:0.333,
-  corbell:0.286,
-  witness_attrition:0.333,
-  blitch_john:0.333,
-};
+const _GRAPH_METRICS = (() => {
+  // Adyacencia NO dirigida y deduplicada a partir de LINKS_DATA
+  const adj = new Map(NODES.map(n => [n.id, new Set()]));
+  for (const { source, target } of LINKS_DATA) {
+    if (source !== target && adj.has(source) && adj.has(target)) {
+      adj.get(source).add(target);
+      adj.get(target).add(source);
+    }
+  }
 
-// All constants exported above with named exports
+  // DEGREE
+  const degree = {};
+  for (const [id, nb] of adj) degree[id] = nb.size;
+
+  // CLUSTERING (coeficiente local)
+  const clustering = {};
+  for (const [id, nb] of adj) {
+    const k = nb.size;
+    if (k < 2) { clustering[id] = 0; continue; }
+    const arr = [...nb];
+    let pairs = 0;
+    for (let i = 0; i < arr.length; i++)
+      for (let j = i + 1; j < arr.length; j++)
+        if (adj.get(arr[i]).has(arr[j])) pairs++;
+    clustering[id] = +(2 * pairs / (k * (k - 1))).toFixed(3);
+  }
+
+  // BETWEENNESS (algoritmo de Brandes, no dirigido, sin pesos)
+  const betweenness = {};
+  for (const n of NODES) betweenness[n.id] = 0;
+  for (const s of adj.keys()) {
+    const S = [], P = {}, sigma = {}, dist = {};
+    for (const w of adj.keys()) { P[w] = []; sigma[w] = 0; dist[w] = -1; }
+    sigma[s] = 1; dist[s] = 0;
+    const Q = [s];
+    while (Q.length) {
+      const v = Q.shift(); S.push(v);
+      for (const w of adj.get(v)) {
+        if (dist[w] < 0) { dist[w] = dist[v] + 1; Q.push(w); }
+        if (dist[w] === dist[v] + 1) { sigma[w] += sigma[v]; P[w].push(v); }
+      }
+    }
+    const delta = {}; for (const w of adj.keys()) delta[w] = 0;
+    while (S.length) {
+      const w = S.pop();
+      for (const v of P[w]) delta[v] += (sigma[v] / sigma[w]) * (1 + delta[w]);
+      if (w !== s) betweenness[w] += delta[w];
+    }
+  }
+  // Grafo no dirigido: cada par se cuenta dos veces
+  for (const k in betweenness) betweenness[k] = +(betweenness[k] / 2).toFixed(1);
+
+  return { degree, clustering, betweenness };
+})();
+
+export const DEGREE = _GRAPH_METRICS.degree;
+export const CLUSTERING = _GRAPH_METRICS.clustering;
+export const BETWEENNESS = _GRAPH_METRICS.betweenness;
