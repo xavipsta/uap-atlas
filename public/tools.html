@@ -544,12 +544,21 @@ const GH_REPO  = 'uap-atlas';
 const GH_BRANCH = 'main';
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
-const _t = 'VmFsaWFuVGhvcjpWaWoqbj82aQ==';
-function doLogin() {
+// El secreto NO se almacena en el código fuente (tools.html es público).
+// Guardamos solo el hash SHA-256 del token; quien lea el fuente no obtiene la
+// contraseña. Para rotar credenciales: cambia la contraseña y regenera el hash con
+//   crypto.createHash('sha256').update(btoa('usuario:contraseña')).digest('hex')
+const _tHash = '74218510e2d52d13d84bfe89dcdaa5223fd65496ae450d0dad005f4b6f2540d6';
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+async function doLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
-  if (btoa(u+':'+p) === _t) {
-    sessionStorage.setItem('uap_tools_auth', btoa(u+':'+p));
+  const token = btoa(u+':'+p);
+  if (await _sha256(token) === _tHash) {
+    sessionStorage.setItem('uap_tools_auth', token);
     sessionStorage.setItem('uap_tools_user', u);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('appShell').style.display = 'flex';
@@ -566,10 +575,10 @@ function doLogout() {
   sessionStorage.clear();
   location.reload();
 }
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
   const auth = sessionStorage.getItem('uap_tools_auth');
   const user = sessionStorage.getItem('uap_tools_user');
-  if (auth === _t) {
+  if (auth && await _sha256(auth) === _tHash) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('appShell').style.display = 'flex';
     document.getElementById('userBadge').textContent = user;
