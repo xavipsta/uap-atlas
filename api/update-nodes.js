@@ -7,9 +7,6 @@ const REPO_NAME  = "uap-atlas";
 const FILE_PATH  = "src/data/nodes.js";
 const BRANCH     = "main";
 
-// Credenciales tools.html (misma protección que el frontend)
-const VALID_TOKEN = "VmFsaWFuVGhvcjpWaWoqbj82aQ=="; // ValianThor:Vij*n?6i
-
 export default async function handler(req, res) {
 
   // ── CORS ────────────────────────────────────────────────────────────────
@@ -23,10 +20,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // ── Autenticación — mismo token que tools.html ───────────────────────────
+  // ── Autenticación — token desde variable de entorno Vercel ───────────────
+  const validToken = process.env.TOOLS_TOKEN;
+  if (!validToken) {
+    return res.status(500).json({ error: "TOOLS_TOKEN not configured in Vercel" });
+  }
   const authHeader = req.headers["authorization"] || "";
   const provided   = authHeader.replace("Basic ", "").trim();
-  if (provided !== VALID_TOKEN) {
+  if (provided !== validToken) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
