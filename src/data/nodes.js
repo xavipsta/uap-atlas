@@ -192,6 +192,27 @@ export const NODES = [
     "links": [
       "naa_gravity_program_1955"
     ]
+  },
+  {
+    "id": "edward_teller",
+    "label": {
+      "es": "Edward Teller",
+      "en": "Edward Teller"
+    },
+    "year": 1955,
+    "cat": "person",
+    "sub": {
+      "es": "Físico — University of California",
+      "en": "Physicist — University of California"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "Mencionado en el documento NAA 30030606 entre los científicos involucrados en investigación sobre control de gravedad junto a Oppenheimer, F.J. Dyson, J.A. Wheeler, Richard Arnowitt, Vaclav Hlavaty y Stanley Deser.",
+      "en": "Named in NAA document 30030606 among scientists involved in gravity control research alongside Oppenheimer, F.J. Dyson, J.A. Wheeler, Richard Arnowitt, Vaclav Hlavaty, and Stanley Deser."
+    },
+    "links": [
+      "naa_gravity_program_1955"
+    ]
   }
 ];
 
