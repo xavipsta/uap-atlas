@@ -1,5 +1,5 @@
 // ─── UAP ATLAS — SMOKING GUNS DATA ─────────────────────────────────────────
-// v4.5 · 18 pistolas humeantes con campos context y path para visualización
+// v4.5 · 27 pistolas humeantes con campos context y path para visualización
 // Estructura: { es: [...], en: [...] } — mismos IDs en ambos idiomas
 
 export const SMOKING_GUNS = {
