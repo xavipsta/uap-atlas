@@ -132,6 +132,8 @@ const GlobalStyles = () => (
 // ─── LANGUAGE DETECTION ───────────────────────────────────────────────────────
 const detectLang = () => (navigator.language||"en").toLowerCase().startsWith("es") ? "es" : "en";
 // ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
+const VERSION = "5.0.0";
+
 const T = {
   es: {
     title: "UAP Atlas", subtitle: "Atlas de Inteligencia Relacional",
@@ -145,6 +147,10 @@ const T = {
     openSource: "Abrir →", guns: "Pistolas humeantes",
     density: "Densidad", avgDeg: "Grado medio", nodes: "nodos", centralNode: "Nodo central",
     clearHL: "Limpiar selección", helpTitle: "Manual",
+    viewGraph: "Grafo", viewIndex: "Índice",
+    sortBy: "Ordenar:", sortYear: "Año", sortRelevance: "Relevancia", sortAZ: "A–Z",
+    credFilterLabel: "Credibilidad:", credAll: "Todas",
+    sourcesShort: "fuentes", indexEmpty: "Ningún nodo coincide con los filtros activos.",
     filterLabel: "Filtros", collapseFilters: "Ocultar", expandFilters: "Filtros",
     sev: { critical:"Crítico", high:"Alto", medium:"Medio" },
     credLabel: { high:"Credibilidad alta", medium:"Credibilidad media", low:"Credibilidad baja", pending:"Sin verificar" },
@@ -192,6 +198,10 @@ const T = {
     openSource: "Open →", guns: "Smoking guns",
     density: "Density", avgDeg: "Avg degree", nodes: "nodes", centralNode: "Central node",
     clearHL: "Clear selection", helpTitle: "Manual",
+    viewGraph: "Graph", viewIndex: "Index",
+    sortBy: "Sort:", sortYear: "Year", sortRelevance: "Relevance", sortAZ: "A–Z",
+    credFilterLabel: "Credibility:", credAll: "All",
+    sourcesShort: "sources", indexEmpty: "No nodes match the active filters.",
     filterLabel: "Filters", collapseFilters: "Hide", expandFilters: "Filters",
     sev: { critical:"Critical", high:"High", medium:"Medium" },
     credLabel: { high:"High credibility", medium:"Medium credibility", low:"Low credibility", pending:"Unverified" },
@@ -239,6 +249,74 @@ const CONF_CFG = {
   speculative: { color: "#fb923c" },
 };
 // ─── GRAPH HINT ───────────────────────────────────────────────────────────────
+// ─── v5.0: VISTA ÍNDICE ──────────────────────────────────────────────────────
+function IndexView({ nodes, lang, t, onSelect, selectedId }) {
+  const [sort, setSort] = useState("year");
+  const [cred, setCred] = useState("all");
+  const shown = nodes
+    .filter(n => cred === "all" || n.credibility === cred)
+    .slice()
+    .sort((a, b) =>
+      sort === "year" ? (b.year - a.year)
+      : sort === "relevance" ? ((BETWEENNESS[b.id] || 0) - (BETWEENNESS[a.id] || 0))
+      : a.label[lang].localeCompare(b.label[lang]));
+  const chip = (active, color) => ({
+    background: active ? (color || "var(--accent)") : "transparent",
+    color: active ? "#0d1117" : (color || "var(--text-muted)"),
+    border: "1px solid " + (color || "var(--border)"),
+    borderRadius: 5, padding: "3px 10px", cursor: "pointer",
+    fontFamily: "var(--font-mono)", fontSize: 10, fontWeight: 600,
+  });
+  return (
+    <div style={{ position:"absolute", inset:0, overflowY:"auto", padding:"18px 20px 60px", background:"#0d1117", zIndex:5 }}>
+      <div style={{ display:"flex", gap:10, flexWrap:"wrap", alignItems:"center", marginBottom:16 }}>
+        <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{t.sortBy}</span>
+        {[["year", t.sortYear], ["relevance", t.sortRelevance], ["az", t.sortAZ]].map(([k, lbl]) => (
+          <button key={k} onClick={() => setSort(k)} style={chip(sort === k)}>{lbl}</button>
+        ))}
+        <span style={{ color:"var(--border)" }}>·</span>
+        <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{t.credFilterLabel}</span>
+        <button onClick={() => setCred("all")} style={chip(cred === "all")}>{t.credAll}</button>
+        {["high", "medium", "low"].map(c => (
+          <button key={c} onClick={() => setCred(c)} style={chip(cred === c, CRED_COLORS[c])}>{t.credLabel[c]}</button>
+        ))}
+      </div>
+      {shown.length === 0 && (
+        <div style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--text-muted)", padding:"40px 0", textAlign:"center" }}>{t.indexEmpty}</div>
+      )}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(250px, 1fr))", gap:12 }}>
+        {shown.map(n => (
+          <div key={n.id} onClick={() => onSelect(n)}
+            style={{
+              background:"var(--bg-glass)", borderRadius:10, padding:14, cursor:"pointer",
+              border: "1px solid " + (selectedId === n.id ? "var(--accent)" : "var(--border)"),
+            }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+              <span style={{ fontFamily:"var(--font-mono)", fontSize:9, textTransform:"uppercase", color:CAT_COLORS[n.cat], background:CAT_COLORS[n.cat]+"18", border:"1px solid "+CAT_COLORS[n.cat]+"33", borderRadius:4, padding:"2px 7px" }}>
+                {t.catLabels[n.cat] || n.cat}
+              </span>
+              <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)" }}>
+                {n.year < 0 ? Math.abs(n.year) + (lang === "es" ? " aC" : " BC") : n.year}
+              </span>
+            </div>
+            <div style={{ fontFamily:"Syne, sans-serif", fontWeight:700, fontSize:14, color:"var(--text-primary)", marginBottom:2 }}>{n.label[lang]}</div>
+            <div style={{ fontSize:11, color:"var(--text-secondary)", marginBottom:10 }}>{n.sub[lang]}</div>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <span style={{ display:"inline-flex", alignItems:"center", gap:5 }}>
+                <span style={{ width:7, height:7, borderRadius:"50%", background:CRED_COLORS[n.credibility] }} />
+                <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:CRED_COLORS[n.credibility] }}>{t.credLabel[n.credibility]}</span>
+              </span>
+              <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>
+                {(SOURCES[n.id] || []).length} {t.sourcesShort}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function GraphHint({ lang, onDismiss }) {
   const t = T[lang];
   const tOther = T[lang === "es" ? "en" : "es"];
@@ -586,7 +664,7 @@ function HelpModal({ lang, onClose, onLangChange }) {
         </div>
         {/* Footer */}
         <div style={{ padding:"10px 20px", borderTop:"1px solid var(--border)", background:"var(--bg-3)", display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
-          <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>UAP Intelligence Atlas · v4.5 · CC0</span>
+          <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>UAP Intelligence Atlas · v{VERSION} · CC0</span>
           <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{internalLang==="es"?"Pulsa ESC para cerrar":"Press ESC to close"}</span>
         </div>
       </div>
@@ -893,7 +971,7 @@ export default function UAPAtlas() {
   const [selectedSG, setSelectedSG] = useState(null);
   const [highlightNodes, setHighlightNodes] = useState(null);
   const [showHelp, setShowHelp] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === "undefined" || window.innerWidth >= 768);
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [dimensions, setDimensions] = useState({ w: 800, h: 600 });
   // Intro screen
@@ -905,6 +983,8 @@ export default function UAPAtlas() {
   const [showHint, setShowHint] = useState(false);
   // ── FASE 2: Modal analítico expandido ──
   const [showExpanded, setShowExpanded] = useState(false);
+  // ── v5.0: Vista índice (en móvil es la vista por defecto) ──
+  const [view, setView] = useState(() => (typeof window !== "undefined" && window.innerWidth < 768) ? "index" : "graph");
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -922,6 +1002,43 @@ export default function UAPAtlas() {
 
   // Cerrar expanded cuando cambia el nodo seleccionado
   useEffect(() => { setShowExpanded(false); }, [selected]);
+
+  // ── v5.0: Hash routing (#node=id · #pattern=sgId) ──
+  useEffect(() => {
+    const h = window.location.hash || "";
+    if (h.startsWith("#node=")) {
+      const id = decodeURIComponent(h.slice(6));
+      const n = NODES.find(x => x.id === id);
+      if (n) { setSelected(n); setPanel("node"); setSidebarOpen(true); }
+    } else if (h.startsWith("#pattern=")) {
+      const id = decodeURIComponent(h.slice(9));
+      const sg = (SMOKING_GUNS[lang] || []).find(s => s.id === id);
+      if (sg) { setSelectedSG(sg); setActiveSG(sg); setPatternMode(true); setHighlightNodes(new Set(sg.nodes)); setPatternStep(-1); }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (selected) history.replaceState(null, "", "#node=" + encodeURIComponent(selected.id));
+    else if (!activeSG) history.replaceState(null, "", window.location.pathname + window.location.search);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
+  useEffect(() => {
+    if (activeSG && activeSG.id) history.replaceState(null, "", "#pattern=" + encodeURIComponent(activeSG.id));
+    else if (!selected) history.replaceState(null, "", window.location.pathname + window.location.search);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSG]);
+
+  // ── v5.0: Fix BUG-01 — GraphHint se dispara al cerrar la intro (una vez) ──
+  useEffect(() => {
+    if (showIntro) return;
+    try {
+      if (localStorage.getItem("uap_atlas_hint_seen")) return;
+      localStorage.setItem("uap_atlas_hint_seen", "1");
+    } catch {}
+    setShowHint(true);
+    const tm = setTimeout(() => setShowHint(false), 8000);
+    return () => clearTimeout(tm);
+  }, [showIntro]);
 
   const filteredNodes = NODES.filter(n => {
     const matchCat = activeCat === "all" || n.cat === activeCat;
@@ -990,8 +1107,7 @@ export default function UAPAtlas() {
     const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => {
       g.attr("transform", e.transform);
       const k = e.transform.k;
-      g.selectAll("g.nd text:not(.yr):not(.badge-txt)")
-        .style("display", function(d) { return d && nodeR(d) * k > 6 ? null : "none"; });
+      applyLabelLOD(k);
       g.selectAll("g.nd text.yr")
         .style("display", function(d) { return d && nodeR(d) * k > 10 ? null : "none"; });
       g.selectAll("g.nd circle.badge, g.nd text.badge-txt")
@@ -1024,7 +1140,10 @@ export default function UAPAtlas() {
         setSelected(d);
         setPanel("node");
         setSelectedSG(null);
-        setHighlightNodes(null);
+        // v5.0: foco+contexto — atenúa todo salvo el nodo y su vecindario
+        const nb = new Set([d.id, ...(d.links || [])]);
+        NODES.forEach(n => { if ((n.links || []).includes(d.id)) nb.add(n.id); });
+        setHighlightNodes(nb);
         if (!sidebarOpen) setSidebarOpen(true);
       });
     ng.append("circle")
@@ -1086,6 +1205,24 @@ export default function UAPAtlas() {
     ng.append("title").text(d => {
       const sc = srcCount(d); const off = hasOfficial(d);
       return `${d.label[lang]} (${d.year < 0 ? Math.abs(d.year)+"aC" : d.year})\n${sc} ${lang==="es"?"fuentes":"sources"} · ${off ? (lang==="es"?"fuente oficial":"official source") : (lang==="es"?"sin oficial":"no official")}`;
+    });
+    // ── v5.0: Zoom semántico de etiquetas (LOD por betweenness) ──
+    const bSorted = filteredNodes.map(n => BETWEENNESS[n.id] || 0).sort((a, b) => b - a);
+    const bCut = bSorted[Math.min(24, Math.max(0, bSorted.length - 1))] || 0;
+    const topLabel = new Set(filteredNodes.filter(n => (BETWEENNESS[n.id] || 0) >= bCut).map(n => n.id));
+    const applyLabelLOD = (k) => {
+      g.selectAll("g.nd text:not(.yr):not(.badge-txt)")
+        .style("display", function(d) {
+          if (!d) return "none";
+          if (filteredNodes.length < 40 || topLabel.has(d.id)) return nodeR(d) * k > 5 ? null : "none";
+          return k > 1.4 && nodeR(d) * k > 8 ? null : "none";
+        });
+    };
+    applyLabelLOD(d3.zoomTransform(svg.node()).k || 1);
+    ng.on("mouseenter", function() {
+      d3.select(this).selectAll("text:not(.yr):not(.badge-txt)").style("display", null);
+    }).on("mouseleave", function() {
+      applyLabelLOD(d3.zoomTransform(svg.node()).k || 1);
     });
     sim.on("tick", () => {
       link.attr("x1", d=>d.source.x).attr("y1", d=>d.source.y).attr("x2", d=>d.target.x).attr("y2", d=>d.target.y);
@@ -1184,7 +1321,8 @@ export default function UAPAtlas() {
         .attr("stroke", l => {
           const s = typeof l.source==="object" ? l.source.id : l.source;
           const t = typeof l.target==="object" ? l.target.id : l.target;
-          return highlightNodes.has(s) && highlightNodes.has(t) ? "rgba(244,63,94,0.5)" : "rgba(56,189,248,0.04)";
+          const hl = (patternMode || activeSG) ? "rgba(244,63,94,0.5)" : "rgba(56,189,248,0.55)";
+          return highlightNodes.has(s) && highlightNodes.has(t) ? hl : "rgba(56,189,248,0.04)";
         })
         .attr("stroke-width", l => {
           const s = typeof l.source==="object" ? l.source.id : l.source;
@@ -1244,6 +1382,15 @@ export default function UAPAtlas() {
               <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{latestRelease.date}</span>
             </a>
           )}
+          <div style={{ display:"flex", gap:2, background:"var(--bg-glass)", border:"1px solid var(--border)", borderRadius:6, padding:2, marginLeft:4 }}>
+            {[["graph", t.viewGraph], ["index", t.viewIndex]].map(([v, lbl]) => (
+              <button key={v} onClick={() => setView(v)}
+                style={{ background: view === v ? "var(--accent)" : "transparent", color: view === v ? "#0d1117" : "var(--text-muted)",
+                  border:"none", borderRadius:4, padding:"3px 10px", cursor:"pointer", fontFamily:"var(--font-mono)", fontSize:10, fontWeight:600 }}>
+                {lbl}
+              </button>
+            ))}
+          </div>
           <div style={{ display:"flex", gap:12, marginLeft:4, alignItems:"center" }}>
             <span style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--text-secondary)" }}>
               <span style={{ color: isFiltered ? "var(--warning)" : "var(--accent)", fontWeight:600 }}>{filteredNodes.length}</span>
@@ -1254,11 +1401,7 @@ export default function UAPAtlas() {
             <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)" }}>
               <span style={{ color:"var(--text-secondary)" }}>{filteredLinks.length}</span>{" "}links
             </span>
-            <span style={{ color:"var(--border)", fontSize:10 }}>·</span>
-            <span style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--text-muted)", display:"flex", gap:4 }}>
-              <span style={{ color:"var(--text-secondary)" }}>{t.density}:</span>
-              <span style={{ color:"var(--text-primary)" }}>{density}%</span>
-            </span>
+
           </div>
           {/* Botón patrones */}
           <button
@@ -1561,14 +1704,18 @@ export default function UAPAtlas() {
                     <div style={{ fontFamily:"var(--font-mono)", fontSize:15, color:"var(--text-primary)", fontWeight:700 }}>{val}</div>
                   </div>
                 ))}
-                <div style={{ marginLeft:"auto", fontFamily:"var(--font-mono)", fontSize:9, color:"var(--text-muted)", alignSelf:"flex-end" }}>v4.5 · CC0</div>
+                <div style={{ marginLeft:"auto", fontFamily:"var(--font-mono)", fontSize:9, color:"var(--text-muted)", alignSelf:"flex-end" }}>v{VERSION} · CC0</div>
               </div>
             </div>
           </aside>
 
           {/* ── GRAPH AREA ── */}
           <div style={{ flex:1, position:"relative", overflow:"hidden", minWidth:0, minHeight:0, width:"100%", height:"100%" }}>
-            <svg ref={svgRef} style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%", display:"block" }}/>
+            <svg ref={svgRef} style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%", display: view === "graph" ? "block" : "none" }}/>
+            {view === "index" && (
+              <IndexView nodes={filteredNodes} lang={lang} t={t} selectedId={selected ? selected.id : null}
+                onSelect={n => { setSelected(n); setPanel("node"); setSidebarOpen(true); }} />
+            )}
             {highlightNodes && !patternMode && (
               <button className="btn" onClick={() => { setHighlightNodes(null); setSelectedSG(null); }}
                 style={{ position:"absolute", top:12, left:12, background:"var(--bg-glass)", backdropFilter:"blur(8px)" }}>
