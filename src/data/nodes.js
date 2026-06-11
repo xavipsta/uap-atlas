@@ -213,6 +213,27 @@ export const NODES = [
     "links": [
       "naa_gravity_program_1955"
     ]
+  },
+  {
+    "id": "vaclav_hlavaty",
+    "label": {
+      "es": "Vaclav Hlavatý",
+      "en": "Vaclav Hlavatý"
+    },
+    "year": 1955,
+    "cat": "person",
+    "sub": {
+      "es": "Matemático — University of Indiana",
+      "en": "Mathematician — University of Indiana"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "Mencionado en el documento NAA 30030606 entre los científicos involucrados en investigación sobre control de gravedad. Había trabajado previamente con Einstein en Praga, y en 1955 figuraba en University of Indiana junto a J.A. Wheeler, Richard Arnowitt y Stanley Deser en programas relacionados.",
+      "en": "Named in NAA document 30030606 among scientists involved in gravity control research. He had previously worked with Einstein in Prague, and by 1955 was at University of Indiana alongside J.A. Wheeler, Richard Arnowitt, and Stanley Deser in related programs."
+    },
+    "links": [
+      "naa_gravity_program_1955"
+    ]
   }
 ];
 
