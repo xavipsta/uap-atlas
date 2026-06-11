@@ -148,7 +148,30 @@ export const NODES = [
     links:["mccasland_neil","legacy_program","witness_attrition","elizondo","grusch"] },
 
   // ── v4.9 — R02 ingestado (war.gov, 22 may 2026) ──
-  { id:"pursue_r02", label:{es:"PURSUE Release 02",en:"PURSUE Release 02"}, year:2026, cat:"program", sub:{es:"Divulgación",en:"Disclosure"}, credibility:"high", desc:{es:"22 mayo 2026. Segundo tranche PURSUE y primera entrega multiagencia: incorpora documentos de CIA, ODNI, NASA y DoE además del DOW. Incluye un F-16C de la ANG abatiendo un UAP, una formación de 4 UAP sobre Irán (26 ago 2022), un informe CIA sobre un avistamiento en la URSS (1973), un debriefing médico del Apolo 12 (NASA) y una imagen de objeto no identificado en la instalación PANTEX (DoE). Desde el 8 de mayo, war.gov/UFO supera los 1.000 millones de visitas. Tercer release ya en preparación.",en:"May 22 2026. Second PURSUE tranche and first multi-agency release: adds CIA, ODNI, NASA and DoE documents alongside DOW. Includes an ANG F-16C shooting down a UAP, a 4-UAP formation over Iran (Aug 26 2022), a CIA report on a 1973 USSR sighting, an Apollo 12 medical debriefing (NASA), and an unidentified-object image at the DoE's PANTEX facility. Since May 8, war.gov/UFO has surpassed 1 billion hits. Third release already in preparation."}, links:["pursue_r01","nasa","odni_uap_d001","controlled_release_pattern"] },
+  { id:"pursue_r02", label:{es:"PURSUE Release 02",en:"PURSUE Release 02"}, year:2026, cat:"program", sub:{es:"Divulgación",en:"Disclosure"}, credibility:"high", desc:{es:"22 mayo 2026. Segundo tranche PURSUE y primera entrega multiagencia: incorpora documentos de CIA, ODNI, NASA y DoE además del DOW. Incluye un F-16C de la ANG abatiendo un UAP, una formación de 4 UAP sobre Irán (26 ago 2022), un informe CIA sobre un avistamiento en la URSS (1973), un debriefing médico del Apolo 12 (NASA) y una imagen de objeto no identificado en la instalación PANTEX (DoE). Desde el 8 de mayo, war.gov/UFO supera los 1.000 millones de visitas. Tercer release ya en preparación.",en:"May 22 2026. Second PURSUE tranche and first multi-agency release: adds CIA, ODNI, NASA and DoE documents alongside DOW. Includes an ANG F-16C shooting down a UAP, a 4-UAP formation over Iran (Aug 26 2022), a CIA report on a 1973 USSR sighting, an Apollo 12 medical debriefing (NASA), and an unidentified-object image at the DoE's PANTEX facility. Since May 8, war.gov/UFO has surpassed 1 billion hits. Third release already in preparation."}, links:["pursue_r01","nasa","odni_uap_d001","controlled_release_pattern"] },,
+  {
+    "id": "naa_gravity_program_1955",
+    "label": {
+      "es": "Programas de control de gravedad (1955)",
+      "en": "Gravity Control Programs (1955)"
+    },
+    "year": 1955,
+    "cat": "program",
+    "sub": {
+      "es": "Documento NAA — Inteligencia australiana sobre OVNIs",
+      "en": "NAA Document — Australian UFO Intelligence"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "Informe 'Scientific and intelligence aspects of the UFO problem, 1957–1971' (O.H. Turner, Hd. Nuclear Branch, mayo 1971, NAA serie A13693, ítem 30030606, acceso abierto). Documenta que durante 1955 al menos seis contratistas aeroespaciales de EE.UU. iniciaron programas de gravedad y/o electromagnetismo, con el objetivo declarado de 'controlar la gravedad'. Citado por Annie Jacobsen en 'Area 51'.",
+      "en": "Report 'Scientific and intelligence aspects of the UFO problem, 1957–1971' (O.H. Turner, Hd. Nuclear Branch, May 1971, NAA series A13693, item 30030606, open access). Documents that during 1955 at least six US aerospace contractors began gravity and/or electromagnetic programs, with the stated objective of 'controlling gravity'. Cited by Annie Jacobsen in 'Area 51'."
+    },
+    "links": [
+      "contractor_complex",
+      "edward_teller",
+      "vaclav_hlavaty"
+    ]
+  }
 ];
 
 export const LINKS_DATA = NODES.flatMap(n =>
