@@ -171,6 +171,27 @@ export const NODES = [
       "edward_teller",
       "vaclav_hlavaty"
     ]
+  },
+  {
+    "id": "contractor_complex",
+    "label": {
+      "es": "Complejo de contratistas aeroespaciales (1955)",
+      "en": "Aerospace Contractor Complex (1955)"
+    },
+    "year": 1955,
+    "cat": "institution",
+    "sub": {
+      "es": "Industria de defensa — programas antigravedad",
+      "en": "Defense Industry — Anti-gravity Programs"
+    },
+    "credibility": "high",
+    "desc": {
+      "es": "Según el documento NAA 30030606, en 1955 entraron en programas de gravedad y/o electromagnetismo: Glenn L. Martin Aviation Co. (con Dr. B. Heim de Göttingen y Dr. P. Jordan de Hamburgo), Convair (San Diego), Bell Aircraft (Buffalo), Sikorsky Division, Lear Inc. (Santa Mónica), Clarke Electronics (Palm Springs) y Sperry Gyroscope Division (Great Neck, NY).",
+      "en": "Per NAA document 30030606, in 1955 the following entered gravity and/or electromagnetic programs: Glenn L. Martin Aviation Co. (with Dr. B. Heim of Göttingen and Dr. P. Jordan of Hamburg), Convair (San Diego), Bell Aircraft (Buffalo), Sikorsky Division, Lear Inc. (Santa Monica), Clarke Electronics (Palm Springs), and Sperry Gyroscope Division (Great Neck, NY)."
+    },
+    "links": [
+      "naa_gravity_program_1955"
+    ]
   }
 ];
 
