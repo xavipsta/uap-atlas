@@ -639,6 +639,19 @@ export const SOURCES = {
         "status": "verified",
         "notes": "334 paginas. FOIA appeal ganada tras denegacion inicial. Precedente legal: caso 1980 NSA vs. ciudadanos. Abogado firmante identificado. Documento embedded en la pagina. Redacciones restantes bajo 50 U.S.C. 3605."
     }
+  ],
+  naa_gravity_program_1955: [
+    {
+        "id": "naa_30030606",
+        "node_id": "naa_gravity_program_1955",
+        "type": "naa_archive",
+        "title": "Scientific and intelligence aspects of the UFO problem, 1957–1971 (O.H. Turner, NAA A13693, item 30030606)",
+        "date": "1971-05-27",
+        "url_primary": "https://recordsearch.naa.gov.au/SearchNRetrieve/Interface/ViewImage.aspx?B=30030606&S=7&R=0",
+        "url_archive": "https://archive.org/details/naa-item-number-30030606",
+        "accessed": "2026-06-11",
+        "status": "verified"
+    }
   ]
 };
 
