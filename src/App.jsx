@@ -5,6 +5,7 @@ import { SOURCES } from "./data/sources.js";
 import { SMOKING_GUNS, NETWORK_INSIGHT } from "./data/smokingGuns.js";
 import { HELP } from "./data/help.js";
 import { PURSUE_RELEASES } from "./data/releases.js";
+import { EXPANDED } from "./data/expanded.js";
 // ─── CSS VARIABLES & GLOBAL STYLES ───────────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
@@ -132,7 +133,7 @@ const GlobalStyles = () => (
 // ─── LANGUAGE DETECTION ───────────────────────────────────────────────────────
 const detectLang = () => (navigator.language||"en").toLowerCase().startsWith("es") ? "es" : "en";
 // ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
-const VERSION = "5.0.0";
+const VERSION = "5.1.0";
 
 const T = {
   es: {
@@ -151,6 +152,10 @@ const T = {
     sortBy: "Ordenar:", sortYear: "Año", sortRelevance: "Relevancia", sortAZ: "A–Z",
     credFilterLabel: "Credibilidad:", credAll: "Todas",
     sourcesShort: "fuentes", indexEmpty: "Ningún nodo coincide con los filtros activos.",
+    timelineBtn: "⏱ Timeline", timelinePlay: "▶", timelinePause: "❚❚",
+    pathBtn: "Trazar camino desde aquí", pathPick: "Selecciona el nodo destino en el grafo",
+    pathCancel: "Cancelar", pathTitle: "Camino más corto", pathHops: "saltos",
+    pathNone: "Sin camino documentado entre estos nodos — también es un dato.",
     filterLabel: "Filtros", collapseFilters: "Ocultar", expandFilters: "Filtros",
     sev: { critical:"Crítico", high:"Alto", medium:"Medio" },
     credLabel: { high:"Credibilidad alta", medium:"Credibilidad media", low:"Credibilidad baja", pending:"Sin verificar" },
@@ -202,6 +207,10 @@ const T = {
     sortBy: "Sort:", sortYear: "Year", sortRelevance: "Relevance", sortAZ: "A–Z",
     credFilterLabel: "Credibility:", credAll: "All",
     sourcesShort: "sources", indexEmpty: "No nodes match the active filters.",
+    timelineBtn: "⏱ Timeline", timelinePlay: "▶", timelinePause: "❚❚",
+    pathBtn: "Trace path from here", pathPick: "Select the destination node in the graph",
+    pathCancel: "Cancel", pathTitle: "Shortest path", pathHops: "hops",
+    pathNone: "No documented path between these nodes — that is data too.",
     filterLabel: "Filters", collapseFilters: "Hide", expandFilters: "Filters",
     sev: { critical:"Critical", high:"High", medium:"Medium" },
     credLabel: { high:"High credibility", medium:"Medium credibility", low:"Low credibility", pending:"Unverified" },
@@ -249,6 +258,35 @@ const CONF_CFG = {
   speculative: { color: "#fb923c" },
 };
 // ─── GRAPH HINT ───────────────────────────────────────────────────────────────
+// ─── v5.1: utilidades de timeline y explorador de caminos ───────────────────
+const YEARS = [...new Set(NODES.map(n => n.year))].sort((x, y) => x - y);
+const ADJ = (() => {
+  const m = new Map(NODES.map(n => [n.id, new Set(n.links || [])]));
+  NODES.forEach(n => (n.links || []).forEach(tg => { if (m.has(tg)) m.get(tg).add(n.id); }));
+  return m;
+})();
+function bfsPath(fromId, toId) {
+  if (fromId === toId) return [fromId];
+  const prev = new Map([[fromId, null]]);
+  const q = [fromId];
+  while (q.length) {
+    const cur = q.shift();
+    for (const nx of (ADJ.get(cur) || [])) {
+      if (prev.has(nx)) continue;
+      prev.set(nx, cur);
+      if (nx === toId) {
+        const path = [toId];
+        let p = cur;
+        while (p !== null) { path.unshift(p); p = prev.get(p); }
+        return path;
+      }
+      q.push(nx);
+    }
+  }
+  return null;
+}
+const yearLabel = (y, lang) => y < 0 ? `${Math.abs(y)} ${lang === "es" ? "aC" : "BC"}` : `${y}`;
+
 // ─── v5.0: VISTA ÍNDICE ──────────────────────────────────────────────────────
 function IndexView({ nodes, lang, t, onSelect, selectedId }) {
   const [sort, setSort] = useState("year");
@@ -985,6 +1023,15 @@ export default function UAPAtlas() {
   const [showExpanded, setShowExpanded] = useState(false);
   // ── v5.0: Vista índice (en móvil es la vista por defecto) ──
   const [view, setView] = useState(() => (typeof window !== "undefined" && window.innerWidth < 768) ? "index" : "graph");
+  // ── v5.1: Timeline ──
+  const [tlOn, setTlOn] = useState(false);
+  const [tlIdx, setTlIdx] = useState(YEARS.length - 1);
+  const [tlPlaying, setTlPlaying] = useState(false);
+  // ── v5.1: Explorador de caminos ──
+  const [pathFrom, setPathFrom] = useState(null);
+  const [pathResult, setPathResult] = useState(null);
+  const pathFromRef = useRef(null);
+  useEffect(() => { pathFromRef.current = pathFrom; }, [pathFrom]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -1039,6 +1086,32 @@ export default function UAPAtlas() {
     const tm = setTimeout(() => setShowHint(false), 8000);
     return () => clearTimeout(tm);
   }, [showIntro]);
+
+  // ── v5.1: filtro temporal sobre el grafo SIN reconstruirlo ──
+  useEffect(() => {
+    if (!svgRef.current) return;
+    const svg = d3.select(svgRef.current);
+    const Y = tlOn ? YEARS[tlIdx] : Infinity;
+    svg.selectAll(".nd").attr("display", d => (d && d.year > Y) ? "none" : null);
+    svg.selectAll(".ll").attr("display", l => {
+      if (!tlOn) return null;
+      const s = typeof l.source === "object" ? l.source : NODES.find(n => n.id === l.source);
+      const tg = typeof l.target === "object" ? l.target : NODES.find(n => n.id === l.target);
+      return (s && s.year > Y) || (tg && tg.year > Y) ? "none" : null;
+    });
+  }, [tlOn, tlIdx, filteredNodes.length, activeCat, dimensions, lang, officialOnly]);
+
+  // ── v5.1: reproducción de la timeline ──
+  useEffect(() => {
+    if (!tlPlaying) return;
+    const iv = setInterval(() => {
+      setTlIdx(i => {
+        if (i >= YEARS.length - 1) { setTlPlaying(false); return i; }
+        return i + 1;
+      });
+    }, 500);
+    return () => clearInterval(iv);
+  }, [tlPlaying]);
 
   const filteredNodes = NODES.filter(n => {
     const matchCat = activeCat === "all" || n.cat === activeCat;
@@ -1137,6 +1210,17 @@ export default function UAPAtlas() {
       )
       .on("click", (e,d) => {
         e.stopPropagation();
+        // v5.1: explorador de caminos — si hay origen armado, este clic elige destino
+        if (pathFromRef.current && pathFromRef.current.id !== d.id) {
+          const p = bfsPath(pathFromRef.current.id, d.id);
+          setPathResult({ from: pathFromRef.current, to: d, path: p });
+          setPathFrom(null);
+          if (p) setHighlightNodes(new Set(p));
+          setSelected(d);
+          setPanel("node");
+          if (!sidebarOpen) setSidebarOpen(true);
+          return;
+        }
         setSelected(d);
         setPanel("node");
         setSelectedSG(null);
@@ -1425,6 +1509,15 @@ export default function UAPAtlas() {
             <span style={{ fontSize:13 }}>◈</span>
             <span>{patternMode ? `${sgs.length} ${t.patternActive}` : t.patternBtn.replace("◈ ","")}</span>
           </button>
+          <button
+            onClick={() => { setTlOn(v => { const nv = !v; if (nv) setTlIdx(0); else setTlPlaying(false); return nv; }); setView("graph"); }}
+            style={{ display:"flex", alignItems:"center", gap:6, padding:"0 12px", height:32, borderRadius:6,
+              background: tlOn ? "var(--accent-dim)" : "var(--bg-3)",
+              border: tlOn ? "1px solid var(--border-accent)" : "1px solid var(--border)",
+              color: tlOn ? "var(--accent)" : "var(--text-secondary)",
+              fontFamily:"var(--font-mono)", fontSize:11, cursor:"pointer", fontWeight: tlOn ? 700 : 400, transition:"all 0.25s" }}>
+            <span>{t.timelineBtn}</span>
+          </button>
           <div style={{ flex:1 }}/>
           <div style={{ display:"flex", border:"1px solid var(--border)", borderRadius:6, overflow:"hidden" }}>
             {["es","en"].map(l => (
@@ -1569,6 +1662,17 @@ export default function UAPAtlas() {
                           <span style={{ fontSize:14 }}>◈</span>
                           {t.expandBtn}
                         </button>
+                        <button
+                          onClick={() => { setPathFrom(selected); setPathResult(null); setView("graph"); }}
+                          style={{ display:"flex", alignItems:"center", gap:6, width:"100%", justifyContent:"center",
+                            height:32, marginTop:8, borderRadius:"var(--radius-sm)",
+                            background: pathFrom && pathFrom.id === selected.id ? "rgba(52,211,153,0.12)" : "var(--bg-3)",
+                            border: pathFrom && pathFrom.id === selected.id ? "1px solid rgba(52,211,153,0.4)" : "1px solid var(--border)",
+                            color: pathFrom && pathFrom.id === selected.id ? "#34d399" : "var(--text-secondary)",
+                            fontFamily:"var(--font-ui)", fontSize:12, fontWeight:600, cursor:"pointer", transition:"var(--transition)" }}>
+                          <span>⇄</span>
+                          {pathFrom && pathFrom.id === selected.id ? t.pathPick : t.pathBtn}
+                        </button>
                       </div>
                       {/* Connections */}
                       {(selected.links||[]).filter(id => filteredIds.has(id)).length > 0 && (
@@ -1711,10 +1815,71 @@ export default function UAPAtlas() {
 
           {/* ── GRAPH AREA ── */}
           <div style={{ flex:1, position:"relative", overflow:"hidden", minWidth:0, minHeight:0, width:"100%", height:"100%" }}>
-            <svg ref={svgRef} style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%", display: view === "graph" ? "block" : "none" }}/>
+            <svg ref={svgRef} style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%", display:"block" }}/>
             {view === "index" && (
               <IndexView nodes={filteredNodes} lang={lang} t={t} selectedId={selected ? selected.id : null}
                 onSelect={n => { setSelected(n); setPanel("node"); setSidebarOpen(true); }} />
+            )}
+            {tlOn && view === "graph" && (
+              <div style={{ position:"absolute", left:"50%", bottom:18, transform:"translateX(-50%)", zIndex:6,
+                display:"flex", alignItems:"center", gap:12, padding:"10px 16px", borderRadius:10,
+                background:"rgba(13,17,23,0.92)", border:"1px solid var(--border-accent)", backdropFilter:"blur(8px)",
+                width:"min(560px, 92%)" }}>
+                <button onClick={() => setTlPlaying(p => !p)}
+                  style={{ background:"var(--accent-dim)", border:"1px solid var(--border-accent)", color:"var(--accent)",
+                    borderRadius:6, width:34, height:28, cursor:"pointer", fontFamily:"var(--font-mono)", fontSize:11 }}>
+                  {tlPlaying ? t.timelinePause : t.timelinePlay}
+                </button>
+                <input type="range" min={0} max={YEARS.length - 1} value={tlIdx}
+                  onChange={e => { setTlPlaying(false); setTlIdx(+e.target.value); }}
+                  style={{ flex:1, accentColor:"#38bdf8" }} />
+                <span style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--text-primary)", minWidth:70, textAlign:"right" }}>
+                  ≤ {yearLabel(YEARS[tlIdx], lang)}
+                </span>
+                <button onClick={() => { setTlOn(false); setTlPlaying(false); }}
+                  style={{ background:"transparent", border:"none", color:"var(--text-muted)", cursor:"pointer", fontSize:13 }}>✕</button>
+              </div>
+            )}
+            {pathFrom && !pathResult && (
+              <div style={{ position:"absolute", left:"50%", top:14, transform:"translateX(-50%)", zIndex:6,
+                display:"flex", alignItems:"center", gap:10, padding:"8px 14px", borderRadius:8,
+                background:"rgba(13,17,23,0.92)", border:"1px solid rgba(52,211,153,0.4)",
+                fontFamily:"var(--font-mono)", fontSize:11, color:"#34d399" }}>
+                <span>⇄ {t.pathPick} · {pathFrom.label[lang]}</span>
+                <button onClick={() => setPathFrom(null)}
+                  style={{ background:"transparent", border:"none", color:"var(--text-muted)", cursor:"pointer", fontFamily:"var(--font-mono)", fontSize:11 }}>{t.pathCancel}</button>
+              </div>
+            )}
+            {pathResult && (
+              <div style={{ position:"absolute", left:"50%", top:14, transform:"translateX(-50%)", zIndex:6, maxWidth:"min(680px, 94%)",
+                padding:"10px 14px", borderRadius:10, background:"rgba(13,17,23,0.94)", border:"1px solid var(--border-accent)" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom: pathResult.path ? 8 : 0 }}>
+                  <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--accent)", fontWeight:700 }}>⇄ {t.pathTitle}</span>
+                  {pathResult.path && <span style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-muted)" }}>{pathResult.path.length - 1} {t.pathHops}</span>}
+                  <span style={{ flex:1 }}/>
+                  <button onClick={() => { setPathResult(null); setHighlightNodes(null); }}
+                    style={{ background:"transparent", border:"none", color:"var(--text-muted)", cursor:"pointer", fontSize:12 }}>✕</button>
+                </div>
+                {pathResult.path ? (
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:6, alignItems:"center" }}>
+                    {pathResult.path.map((id, i) => {
+                      const n = NODES.find(x => x.id === id);
+                      return (
+                        <span key={id} style={{ display:"inline-flex", alignItems:"center", gap:6 }}>
+                          {i > 0 && <span style={{ color:"var(--text-muted)" }}>→</span>}
+                          <button onClick={() => { setSelected(n); setPanel("node"); }}
+                            style={{ background:"var(--bg-3)", border:"1px solid var(--border)", borderRadius:5, padding:"3px 8px",
+                              color:"var(--text-primary)", fontFamily:"var(--font-mono)", fontSize:10, cursor:"pointer" }}>
+                            {n ? n.label[lang] : id} <span style={{ color:"var(--text-muted)" }}>{n ? yearLabel(n.year, lang) : ""}</span>
+                          </button>
+                        </span>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div style={{ fontFamily:"var(--font-mono)", fontSize:11, color:"var(--warning)" }}>{t.pathNone}</div>
+                )}
+              </div>
             )}
             {highlightNodes && !patternMode && (
               <button className="btn" onClick={() => { setHighlightNodes(null); setSelectedSG(null); }}
@@ -1869,7 +2034,7 @@ export default function UAPAtlas() {
       {/* ── EXPANDED MODAL — Fase 2 ── */}
       {showExpanded && selected && (
         <ExpandedModal
-          node={selected}
+          node={{ ...selected, expanded: EXPANDED[selected.id] }}
           lang={lang}
           onClose={() => setShowExpanded(false)}
           allNodes={NODES}
@@ -1880,3 +2045,4 @@ export default function UAPAtlas() {
     </>
   );
 }
+
