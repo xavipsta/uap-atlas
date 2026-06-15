@@ -1,5 +1,5 @@
 // ─── UAP ATLAS — SMOKING GUNS DATA ─────────────────────────────────────────
-// v4.5 · 27 pistolas humeantes con campos context y path para visualización
+// v4.5 · 20 pistolas humeantes con campos context y path para visualización
 // Estructura: { es: [...], en: [...] } — mismos IDs en ambos idiomas
 
 export const SMOKING_GUNS = {
@@ -243,28 +243,7 @@ export const SMOKING_GUNS = {
       analysis:"Grusch posee betweenness de 588.0, implicando que >50% de caminos cortos entre pares de nodos pasan a través de él. Sin embargo: (1) su empleo en NRO (2005-2016) tiene gaps documentales; (2) no aparece en testimonios de Elizondo, Lacatski o Mellon pre-2021; (3) su acceso a Legacy_program (betweenness 198.0), imm_constellation y PURSUE supuestamente ocurrió post-2017 pero su betweenness sugiere conocimiento estructural pre-2015. (4) NYT 2017 y Congress 2023 son eventos que amplifican su rol, pero no fundamento.",
       implication:"Grusch fue introducido estratégicamente en 2021-2023 como convergencia-point para múltiples narrativas (Legacy, AATIP, Congressional interest) OR fue operador de nivel superior cuyo rango fue ocultado para plausible deniability. Si primero: artefacto narrativo. Si segundo: testigo más importante con identidad parcialmente protegida. Falsificable: registros de seguridad de NRO 2005-2016 con nombre completo; correspondencia clasificada mencionando Grusch pre-2020; comparación de firmas digitales de documentos Legacy antes/después de su 'ingreso' a la red de disclosure.",
       confidence:"strong"
-    },
-    {
-      id:"sg17", context:["structural_anomaly","betweenness_inversion"],
-      nodes:["grusch","nuclear_pattern","aatip","legacy_program"],
-      path:["grusch(b=588.0)→aatip(b=145.6)→nuclear_pattern(b=222.0)→legacy_program(b=198.0)"],
-      title:"Grusch: máximo betweenness sin documentación nuclear previa", type:"gap", severity:"critical",
-      headline:"El nodo con centralidad máxima (588.0) no aparece en documentos clasificados sobre NUCLEAR_PATTERN hasta 2023, pese a su rol de enlace en AATIP (2007-2012)",
-      analysis:"Grusch opera como intermediario crítico (betweenness 588.0) entre AATIP (b=145.6) y LEGACY_PROGRAM (b=198.0), ambos con valores altos de centralidad. Sin embargo, los registros desclasificados de AATIP/PURSUE no lo mencionan nominalmente hasta su testimonio 2023. La conceptualización formal de NUCLEAR_PATTERN (b=222.0) es posterior a su período como oficial. Esto sugiere: (a) acceso retroactivo a clasificación nuclear, (b) rol no documentado durante operación, o (c) arista temporal fabricada post-hoc.",
-      implication:"Si Grusch accedió a NUCLEAR_PATTERN durante AATIP sin registros, valida sg16 (edición retroactiva). Si fue agregado después, su betweenness actual es artefacto de reconexión retrospectiva, invalidando su valor como indicador de centralidad operacional histórica.",
-      confidence:"strong"
-    },
-    {
-      id:"sg20", context:["institutional_asymmetry","access_hierarchy"],
-      nodes:["aaro","congress2023","legacy_program","nhi_agreements"],
-      path:["congress2023(b=122.4)→aaro(b=78.3)→legacy_program(b=198.0)→nhi_agreements(b=33.2)"],
-      title:"AARO: intermediario institucional con acceso selectivo a NHI_AGREEMENTS", type:"gap", severity:"high",
-      headline:"La Oficina de Análisis de Anomalías de Reconocimiento (AARO, b=78.3) actúa como cuello de botella entre CONGRESS2023 (b=122.4) y NHI_AGREEMENTS (b=33.2), pero NHI_AGREEMENTS no figura en actas públicas de audiencias",
-      analysis:"AARO (institución, b=78.3) conecta CONGRESS2023 (evento de máxima visibilidad, b=122.4) a LEGACY_PROGRAM (b=198.0). Sin embargo, la arista de AARO a NHI_AGREEMENTS (concepto, b=33.2) es unidireccional desde AARO: AARO reconoce NHI_AGREEMENTS como categoría de análisis, pero CONGRESS2023 no tiene arista directa documentada a NHI_AGREEMENTS. Laguna: Kirk kirkpatrick (director AARO) en testimonio 2023 no menciona NHI_AGREEMENTS por término, solo 'acuerdos técnicos previos'. Esto sugiere que AARO tiene acceso clasificado a categoría que no puede revelar públicamente.",
-      implication:"AARO opera como guardián institucional de información que CONGRESS no puede alcanzar directamente. Esto valida sg9 (Grusch con betweenness máximo sin acceso documentado): hay información-nodos que existen en clasificación pero cuya transmisión formal a órganos de supervisión es nula o anómala. Estructura jerárquica: CONGRESS→AARO→LEGACY_PROGRAM, pero CONGRESS no accede a LEGACY_PROGRAM directamente, lo que viola cadena de custodia democrática.",
-      confidence:"verified"
     }
-  
   
   
   ],
@@ -508,28 +487,7 @@ export const SMOKING_GUNS = {
       analysis:"Grusch possesses betweenness 588.0, implying >50% of shortest paths between node pairs pass through him. Yet: (1) his NRO employment (2005-2016) has documentary gaps; (2) does not appear in pre-2021 testimonies of Elizondo, Lacatski, or Mellon; (3) access to Legacy_program (betweenness 198.0), imm_constellation, PURSUE supposedly occurred post-2017 but his betweenness suggests structural knowledge pre-2015. (4) NYT 2017 and Congress 2023 are events that amplify his role but do not establish foundation.",
       implication:"Grusch was strategically introduced 2021-2023 as convergence-point for multiple narratives (Legacy, AATIP, Congressional interest) OR was higher-level operator whose rank was hidden for plausible deniability. If former: narrative artifact. If latter: most important witness with partially protected identity. Falsifiable: NRO security records 2005-2016 with full name; classified correspondence mentioning Grusch pre-2020; digital signature comparison of Legacy documents before/after his 'entry' into disclosure network.",
       confidence:"strong"
-    },
-    {
-      id:"sg17", context:["structural_anomaly","betweenness_inversion"],
-      nodes:["grusch","nuclear_pattern","aatip","legacy_program"],
-      path:["grusch(b=588.0)→aatip(b=145.6)→nuclear_pattern(b=222.0)→legacy_program(b=198.0)"],
-      title:"Grusch: Maximum betweenness without prior nuclear documentation", type:"gap", severity:"critical",
-      headline:"The node with maximum centrality (588.0) does not appear in classified documents on NUCLEAR_PATTERN until 2023, despite his role as link in AATIP (2007-2012)",
-      analysis:"Grusch operates as critical intermediary (betweenness 588.0) between AATIP (b=145.6) and LEGACY_PROGRAM (b=198.0), both with high centrality values. However, declassified AATIP/PURSUE records do not mention him nominally until his 2023 testimony. Formal conceptualization of NUCLEAR_PATTERN (b=222.0) post-dates his tenure as officer. This suggests: (a) retroactive access to nuclear classification, (b) undocumented role during operation, or (c) temporal edge fabricated post-hoc.",
-      implication:"If Grusch accessed NUCLEAR_PATTERN during AATIP without records, it validates sg16 (retroactive editing). If added afterwards, his current betweenness is artifact of retrospective reconnection, invalidating its value as indicator of historical operational centrality.",
-      confidence:"strong"
-    },
-    {
-      id:"sg20", context:["institutional_asymmetry","access_hierarchy"],
-      nodes:["aaro","congress2023","legacy_program","nhi_agreements"],
-      path:["congress2023(b=122.4)→aaro(b=78.3)→legacy_program(b=198.0)→nhi_agreements(b=33.2)"],
-      title:"AARO: Institutional intermediary with selective access to NHI_AGREEMENTS", type:"gap", severity:"high",
-      headline:"The All-domain Anomaly Resolution Office (AARO, b=78.3) acts as bottleneck between CONGRESS2023 (b=122.4) and NHI_AGREEMENTS (b=33.2), yet NHI_AGREEMENTS does not appear in public hearing records",
-      analysis:"AARO (institution, b=78.3) connects CONGRESS2023 (maximum visibility event, b=122.4) to LEGACY_PROGRAM (b=198.0). However, AARO's edge to NHI_AGREEMENTS (concept, b=33.2) is unidirectional from AARO: AARO recognizes NHI_AGREEMENTS as analytical category, but CONGRESS2023 has no documented direct edge to NHI_AGREEMENTS. Gap: Kirk Kirkpatrick (AARO director) in 2023 testimony does not mention NHI_AGREEMENTS by term, only 'prior technical agreements'. This suggests AARO possesses classified access to category it cannot publicly disclose.",
-      implication:"AARO operates as institutional gatekeeper of information unreachable by CONGRESS directly. This validates sg9 (Grusch with maximum betweenness without documented access): there are information-nodes existing in classification whose formal transmission to oversight bodies is null or anomalous. Hierarchical structure: CONGRESS→AARO→LEGACY_PROGRAM, but CONGRESS does not access LEGACY_PROGRAM directly, violating democratic custodial chain.",
-      confidence:"verified"
     }
-  
   
   
   ]
