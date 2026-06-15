@@ -1,6 +1,14 @@
 Changelog — UAP Intelligence Atlas
 Formato: Keep a Changelog · Versionado: SemVer
 Convención: major = cambios de arquitectura · minor = features · patch = datos y fixes.
+[5.1.0] — 2026-06-12
+Added
+Timeline interactiva: botón ⏱ en el header + barra con deslizador y play/pause. Recorre los años reales del corpus (1500 aC → 2027) ocultando nodos/aristas futuros SIN reconstruir el grafo (sin re-simulación).
+Explorador de caminos (BFS): botón "⇄ Trazar camino desde aquí" en la ficha → click en destino → camino más corto resaltado con panel de saltos navegable. Determinista, sin IA. "Sin camino" también se comunica como dato.
+Ventana analítica (expanded): nuevo `src/data/expanded.js` con contenido extendido curado por nodo (la IA propone, el humano decide). Sembrados 3 nodos: grusch, varginha1996 (con gestión de contradicción Rebelo↔STM/AARO), pursue_r02. El modal Ampliar ya lo consume.
+3 secciones nuevas de help (ES+EN) con feature_id/since_version.
+Fixed
+FIX-01 (regresión v5.0.0): el grafo quedaba vacío al volver de la vista Índice tras cambiar filtros. Causa: el svg oculto con display:none corrompía la geometría del fit-to-view (getBBox=0). Solución: el svg ya no se oculta nunca — la vista Índice, opaca, lo cubre. Se evita además la reconstrucción/re-simulación al cambiar de pestaña.
 [5.0.0] — 2026-06-10
 Added
 Vista Índice: puerta de entrada alternativa al grafo. Tarjetas de todos los nodos con ordenación (año / relevancia / A–Z) y filtro por credibilidad. Vista por defecto en móvil (<768px).
